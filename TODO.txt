@@ -1,0 +1,23 @@
+TODO:
+
+Show a ship
+Move it
+Rotate it
+Add physics (no gravity)
+Add box
+Add collisions
+Add gravity
+Level moves, ship does not
+Make full screen
+Get size of screen
+Build simple level
+Add particle effects on collision
+Add gun
+Add enemy to shoot
+Add door
+Add opening lock
+Add front end start
+Add scripted sequence
+Add conversations
+
+
