@@ -1,6 +1,8 @@
 TODO:
 
-Show a ship
+* -> Done
+
+* Show a ship
 Move it
 Rotate it
 Add physics (no gravity)
