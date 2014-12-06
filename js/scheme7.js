@@ -1,46 +1,35 @@
 "use strict";
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:update});
+var WIDTH = 800;
+var HEIGHT = 600;
 
-function Ship() {
-	this.xpos = 0;
-	this.ypos = 0;
-	this.colour = 0xAA8822;
-	
-	this.polygons = new Array();
-	
-	this.addPolygon = function(points) {
-		for(var i in points) {
-			points[i]['x'] += this.xpos;
-			points[i]['y'] += this.ypos;
-		}
-		var poly = new Phaser.Polygon([]);
-		poly.setTo(points);
-		this.polygons.push(poly);
-	};
-	
-	this.render = function(gfx) {
-		for(var i in this.polygons) {
-			gfx.beginFill(this.colour);
-			gfx.drawPolygon(this.polygons[i].points);
-			gfx.endFill();
-		}
-	};
+var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:update});
+
+function setupPhysics() {
+	game.physics.startSystem(Phaser.Physics.P2JS);
+	game.physics.p2.gravity.y = 10;
+    game.physics.p2.restitution = 0.8;
 };
 
 function preload() {
+	game.load.image('ship', 'gfx/ship.png');
+	game.load.image('ground', 'gfx/ground.png');
 };
 
 function create() {
-	var player = new Ship();
-	player.ypos = 50;
-	player.xpos = 150;
-	player.addPolygon([{x:0, y:0}, {x:-100, y:240}, {x:0, y:200}]);
-	player.addPolygon([{x:0, y:0}, {x:0, y:200}, {x:100, y:240}]);
+	setupPhysics();
 
-	var gfx = game.add.graphics(0, 0);
-	console.log(gfx);
-	player.render(gfx);
+	var player = game.add.sprite(350, 150, 'ship');
+	// true is for the visual debugger
+	game.physics.p2.enable(player, false);
+	player.body.clearShapes();
+	player.body.addPolygon({}, [[0,0], [-25,60], [25,60],[0,0]]);
+
+
+	var ground = game.add.sprite(0, 550, 'ground');
+	game.physics.p2.enable(ground, true);
+	ground.body.clearShapes();
+	ground.body.addPolygon({}, [[0,0], [WIDTH,0], [WIDTH,5], [0,5], [0,0]]);
 };
 
 function update() {
