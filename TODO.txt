@@ -3,12 +3,12 @@ TODO:
 * -> Done
 
 * Show a ship
-Move it
-Rotate it
-Add physics (no gravity)
-Add box
-Add collisions
-Add gravity
+* Move it
+* Rotate it
+* Add physics (no gravity)
+* Add box
+* Add collisions
+* Add gravity
 Level moves, ship does not
 Make full screen
 Get size of screen
