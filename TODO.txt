@@ -2,6 +2,8 @@ TODO:
 
 * -> Done
 
+Game aims:
+
 * Show a ship
 * Move it
 * Rotate it
