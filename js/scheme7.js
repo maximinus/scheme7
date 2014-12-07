@@ -3,16 +3,6 @@
 var WIDTH = 800;
 var HEIGHT = 600;
 
-if(typeof CODE_TESTING == 'undefined') {
-	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:update}); }
-else {
-	var game = null;
-}
-
-var cursors;
-var player;
-var flag;
-
 function generateSpriteImage(width, height) {
 	var image = game.add.bitmapData(width, height);
 	// clear to black and draw lines all over
@@ -33,11 +23,12 @@ function setupPhysics() {
 };
 
 function buildPlayer() {
-	player = game.add.sprite(350, 150, 'ship');
+	var player = game.add.sprite(350, 150, 'ship');
 	// true is for the visual debugger
 	game.physics.p2.enable(player, true);
 	player.body.clearShapes();
 	player.body.addPolygon({}, [[0,0], [-25,60], [25,60]]);
+	return(player);
 };
 
 function buildLevel() {
@@ -59,23 +50,40 @@ function preload() {
 
 function create() {
 	setupPhysics();
-	buildPlayer();
+	model.player = buildPlayer();
+	model.cursors = game.input.keyboard.createCursorKeys();
 	buildLevel();
-	//game.camera.follow(player);
-	cursors = game.input.keyboard.createCursorKeys();
+	game.world.setBounds(0, 0, 1920, 1920);
+	game.camera.follow(model.player);
 };
 
-function update() {
-	if(cursors.left.isDown) {
-		player.body.rotateLeft(40);
-		flag = true; }
-	else if(cursors.right.isDown) {
-		player.body.rotateRight(40);
-		flag = true; }
-	else if(flag == true) {
-		player.body.setZeroRotation();
-		flag = false; }
-	if(cursors.up.isDown) {
-		player.body.thrust(80); };
+function GameModel() {
+	// data model for game
+	this.cursors = null;
+	this.player = null;
+	this.ship_rotated = false;
+	
+	this.update = function() {
+		if(model.cursors.left.isDown) {
+			this.player.body.rotateLeft(40);
+			this.ship_rotated = true; }
+		else if(model.cursors.right.isDown) {
+			this.player.body.rotateRight(40);
+			this.ship_rotated = true; }
+		else if(model.ship_rotated == true) {
+			this.player.body.setZeroRotation();
+			this.ship_rotated = false; }
+		if(this.cursors.up.isDown) {
+			this.player.body.thrust(80); };
+	};
 };
+
+var model = new GameModel();
+
+// game can be seen as the view
+if(typeof CODE_TESTING == 'undefined') {
+	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:model.update.bind(model) }); }
+else {
+	var game = null;
+}
 

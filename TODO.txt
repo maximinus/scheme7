@@ -11,7 +11,7 @@ Game aims:
 * Add box
 * Add collisions
 * Add gravity
-Level moves, ship does not
+* Level moves, ship does not
 Make full screen
 Get size of screen
 Build simple level
