@@ -3,7 +3,12 @@
 var WIDTH = 800;
 var HEIGHT = 600;
 
-var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:update});
+if (typeof CODE_TESTING !== 'undefined') {
+	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:update}); }
+else {
+	var game = null;
+}
+
 var cursors;
 var player;
 var flag;
