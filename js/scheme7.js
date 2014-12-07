@@ -1,25 +1,51 @@
 "use strict";
 
-var WIDTH = 800;
-var HEIGHT = 600;
+// calculate view size on page load
+if(typeof window.innerWidth != 'undefined') {
+	var WIDTH = window.innerWidth;
+	var HEIGHT = window.innerHeight; }
+else {
+	// some error, use a small default
+	var WIDTH = 640;
+	var HEIGHT = 400; }
 
-function generateSpriteImage(width, height) {
+function generateSpriteImage(width, height, colour) {
 	var image = game.add.bitmapData(width, height);
-	// clear to black and draw lines all over
+	// clear to black and dcoords lines all over
 	image.ctx.fillStyle = '#000000';
 	image.ctx.fillRect(0, 0, width, height);
 	// top, bottom, left, right lines
-	image.ctx.strokeStyle = '#ff00ff';
+	image.ctx.strokeStyle = colour;
 	image.ctx.lineWidth = 1;
 	image.ctx.strokeRect(0, 0, width, height);
 	// now we can make the sprite
 	return(image);
 };
 
+function calculateBounds() {
+	// from the level, calculate the level bounding
+	// first generate a list of all co-ords
+	var xcoords = new Array();
+	var ycoords = new Array();
+	var boxes = LEVEL.areas;
+	for(var i in boxes) {
+		// generate and save kust the top-left and bottom-right (only after max and min)
+		xcoords.push(boxes[i][0], boxes[i][0] + boxes[i][2]);
+		ycoords.push(boxes[i][1], boxes[i][1] + boxes[i][3]);
+	}
+	// make an array of thos values, x and y, min and max
+	// add half the size of the screen, allow extra 1 for off-by one errors
+	var limits = [Math.min.apply(Math, xcoords) - ((WIDTH / 2) + 1)];
+	limits.push(Math.max.apply(Math, xcoords) + ((WIDTH / 2) + 1));
+	limits.push(Math.min.apply(Math, ycoords) - ((HEIGHT / 2) + 1));
+	limits.push(Math.max.apply(Math, ycoords) + ((HEIGHT / 2) + 1));
+	return(limits);
+};
+
 function setupPhysics() {
 	game.physics.startSystem(Phaser.Physics.P2JS);
-	game.physics.p2.gravity.y = 24;
-    game.physics.p2.restitution = 0.2;
+	game.physics.p2.gravity.y = LEVEL.physics.gravity;
+    game.physics.p2.restitution = LEVEL.physics.restitution;
 };
 
 function buildPlayer() {
@@ -32,16 +58,19 @@ function buildPlayer() {
 };
 
 function buildLevel() {
-	// the array is xpos, ypos, height, width
-	var boxes = [[20, 20, 760, 10], [20, 30, 10, 520], [20, 550, 760, 10], [770, 30, 10, 520]];
+	var boxes = LEVEL.areas;
+	var colour = LEVEL.area_colour;
 	for(var i in boxes) {
-		var image = generateSpriteImage(boxes[i][2], boxes[i][3]);
-		var sprite = game.add.sprite(boxes[i][0], boxes[i][1], image);
+		var coords = boxes[i].coords;
+		var image = generateSpriteImage(coords[2], coords[3], colour);
+		var sprite = game.add.sprite(coords[0], coords[1], image);
 		game.physics.p2.enable(sprite, false);
 		sprite.body.clearShapes();
-		sprite.body.addPolygon({}, [[0, 0],	[boxes[i][2], 0], [boxes[i][2], boxes[i][3]], [0, boxes[i][3]]]);
+		sprite.body.addPolygon({}, [[0, 0],	[coords[2], 0], [coords[2], coords[3]], [0, coords[3]]]);
 		sprite.body.static = true;
 	}
+	var bounds = calculateBounds();
+	game.world.setBounds(bounds[0], bounds[1], bounds[2], bounds[3]);
 };
 
 function preload() {
@@ -53,7 +82,6 @@ function create() {
 	model.player = buildPlayer();
 	model.cursors = game.input.keyboard.createCursorKeys();
 	buildLevel();
-	game.world.setBounds(0, 0, 1920, 1920);
 	game.camera.follow(model.player);
 };
 
