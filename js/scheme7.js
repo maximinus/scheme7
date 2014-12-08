@@ -79,38 +79,57 @@ function preload() {
 
 function create() {
 	setupPhysics();
-	model.player = buildPlayer();
-	model.cursors = game.input.keyboard.createCursorKeys();
+	s7.addPlayer(buildPlayer());
+	s7.cursors = game.input.keyboard.createCursorKeys();
 	buildLevel();
-	game.camera.follow(model.player);
+	game.camera.follow(s7.player);
 };
 
-function GameModel() {
-	// data model for game
+function Game() {
+	// game controller
 	this.cursors = null;
 	this.player = null;
 	this.ship_rotated = false;
 	
 	this.update = function() {
-		if(model.cursors.left.isDown) {
+		if(s7.cursors.left.isDown) {
 			this.player.body.rotateLeft(40);
 			this.ship_rotated = true; }
-		else if(model.cursors.right.isDown) {
+		else if(s7.cursors.right.isDown) {
 			this.player.body.rotateRight(40);
 			this.ship_rotated = true; }
-		else if(model.ship_rotated == true) {
+		else if(s7.ship_rotated == true) {
 			this.player.body.setZeroRotation();
 			this.ship_rotated = false; }
 		if(this.cursors.up.isDown) {
 			this.player.body.thrust(80); };
 	};
+	
+	this.addPlayer = function(player) {
+		this.player = player;
+		this.player.body.onBeginContact.add(this.playerCollide, this);
+	};
+	
+	this.addCollisionDamage(speed) {
+		// damage is the square of the speed
+		console.log('Damage:', speed * speed);
+	};
+	
+	this.playerCollide = function(body, shapeA, shapeB, eq) {
+		// get the speed of the collision
+		if(eq[0] != null) {
+			var speed = Phaser.Point.distance(new Phaser.Point(eq[0].bodyB.velocity[0], eq[0].bodyB.velocity[1]), new Phaser.Point(0,0)); }
+			this.addCollisionDamage(speed);
+		}
+		console.log(eq);
+	};
 };
 
-var model = new GameModel();
+var s7 = new Game();
 
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
-	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:model.update.bind(model) }); }
+	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7) }); }
 else {
 	var game = null;
 }
