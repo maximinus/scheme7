@@ -75,6 +75,8 @@ function buildLevel() {
 
 function preload() {
 	game.load.image('ship', 'gfx/ship.png');
+	// a simple green circle as a test image
+	game.load.image('test', 'gfx/test.png');
 };
 
 function create() {
@@ -83,6 +85,7 @@ function create() {
 	s7.cursors = game.input.keyboard.createCursorKeys();
 	buildLevel();
 	game.camera.follow(s7.player);
+	game.camera.roundPx = false;
 };
 
 function Game() {
@@ -110,7 +113,7 @@ function Game() {
 		this.player.body.onBeginContact.add(this.playerCollide, this);
 	};
 	
-	this.addCollisionDamage(speed) {
+	this.addCollisionDamage = function(speed) {
 		// damage is the square of the speed
 		console.log('Damage:', speed * speed);
 	};
@@ -118,10 +121,27 @@ function Game() {
 	this.playerCollide = function(body, shapeA, shapeB, eq) {
 		// get the speed of the collision
 		if(eq[0] != null) {
-			var speed = Phaser.Point.distance(new Phaser.Point(eq[0].bodyB.velocity[0], eq[0].bodyB.velocity[1]), new Phaser.Point(0,0)); }
-			this.addCollisionDamage(speed);
+			var speed = Phaser.Point.distance(new Phaser.Point(eq[0].bodyB.velocity[0], eq[0].bodyB.velocity[1]), new Phaser.Point(0,0));
+			//this.addCollisionDamage(speed);
 		}
-		console.log(eq);
+		if(eq[0].contactPointB == null) {
+			return; }
+		// should be offset from bodyB
+		var xpos = (eq[0].contactPointB[0] * 40) + body.x;
+		var ypos = (eq[0].contactPointB[1] * 2) + body.y;
+		this.drawParticles(xpos, ypos);
+	};
+	
+	this.drawParticles = function(xpos, ypos) {
+		// xpos and ypos are world co-ordinates
+		var sprite = game.add.sprite(xpos, ypos, 'test');
+		// add time
+		game.time.events.add(Phaser.Timer.SECOND * 12, this.deleteParticles, this, sprite);
+	};
+	
+	this.deleteParticles = function(sprite) {
+		// delete the sprite
+		sprite.destroy();
 	};
 };
 
