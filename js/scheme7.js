@@ -95,13 +95,13 @@ function Game() {
 	this.ship_rotated = false;
 	
 	this.update = function() {
-		if(s7.cursors.left.isDown) {
+		if(this.cursors.left.isDown) {
 			this.player.body.rotateLeft(40);
 			this.ship_rotated = true; }
-		else if(s7.cursors.right.isDown) {
+		else if(this.cursors.right.isDown) {
 			this.player.body.rotateRight(40);
 			this.ship_rotated = true; }
-		else if(s7.ship_rotated == true) {
+		else if(this.ship_rotated == true) {
 			this.player.body.setZeroRotation();
 			this.ship_rotated = false; }
 		if(this.cursors.up.isDown) {
@@ -126,13 +126,14 @@ function Game() {
 		}
 		if(eq[0].contactPointB == null) {
 			return; }
-		// should be offset from bodyB
-		var xpos = (eq[0].contactPointB[0] * 40) + body.x;
-		var ypos = (eq[0].contactPointB[1] * 2) + body.y;
-		this.drawParticles(xpos, ypos);
+		var pos = eq[0].bodyA.position;
+		var pnt = eq[0].contactPointA;
+		this.drawParticles(pos[0] + pnt[0], pos[1] + pnt[1]);
 	};
 	
 	this.drawParticles = function(xpos, ypos) {
+		xpos = (xpos * -20) - 32;
+		ypos = (ypos * -20) - 32;
 		// xpos and ypos are world co-ordinates
 		var sprite = game.add.sprite(xpos, ypos, 'test');
 		// add time

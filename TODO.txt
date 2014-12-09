@@ -19,7 +19,8 @@ Game aims:
 Make sprite collision better
 Adjust gravity etc for better playing
 
-Add particle effects on collision
+* Add effects on collision
+Make effects particles
 Add gun
 Add enemy to shoot
 Add door
