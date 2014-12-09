@@ -1,5 +1,8 @@
 "use strict";
 
+// global constants
+var MAX_COLLISIONS = 5;
+
 // calculate view size on page load
 if(typeof window.innerWidth != 'undefined') {
 	var WIDTH = window.innerWidth;
@@ -19,6 +22,13 @@ function generateSpriteImage(width, height, colour) {
 	image.ctx.lineWidth = 1;
 	image.ctx.strokeRect(0, 0, width, height);
 	// now we can make the sprite
+	return(image);
+};
+
+function generateParticleImage() {
+	var image = game.add.bitmapData(1, 1);
+	image.ctx.fillStyle = '#FFFFFF';
+	image.ctx.fillRect(0, 0, 1, 1);
 	return(image);
 };
 
@@ -81,18 +91,43 @@ function preload() {
 
 function create() {
 	setupPhysics();
-	s7.addPlayer(buildPlayer());
-	s7.cursors = game.input.keyboard.createCursorKeys();
 	buildLevel();
+	s7.setup();
 	game.camera.follow(s7.player);
 	game.camera.roundPx = false;
 };
 
+function Emitter() {
+	var image = generateParticleImage();
+	this.emitter = game.add.emitter(0, 0, 10);
+	this.emitter.makeParticles(image);
+	this.emitter.gravity = 200;
+	
+	this.start = function(xpos, ypos) {
+		this.emitter.x = xpos;
+		this.emitter.y = ypos;
+		this.alpha = 0.5;
+		// from 0 to 1, in 1000ms
+		this.emitter.setAlpha(1, 0, 2000);
+		// true = explode, 2000ms length, do 10 particles
+		this.emitter.start(true, 2000, null, 10);
+	};
+};
+
+function CollisionEmitter() {
+	// problem: we only want MAX_COLLISIONS to be showing.
+	// if more than this, stop the oldest and make that the new one
+};
+
 function Game() {
 	// game controller
-	this.cursors = null;
-	this.player = null;
 	this.ship_rotated = false;
+	
+	this.setup = function() {
+		this.addPlayer(buildPlayer());
+		this.cursors = game.input.keyboard.createCursorKeys();
+		this.emitter = new Emitter();
+	};
 	
 	this.update = function() {
 		if(this.cursors.left.isDown) {
@@ -132,17 +167,10 @@ function Game() {
 	};
 	
 	this.drawParticles = function(xpos, ypos) {
-		xpos = (xpos * -20) - 32;
-		ypos = (ypos * -20) - 32;
+		xpos = xpos * -20;
+		ypos = ypos * -20;
 		// xpos and ypos are world co-ordinates
-		var sprite = game.add.sprite(xpos, ypos, 'test');
-		// add time
-		game.time.events.add(Phaser.Timer.SECOND * 12, this.deleteParticles, this, sprite);
-	};
-	
-	this.deleteParticles = function(sprite) {
-		// delete the sprite
-		sprite.destroy();
+		this.emitter.start(xpos, ypos);
 	};
 };
 
