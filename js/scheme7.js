@@ -32,26 +32,6 @@ function generateParticleImage() {
 	return(image);
 };
 
-function calculateBounds() {
-	// from the level, calculate the level bounding
-	// first generate a list of all co-ords
-	var xcoords = new Array();
-	var ycoords = new Array();
-	var boxes = LEVEL.areas;
-	for(var i in boxes) {
-		// generate and save kust the top-left and bottom-right (only after max and min)
-		xcoords.push(boxes[i][0], boxes[i][0] + boxes[i][2]);
-		ycoords.push(boxes[i][1], boxes[i][1] + boxes[i][3]);
-	}
-	// make an array of thos values, x and y, min and max
-	// add half the size of the screen, allow extra 1 for off-by one errors
-	var limits = [Math.min.apply(Math, xcoords) - ((WIDTH / 2) + 1)];
-	limits.push(Math.max.apply(Math, xcoords) + ((WIDTH / 2) + 1));
-	limits.push(Math.min.apply(Math, ycoords) - ((HEIGHT / 2) + 1));
-	limits.push(Math.max.apply(Math, ycoords) + ((HEIGHT / 2) + 1));
-	return(limits);
-};
-
 function setupPhysics() {
 	game.physics.startSystem(Phaser.Physics.P2JS);
 	game.physics.p2.gravity.y = LEVEL.physics.gravity;
@@ -59,7 +39,7 @@ function setupPhysics() {
 };
 
 function buildPlayer() {
-	var player = game.add.sprite(350, 150, 'ship');
+	var player = game.add.sprite(LEVEL.player.xpos, LEVEL.player.ypos, 'ship');
 	// true is for the visual debugger
 	game.physics.p2.enable(player, true);
 	player.body.clearShapes();
@@ -67,26 +47,72 @@ function buildPlayer() {
 	return(player);
 };
 
-function buildLevel() {
-	var boxes = LEVEL.areas;
-	var colour = LEVEL.area_colour;
-	for(var i in boxes) {
-		var coords = boxes[i].coords;
-		var image = generateSpriteImage(coords[2], coords[3], colour);
-		var sprite = game.add.sprite(coords[0], coords[1], image);
-		game.physics.p2.enable(sprite, false);
-		sprite.body.clearShapes();
-		sprite.body.addPolygon({}, [[0, 0],	[coords[2], 0], [coords[2], coords[3]], [0, coords[3]]]);
-		sprite.body.static = true;
+function getBoundingRect(coords) {
+	// coords is an array of coords representing the position
+	// we need to return an array of [xmin, ymin, width, height]
+	var xpos = coords.map(function(v, i, a) { return(v[0]); });
+	var ypos = coords.map(function(v, i, a) { return(v[1]); });
+	var minx = Math.min.apply(Math, xpos);
+	var miny = Math.min.apply(Math, ypos);
+	// return the bounds
+	return([minx, miny, Math.max.apply(Math, xpos) - minx, Math.max.apply(Math, ypos) - miny]);
+};
+
+function generateWallImage(bounds, coords, colour) {
+	// bounds: [xpos, ypos, width, height]
+	
+	console.log('--------------------');
+	console.log(bounds[2], bounds[3]);
+	
+	var image = game.add.bitmapData(bounds[2], bounds[3]);
+	// cycle through the coords and correct for x/y
+	// all the points in these new coords are inside the image
+	image.ctx.fillStyle = colour;
+	image.ctx.beginPath();
+	image.ctx.moveTo(coords[0][0], coords[0][1]);
+	
+	console.log(coords[0][0], coords[0][1]);
+	
+	for(var i=1; i<coords.length; i++) {
+		image.ctx.lineTo(coords[i][0], coords[i][1]); 
+		console.log(coords[i][0], coords[i][1]);
 	}
-	var bounds = calculateBounds();
-	game.world.setBounds(bounds[0], bounds[1], bounds[2], bounds[3]);
+
+	image.ctx.closePath();
+	image.ctx.fill();
+	return(image);
+};
+
+function setLevelBounds(bounds) {
+	// given an array of [xpos, ypos, width, height], calculate the
+	// bounds for this level and set them
+	var xmax = Math.max.apply(Math, bounds.map(function(v, i, a) { return(v[2] + v[0]); }));
+	var ymax = Math.max.apply(Math, bounds.map(function(v, i, a) { return(v[3] + v[1]); }));
+	// add half the size of the screen, allow extra 1 for off-by one errors
+	game.world.setBounds(0, 0, xmax, ymax);
+};
+
+function buildLevel() {
+	var level_bounds = new Array();
+	for(var i in LEVEL.walls) {
+		var bounds = getBoundingRect(LEVEL.walls[i].coords);
+		var coords = LEVEL.walls[i].coords.map(function(v, i, a) { return([v[0] - bounds[0], v[1] - bounds[1]]) });
+		level_bounds.push(bounds);
+		var image = generateWallImage(bounds, coords, LEVEL.area_colour);
+		var sprite = game.add.sprite(bounds[0], bounds[1], image);
+		game.physics.p2.enable(sprite, true);
+		sprite.body.clearShapes();
+		sprite.body.addPolygon({}, coords);
+		sprite.body.static = true;
+	};
+	setLevelBounds(level_bounds);
 };
 
 function preload() {
 	game.load.image('ship', 'gfx/ship.png');
 	// a simple green circle as a test image
 	game.load.image('test', 'gfx/test.png');
+	game.load.image('land', 'gfx/land.png');
 };
 
 function create() {
@@ -94,7 +120,6 @@ function create() {
 	buildLevel();
 	s7.setup();
 	game.camera.follow(s7.player);
-	game.camera.roundPx = false;
 };
 
 function Emitter() {
@@ -159,7 +184,7 @@ function Game() {
 			var speed = Phaser.Point.distance(new Phaser.Point(eq[0].bodyB.velocity[0], eq[0].bodyB.velocity[1]), new Phaser.Point(0,0));
 			//this.addCollisionDamage(speed);
 		}
-		if(eq[0].contactPointB == null) {
+		if(eq[0].contactPointA == null) {
 			return; }
 		var pos = eq[0].bodyA.position;
 		var pnt = eq[0].contactPointA;
@@ -174,11 +199,15 @@ function Game() {
 	};
 };
 
+function render() {
+	 game.debug.text('Xpos/Ypos:' + (s7.player.x|0) + ',' + (s7.player.y|0) + ' - ' + HEIGHT, 32, 32);
+};
+
 var s7 = new Game();
 
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
-	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7) }); }
+	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
 else {
 	var game = null;
 }
