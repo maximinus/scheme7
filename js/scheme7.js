@@ -60,24 +60,15 @@ function getBoundingRect(coords) {
 
 function generateWallImage(bounds, coords, colour) {
 	// bounds: [xpos, ypos, width, height]
-	
-	console.log('--------------------');
-	console.log(bounds[2], bounds[3]);
-	
 	var image = game.add.bitmapData(bounds[2], bounds[3]);
 	// cycle through the coords and correct for x/y
 	// all the points in these new coords are inside the image
 	image.ctx.fillStyle = colour;
 	image.ctx.beginPath();
 	image.ctx.moveTo(coords[0][0], coords[0][1]);
-	
-	console.log(coords[0][0], coords[0][1]);
-	
 	for(var i=1; i<coords.length; i++) {
 		image.ctx.lineTo(coords[i][0], coords[i][1]); 
-		console.log(coords[i][0], coords[i][1]);
 	}
-
 	image.ctx.closePath();
 	image.ctx.fill();
 	return(image);
@@ -97,6 +88,7 @@ function buildLevel() {
 	for(var i in LEVEL.walls) {
 		var bounds = getBoundingRect(LEVEL.walls[i].coords);
 		var coords = LEVEL.walls[i].coords.map(function(v, i, a) { return([v[0] - bounds[0], v[1] - bounds[1]]) });
+		
 		level_bounds.push(bounds);
 		var image = generateWallImage(bounds, coords, LEVEL.area_colour);
 		var sprite = game.add.sprite(bounds[0], bounds[1], image);
@@ -106,13 +98,21 @@ function buildLevel() {
 		sprite.body.static = true;
 	};
 	setLevelBounds(level_bounds);
+	
+	bounds = [860, 840, 120, 400];
+	image = generateWallImage(bounds, [[0,0], [120,0], [120,400], [0,240]], LEVEL.area_colour);
+	sprite = game.add.sprite(bounds[0], bounds[1], image);
+	game.physics.p2.enable(sprite, true);
+	sprite.body.clearShapes();
+	console.log(sprite.body.addPhaserPolygon('physicsData', 'QWE2'));
+	sprite.body.static = true;
 };
 
 function preload() {
 	game.load.image('ship', 'gfx/ship.png');
 	// a simple green circle as a test image
 	game.load.image('test', 'gfx/test.png');
-	game.load.image('land', 'gfx/land.png');
+	game.load.physics('physicsData', 'levels/test.json');
 };
 
 function create() {
