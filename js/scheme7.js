@@ -98,21 +98,12 @@ function buildLevel() {
 		sprite.body.static = true;
 	};
 	setLevelBounds(level_bounds);
-	
-	bounds = [860, 840, 120, 400];
-	image = generateWallImage(bounds, [[0,0], [120,0], [120,400], [0,240]], LEVEL.area_colour);
-	sprite = game.add.sprite(bounds[0], bounds[1], image);
-	game.physics.p2.enable(sprite, true);
-	sprite.body.clearShapes();
-	console.log(sprite.body.addPhaserPolygon('physicsData', 'QWE2'));
-	sprite.body.static = true;
 };
 
 function preload() {
-	game.load.image('ship', 'gfx/ship.png');
+	game.load.image('ship', 'data/gfx/ship.png');
 	// a simple green circle as a test image
-	game.load.image('test', 'gfx/test.png');
-	game.load.physics('physicsData', 'levels/test.json');
+	game.load.image('test', 'data/gfx/test.png');
 };
 
 function create() {
@@ -137,11 +128,6 @@ function Emitter() {
 		// true = explode, 2000ms length, do 10 particles
 		this.emitter.start(true, 2000, null, 10);
 	};
-};
-
-function CollisionEmitter() {
-	// problem: we only want MAX_COLLISIONS to be showing.
-	// if more than this, stop the oldest and make that the new one
 };
 
 function Game() {

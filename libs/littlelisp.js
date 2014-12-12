@@ -1,7 +1,6 @@
 "use strict";
 
-// lisp-style interpretor for Scheme7
-// parser code adapted from https://github.com/maryrosecook/littlelisp
+// branch of https://github.com/maryrosecook/littlelisp
 
 // all library functions
 var library = {
@@ -105,30 +104,16 @@ var parenthesize = function(input, list) {
 };
 
 var tokenize = function(input) {
-	// tokenizer should check for "34""45" or similar
-	// should be no 2 " next to each other
 	return input.split('"')
 	    .map(function(x, i) {
-	    	console.log(x, i);
 	        if (i % 2 === 0) { // not in string
-	        	// put spaces around parens
 	            return x.replace(/\(/g, ' ( ').replace(/\)/g, ' ) '); }
 			else { // in string
 				return x.replace(/ /g, "!whitespace!"); }
 			}).join('"').trim().split(/\s+/).map(function(x) { return x.replace(/!whitespace!/g, " "); });
 };
 
-var parseCode = function(input) {
-	var tokens = tokenize(input);
-	console.log(tokens);
-	//var parens = parenthesize(tokens);
-	//console.log(parens);
-	//return(parenthesize(tokenize(input)));
-};
-
-function readInput(text, term) {
-	// given the text, return the output
-	parseCode(text);
-	term.echo('Got this: ' + text);
+var parse = function(input) {
+	return(parenthesize(tokenize(input)));
 };
 
