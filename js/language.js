@@ -1,134 +1,78 @@
 "use strict";
 
-// lisp-style interpretor for Scheme7
-// parser code adapted from https://github.com/maryrosecook/littlelisp
+// start with an environment
+var Env = {};
+var token_error = false;
 
-// all library functions
-var library = {
-	first: function(x) {
-		return x[0];
-	},
-	rest: function(x) {
-		return x.slice(1);
-	},
-	print: function(x) {
-		console.log(x);
-		return x;
-	}
+function setTokenError(text) {
+	token_error = true;
 };
 
-var Context = function(scope, parent) {
-	this.scope = scope;
-	this.parent = parent;
-
-	this.get = function(identifier) {
-		if(identifier in this.scope) {
-			return(this.scope[identifier]); }
-		else if (this.parent !== undefined) {
-			return this.parent.get(identifier); }
-	};
+function spaceParens(text) {
+	// put spaces around the parens:
+	text = text.replace(/\(/g, ' ( ');
+	text = text.replace(/\)/g, ' ) ');
+	return(text);
 };
 
-var special = {
-	let: function(input, context) {
-		var letContext = input[1].reduce(function(acc, x) {
-			acc.scope[x[0].value] = interpret(x[1], context);
-			return acc;
-		}, new Context({}, context));
-	 return interpret(input[2], letContext);
-	},
-
-	lambda: function(input, context) {
-		return function() {
-			var lambdaArguments = arguments;
-			var lambdaScope = input[1].reduce(function(acc, x, i) {
-				acc[x.value] = lambdaArguments[i];
-				return acc;
-			}, {});
-			return interpret(input[2], new Context(lambdaScope, context));
-      	};
-    },
-
-	if: function(input, context) {
-		return(interpret(input[1], context) ? interpret(input[2], context) : interpret(input[3], context));
-    }
+function removeEmptyStrings(tokens) {
+	// remove null strings at start and end of the list
+	return(tokens.filter(function(value) { return(value != ''); }));
 };
 
-var interpretList = function(input, context) {
-	if(input.length > 0 && input[0].value in special) {
-		return special[input[0].value](input, context); }
-	else {
-		var list = input.map(function(x) { return interpret(x, context); });
-		if(list[0] instanceof Function) {
-			return list[0].apply(undefined, list.slice(1)); }
+function joinStrings(tokens) {
+	// traverse the array looking for one that starts with a "
+	// token is always a string of length > 0
+	var new_tokens = [];
+	for(var i=0; i<tokens.length; i++) {
+		// does it start with "?
+		if(textIsNotFullyQuoted(tokens[i])) {
+			var index = readUntilQuote(tokens.slice(i + 1));
+			// now we know how long the quote is, so create it and store
+			console.log(tokens.slice(i, i+index));
+			new_tokens.push(tokens.slice(i, i+index).join());
+			// 1 is added to i next iteration
+			i += index;
+		}
 		else {
-			return list;
+			new_tokens.push(tokens[i]);
 		}
 	}
+	return(new_tokens);
 };
 
-var interpret = function(input, context) {
-	if(context === undefined) {
-		return interpret(input, new Context(library)); }
-	else if (input instanceof Array) {
-		return interpretList(input, context); }
-	else if (input.type === "identifier") {
-		return context.get(input.value); }
-	else { // literal
-		return input.value; }
+function readUntilQuote(tokens) {
+	var i;
+	for(i=0; i<tokens.length;i++) {
+		if(endIsQuote(tokens[i])) {
+			// +1 because we need the offset (and arrat is zero-indexed)
+			return(i + 1); }
+	}
+	// there is an error
+	setTokenError('String does not end');
+	return(-1);
 };
 
-var categorize = function(input) {
-	if(!isNaN(parseFloat(input))) {
-		return { type:'literal', value: parseFloat(input) }; }
-	else if (input[0] === '"' && input.slice(-1) === '"') {
-		return { type:'literal', value: input.slice(1, -1) }; }
-	else {
-      return { type:'identifier', value: input }; }
+function textIsNotFullyQuoted(text) {
+	// test further is start is not a quote
+	if(text[0] != '"') {
+		return(false); }
+	return(!endIsQuote(text));
 };
 
-var parenthesize = function(input, list) {
-	if(list === undefined) {
-		return parenthesize(input, []); }
-	else {
-		var token = input.shift();
-		if(token === undefined) {
-			return list.pop(); }
-	else if (token === "(") {
-		list.push(parenthesize(input, []));
-		return parenthesize(input, list); }
-	else if (token === ")") {
-		return list; }
-	else {
-		return parenthesize(input, list.concat(categorize(token))); }
-    }
+function endIsQuote(text) {
+	// only length 1, easy:
+	if(text.length == 1) {
+		return(text[0] == '"'); }
+	// otherwise, have to check for \ before:
+	return((text[text.length-1] == '"') && (text[text.length-2] != '\\'));
 };
 
-var tokenize = function(input) {
-	// tokenizer should check for "34""45" or similar
-	// should be no 2 " next to each other
-	return input.split('"')
-	    .map(function(x, i) {
-	    	console.log(x, i);
-	        if (i % 2 === 0) { // not in string
-	        	// put spaces around parens
-	            return x.replace(/\(/g, ' ( ').replace(/\)/g, ' ) '); }
-			else { // in string
-				return x.replace(/ /g, "!whitespace!"); }
-			}).join('"').trim().split(/\s+/).map(function(x) { return x.replace(/!whitespace!/g, " "); });
-};
-
-var parseCode = function(input) {
-	var tokens = tokenize(input);
-	console.log(tokens);
-	//var parens = parenthesize(tokens);
-	//console.log(parens);
-	//return(parenthesize(tokenize(input)));
-};
-
-function readInput(text, term) {
-	// given the text, return the output
-	parseCode(text);
-	term.echo('Got this: ' + text);
+function tokenise(text) {
+	text = spaceParens(text);
+	var tokens = text.split(/\s+/);
+	tokens = removeEmptyStrings(tokens);
+	tokens = joinStrings(tokens);
+	return(tokens);
 };
 

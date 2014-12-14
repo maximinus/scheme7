@@ -12,6 +12,20 @@ else {
 	var WIDTH = 640;
 	var HEIGHT = 400; }
 
+// a state is a section of something that acts differently. 1 of these states is the game
+// the other is the UI. The game is run via the keyboard.
+function TextInterface() {
+	this.preload = function() {
+	
+	};
+	
+	this.create = function() {
+	};
+	
+	this.render = function() {
+	};
+};
+
 function generateSpriteImage(width, height, colour) {
 	var image = game.add.bitmapData(width, height);
 	// clear to black and dcoords lines all over
@@ -151,7 +165,7 @@ function Game() {
 			this.player.body.setZeroRotation();
 			this.ship_rotated = false; }
 		if(this.cursors.up.isDown) {
-			this.player.body.thrust(80); };
+			this.player.body.thrust(350); };
 	};
 	
 	this.addPlayer = function(player) {
