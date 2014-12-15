@@ -104,6 +104,7 @@ function Parser() {
 			return(false); }
 		// opening and closing must be correct
 		if((tokens[0] != '(') || (tokens[tokens.length - 1] != ')')) {
+			this.setParseError('Open or close parens missing');
 			return(false); }
 		var open = 0;
 		for(var i in tokens) {
@@ -113,10 +114,14 @@ function Parser() {
 				open--; }
 			// sum of ) must be always less than (
 			if(open < 0) {
+				this.setParseError('Too many close parens');
 				return(false); }
 		};
 		// equal number of ( and )
-		return(open == 0);
+		if(open != 0) {
+			this.setParseError('Parens unbalanced');
+			return(false); }
+		return(true);
 	};
 
 	this.tokenIsString = function(token) {
@@ -137,24 +142,27 @@ function Parser() {
 	this.getParseItem = function(token) {
 		// given a token, what is it?
 		if(token == '(') {
-			return(ParseItem(PARSE_TYPES.OPEN)); }
+			return(new ParseItem(PARSE_TYPES.OPEN)); }
 		if(token == ')') {
-			return(ParseItem(PARSE_TYPES.CLOSE)); }
+			return(new ParseItem(PARSE_TYPES.CLOSE)); }
 		// number? is ddd or dd.ddd
 		if((token.match(/^[0-9]+$/)) || (token.match(/^[0-9]+\.[0-9]+/))) {
-			return(ParseItem(PARSE_TYPES.NUMBER), Number(token)); }
+			return(new ParseItem(PARSE_TYPES.NUMBER, Number(token))); }
 		if(this.tokenIsString(token)) {
-			return(ParseItem(PARSE_TYPES.STRING), this.stripQuotes(token)); }
+			return(new ParseItem(PARSE_TYPES.STRING, this.stripQuotes(token))); }
+		return(new ParseItem(PARSE_TYPES.IDENTIFIER, token));
 	};
 
 	// convert the tokens into values
-	this.parseTokens = function(token_list) {
-		// go along tokens converting
-		if(!parensBalanced) {
-			this.setParseError('Parens unbalanced');
+	this.parseTokens = function(tokens) {
+		if(!this.parensBalanced(tokens)) {
 			return([]); }
 		var parse_results = [];
-		parse_type
+		for(var i in tokens) {
+			// go along tokens converting
+			parse_results.push(this.getParseItem(tokens[i]));
+		}
+		return(parse_results);
 	};
 };
 
