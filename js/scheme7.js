@@ -110,6 +110,10 @@ function buildLevel() {
 		sprite.body.clearShapes();
 		sprite.body.addPolygon({}, coords);
 		sprite.body.static = true;
+		console.log('----');
+		console.log(bounds[0]);
+		console.log(sprite.x);
+		console.log(sprite.body.x);
 	};
 	setLevelBounds(level_bounds);
 };

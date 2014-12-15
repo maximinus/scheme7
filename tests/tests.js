@@ -95,3 +95,12 @@ QUnit.test('Check ParseItems', function(assert) {
 	assert.equal(p.getParseItem('FOOBAR+!@').value, result.value, 'ParseItems gets identifier 2');
 });
 
+QUnit.test('Check sublist aquisition', function(assert) {
+	var tokens = p.parseTokens(t.tokenise('(+ 1 3 4)').tokens);
+	assert.equal(p.getSubList(tokens, 0).length, 6, 'Sublist returns correct list');
+	var tokens = p.parseTokens(t.tokenise('()').tokens);
+	assert.equal(p.getSubList(tokens, 0).length, 2, 'Sublist returns correct list');
+	var tokens = p.parseTokens(t.tokenise('(+ (- 3 4) 5)').tokens);
+	assert.equal(p.getSubList(tokens, 2).length, 5, 'Sublist returns correct list');
+});
+

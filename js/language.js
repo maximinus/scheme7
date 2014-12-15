@@ -164,5 +164,44 @@ function Parser() {
 		}
 		return(parse_results);
 	};
+	
+	this.getSubList = function(tokens, index) {
+		// given a list of tokens and the index of the start of a sub-list,
+		// return the sub-list
+		var sub_list = [];
+		var parens = 0;
+		for(var i=index; i<tokens.length; i++) {
+			if(tokens[i].type == PARSE_TYPES.OPEN) {
+				parens += 1; }
+			else if(tokens[i].type == PARSE_TYPES.CLOSE) {
+				parens -= 1; }
+			sub_list.push(tokens[i]);
+			if(parens == 0) {
+				return(sub_list); }
+		}
+		// some problem, no end parens found
+		return([]);
+	};
+	
+	this.makeTree = function(tokens) {
+		// start a list
+		var tree = [];
+		// remove first and last parens
+		tokens = tokens.splice(1, tokens.length - 2);
+		for(var i=0; i<tokens.length; i++) {
+			if(tokens[i].type == PARSE_TYPES.OPEN) {
+				var mini_list = this.getFullList(tokens, i);
+				tree.push(this.makeTree(mini_list));
+				i += mini_list.length;
+			}
+		}
+	};
+	
+	this.convertToTree = function(tokens) {
+		tokens = this.parseTokens(tokens);
+		if(this.parse_error == true) {
+			return([]); }
+		return(this.makeTree(tokens));
+	};
 };
 
