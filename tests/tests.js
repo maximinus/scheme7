@@ -104,3 +104,10 @@ QUnit.test('Check sublist aquisition', function(assert) {
 	assert.equal(p.getSubList(tokens, 2).length, 5, 'Sublist returns correct list');
 });
 
+QUnit.test('MakeTree check', function(assert) {
+	var test = p.parseTokens(t.tokenise('(+ 1 2)').tokens);
+	assert.equal(p.makeTree(test).length, 3, 'MakeTree gets correct number');
+	var test = p.parseTokens(t.tokenise('(+ (+ 4 6) 1 2)').tokens);
+	assert.equal(p.makeTree(test).length, 4, 'MakeTree handles sub-lists');
+});
+

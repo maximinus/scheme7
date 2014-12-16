@@ -180,21 +180,25 @@ function Parser() {
 				return(sub_list); }
 		}
 		// some problem, no end parens found
+		self.setParseError('No matching end param on sub-list');
 		return([]);
 	};
 	
 	this.makeTree = function(tokens) {
 		// start a list
+		console.log(tokens);
 		var tree = [];
 		// remove first and last parens
 		tokens = tokens.splice(1, tokens.length - 2);
 		for(var i=0; i<tokens.length; i++) {
 			if(tokens[i].type == PARSE_TYPES.OPEN) {
-				var mini_list = this.getFullList(tokens, i);
-				tree.push(this.makeTree(mini_list));
+				var mini_list = this.getSubList(tokens, i);
 				i += mini_list.length;
+				tree.push(this.makeTree(mini_list));
 			}
+			tree.push(tokens[i]);
 		}
+		return(tree);
 	};
 	
 	this.convertToTree = function(tokens) {
@@ -203,5 +207,26 @@ function Parser() {
 			return([]); }
 		return(this.makeTree(tokens));
 	};
+};
+
+function prettyPrint(tree) {
+	// given a code tree, print it
+	var string = '(';
+	for(var i in tree) {
+		// if an array:
+		if(tree[i] instanceof Array) {
+			string += prettyPrint(tree[i]); }
+		else if(tree[i].type == PARSE_TYPES.IDENTIFIER) {
+			string += tree[i].value; }
+		else if(tree[i].type == PARSE_TYPES.NUMBER) {
+			string += tree[i].value.toString();
+		}
+		else if(tree[i].type == PARSE_TYPES.STRING) {
+			string += '"' + tree[i].value + '"'; }
+		else { // probably an error
+			string += '??_' + tree[i].value + '_??'; }
+		string += ' ';
+	};
+	return(string.trim() + ')');
 };
 
