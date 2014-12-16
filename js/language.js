@@ -129,8 +129,7 @@ function Parser() {
 			return(false); }
 		if((token[0] == '"') && (token[token.length - 1] == '"')) {
 			return(true); }
-		// some error
-		this.setParseError('Malformed string');
+		// not a string
 		return(false);
 	};
 
@@ -185,8 +184,6 @@ function Parser() {
 	};
 	
 	this.makeTree = function(tokens) {
-		// start a list
-		console.log(tokens);
 		var tree = [];
 		// remove first and last parens
 		tokens = tokens.splice(1, tokens.length - 2);
@@ -206,6 +203,27 @@ function Parser() {
 		if(this.parse_error == true) {
 			return([]); }
 		return(this.makeTree(tokens));
+	};
+};
+
+function Compiler() {
+	var tokeniser = new Tokeniser();
+	var parser = new Parser();
+	var error = '';
+	
+	this.generateReturn = function(tree, error) {
+		return({'tree':tree, 'error':error});
+	};
+	
+	this.compile = function(string) {
+		var tokens = tokeniser.tokenise(string);
+		if(tokens.token_error) {
+			return(this.generateReturn([], tokens.error_message)); }
+		var tree = parser.convertToTree(tokens.tokens);
+		if(parser.parse_error) {
+			return(this.generateReturn([], parser.error_message)); }
+		// everything ok
+		return(this.generateReturn(tree, ''));
 	};
 };
 

@@ -2,6 +2,7 @@
 
 var t = new Tokeniser();
 var p = new Parser();
+var c = new Compiler();
 
 QUnit.test('Tokenise error test', function(assert) {
 	t.setTokenError('test');
@@ -95,7 +96,7 @@ QUnit.test('Check ParseItems', function(assert) {
 	assert.equal(p.getParseItem('FOOBAR+!@').value, result.value, 'ParseItems gets identifier 2');
 });
 
-QUnit.test('Check sublist aquisition', function(assert) {
+QUnit.test('Check sublist acquisition', function(assert) {
 	var tokens = p.parseTokens(t.tokenise('(+ 1 3 4)').tokens);
 	assert.equal(p.getSubList(tokens, 0).length, 6, 'Sublist returns correct list');
 	var tokens = p.parseTokens(t.tokenise('()').tokens);
@@ -109,5 +110,21 @@ QUnit.test('MakeTree check', function(assert) {
 	assert.equal(p.makeTree(test).length, 3, 'MakeTree gets correct number');
 	var test = p.parseTokens(t.tokenise('(+ (+ 4 6) 1 2)').tokens);
 	assert.equal(p.makeTree(test).length, 4, 'MakeTree handles sub-lists');
+});
+
+QUnit.test('PrettyPrint check', function(assert) {
+	var test = p.parseTokens(t.tokenise('(+ 1 2)').tokens);
+	assert.equal(p.makeTree(test).length, 3, 'MakeTree gets correct number');
+	var test = p.parseTokens(t.tokenise('(+ (+ 4 6) 1 2)').tokens);
+	assert.equal(p.makeTree(test).length, 4, 'MakeTree handles sub-lists');
+});
+
+QUnit.test('No compiler errors check', function(assert) {
+	var result = c.compile('(+ 1 2)');
+	assert.equal(result.error, '', 'Compiler compiles with no errors');
+	var result = c.compile('(+ 1 (- 5 6) "hello")');
+	assert.equal(result.error, '', 'Compiler compiles with string and no errors');
+	var result = c.compile('(+ 1 (- 5 6) hello)');
+	assert.equal(result.error, '', 'Compiler compiles with identifier and no errors');
 });
 
