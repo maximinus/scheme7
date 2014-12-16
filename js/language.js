@@ -3,9 +3,6 @@
 // enums for parser types
 var PARSE_TYPES = {'OPEN':0, 'CLOSE':1, 'IDENTIFIER':2, 'NUMBER':3, 'STRING':4};
 
-// start with an environment
-var Env = {};
-
 // code for the tokeniser
 // this turns the raw text into an array of tokens
 function Tokeniser() {
@@ -207,23 +204,25 @@ function Parser() {
 };
 
 function Compiler() {
-	var tokeniser = new Tokeniser();
-	var parser = new Parser();
-	var error = '';
+	this.tokeniser = new Tokeniser();
+	this.parser = new Parser();
+	this.error = '';
 	
-	this.generateReturn = function(tree, error) {
-		return({'tree':tree, 'error':error});
+	this.hasError = function() {
+		return(!this.error == '');
 	};
 	
 	this.compile = function(string) {
-		var tokens = tokeniser.tokenise(string);
+		var tokens = this.tokeniser.tokenise(string);
 		if(tokens.token_error) {
-			return(this.generateReturn([], tokens.error_message)); }
-		var tree = parser.convertToTree(tokens.tokens);
-		if(parser.parse_error) {
-			return(this.generateReturn([], parser.error_message)); }
+			this.error = tokens.token_error;
+			return([]); }
+		var tree = this.parser.convertToTree(tokens.tokens);
+		if(this.parser.parse_error) {
+			this.error = this.parser.error_message;
+			return([]); }
 		// everything ok
-		return(this.generateReturn(tree, ''));
+		return(tree);
 	};
 };
 
@@ -246,5 +245,9 @@ function prettyPrint(tree) {
 		string += ' ';
 	};
 	return(string.trim() + ')');
+};
+
+function VirtualMachine() {
+	this.env = {}
 };
 

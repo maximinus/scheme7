@@ -113,18 +113,18 @@ QUnit.test('MakeTree check', function(assert) {
 });
 
 QUnit.test('PrettyPrint check', function(assert) {
-	var test = p.parseTokens(t.tokenise('(+ 1 2)').tokens);
-	assert.equal(p.makeTree(test).length, 3, 'MakeTree gets correct number');
-	var test = p.parseTokens(t.tokenise('(+ (+ 4 6) 1 2)').tokens);
-	assert.equal(p.makeTree(test).length, 4, 'MakeTree handles sub-lists');
+	var tree = c.compile('(+ 1 2)');
+	assert.equal(prettyPrint(tree), '(+ 1 2)', 'prettyPrint returns correct structure');
+	var tree = c.compile('(+ 1 (- 5 6) 2)');
+	assert.equal(prettyPrint(tree), '(+ 1 (- 5 6) 2)', 'prettyPrint returns correct structure');
 });
 
 QUnit.test('No compiler errors check', function(assert) {
-	var result = c.compile('(+ 1 2)');
-	assert.equal(result.error, '', 'Compiler compiles with no errors');
-	var result = c.compile('(+ 1 (- 5 6) "hello")');
-	assert.equal(result.error, '', 'Compiler compiles with string and no errors');
-	var result = c.compile('(+ 1 (- 5 6) hello)');
-	assert.equal(result.error, '', 'Compiler compiles with identifier and no errors');
+	c.compile('(+ 1 2)');
+	assert.equal(c.error, '', 'Compiler compiles with no errors');
+	c.compile('(+ 1 (- 5 6) "hello")');
+	assert.equal(c.error, '', 'Compiler compiles with string and no errors');
+	c.compile('(+ 1 (- 5 6) hello)');
+	assert.equal(c.error, '', 'Compiler compiles with identifier and no errors');
 });
 
