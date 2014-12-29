@@ -54,10 +54,13 @@ function setupPhysics() {
 
 function buildPlayer() {
 	var player = game.add.sprite(LEVEL.player.xpos, LEVEL.player.ypos, 'ship');
+	
 	// true is for the visual debugger
 	game.physics.p2.enable(player, true);
 	player.body.clearShapes();
-	player.body.addPolygon({}, [[0,0], [-25,60], [25,60]]);
+	player.body.addPolygon({}, [[0,-30], [-25,30], [25,30]]);
+	// 0.5 because of moved offsets for rotation
+	player.anchor.set(0.5, 0.5);
 	return(player);
 };
 
@@ -106,22 +109,22 @@ function buildLevel() {
 		level_bounds.push(bounds);
 		var image = generateWallImage(bounds, coords, LEVEL.area_colour);
 		var sprite = game.add.sprite(bounds[0], bounds[1], image);
-		game.physics.p2.enable(sprite, true);
+		game.physics.p2.enable(sprite, false);
 		sprite.body.clearShapes();
 		sprite.body.addPolygon({}, coords);
 		sprite.body.static = true;
-		console.log('----');
-		console.log(bounds[0]);
-		console.log(sprite.x);
-		console.log(sprite.body.x);
+		// must do this to correct for Phaser
+		// also remove line this.adjustCenterOfMass() in fromPolygon() in Phaser source
+		sprite.anchor.set(0,0);
 	};
 	setLevelBounds(level_bounds);
 };
 
 function preload() {
 	game.load.image('ship', 'data/gfx/ship.png');
-	// a simple green circle as a test image
+	// some test images
 	game.load.image('test', 'data/gfx/test.png');
+	game.load.image('square', 'data/gfx/square.png');
 };
 
 function create() {

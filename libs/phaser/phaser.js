@@ -79972,7 +79972,7 @@ Body.prototype.fromPolygon = function(path,options){
 
         // Move all vertices so its center of mass is in the local center of the convex
         for(var j=0; j!==c.vertices.length; j++){
-            var v = c.vertices[j];
+           var v = c.vertices[j];
             vec2.sub(v,v,c.centerOfMass);
         }
 
@@ -79985,7 +79985,7 @@ Body.prototype.fromPolygon = function(path,options){
         this.addShape(c,cm);
     }
 
-    this.adjustCenterOfMass();
+    //this.adjustCenterOfMass();
 
     this.aabbNeedsUpdate = true;
 
