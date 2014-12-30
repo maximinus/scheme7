@@ -15,12 +15,9 @@ Game aims:
 * Make full screen
 * Get size of screen
 * Build simple level
-
-Make sprite collision better
-Adjust gravity etc for better playing
-
+* Make sprite collision better
 * Add effects on collision
-Make effects particles
+* Make effects particles
 Add gun
 Add enemy to shoot
 Add door

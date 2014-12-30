@@ -3,7 +3,7 @@
 // A level, defined as a javascript literal object
 var LEVEL = {
 	'name':'Level 2',
-	'area_colour':'#329649',
+	'area_colour':'#027689',
 	'physics':{'gravity':24,
 			   'restitution':0.2},
 	'player':{'xpos':700, 'ypos':440},

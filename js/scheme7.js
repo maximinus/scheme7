@@ -2,6 +2,8 @@
 
 // global constants
 var MAX_COLLISIONS = 5;
+// how much time between bullets?
+var BULLET_PAUSE = 5;
 
 // calculate view size on page load
 if(typeof window.innerWidth != 'undefined') {
@@ -153,12 +155,15 @@ function Emitter() {
 
 function Game() {
 	// game controller
+	// put things in the constructor, which is this.setup()
 	this.ship_rotated = false;
 	
+
 	this.setup = function() {
 		this.addPlayer(buildPlayer());
 		this.cursors = game.input.keyboard.createCursorKeys();
 		this.emitter = new Emitter();
+		this.bullet = generateSpriteImage(4, 4, '#FFFFFF');
 	};
 	
 	this.update = function() {
@@ -173,6 +178,10 @@ function Game() {
 			this.ship_rotated = false; }
 		if(this.cursors.up.isDown) {
 			this.player.body.thrust(350); };
+		if(this.cursors.down.isDown) {
+			// fire a bullet
+			this.fireBullet();
+		};
 	};
 	
 	this.addPlayer = function(player) {
@@ -203,6 +212,17 @@ function Game() {
 		ypos = ypos * -20;
 		// xpos and ypos are world co-ordinates
 		this.emitter.start(xpos, ypos);
+	};
+	
+	this.fireBullet = function() {
+		// get player angle and position
+		var xpos = this.player.body.x - 50;
+		var ypos = this.player.body.y;
+		var angle = this.player.body.angle;
+		var sprite = game.add.sprite(xpos, ypos, this.bullet);
+		game.physics.p2.enable(sprite, false);
+		sprite.body.clearShapes();
+		sprite.body.addCircle(2);
 	};
 };
 
