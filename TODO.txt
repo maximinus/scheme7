@@ -18,6 +18,10 @@ Game aims:
 * Make sprite collision better
 * Add effects on collision
 * Make effects particles
+
+Get fonts working
+Define different modes - start game and end game
+No mouse! - Do the start interface (quit, load, start etc...)
 Add gun
 Add enemy to shoot
 Add door
