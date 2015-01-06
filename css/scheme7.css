@@ -6,7 +6,7 @@ body {
 }
 			
 @font-face {
-	font-family: 'vegurmedium';
+	font-family: 'font-standard';
 	src: url('../data/fonts/anonymouspro.eot');
 	src: url('../data/fonts/anonymouspro.eot?#iefix') format('embedded-opentype'),
 		 url('../data/fonts/anonymouspro.woff2') format('woff2'),
@@ -15,5 +15,10 @@ body {
    		 url('../data/fonts/anonymouspro.svg#vegurmedium') format('svg');
 	font-weight: normal;
 	font-style: normal;
+}
+
+.fontPreload {
+    position:absolute;
+    left:-100px;
 }
 
