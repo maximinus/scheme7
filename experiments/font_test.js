@@ -1,11 +1,12 @@
 "use strict";
 
 // Note: using this code gets us the average text WIDTH of font_size in px * 0.55
-//                           and an average text HEIGHT of font_size in px * 0.85
+//                           and an average text HEIGHT of font_size in px * (0.85 x 1.5) = 1.275
 
-// so the ratio of width:height of 1 letter for px x would be 0.55x:0.85x
+// so the ratio of width:height of 1 letter for px x would be 0.55x:1.275x
 
-// for a screen ratio that is 1.6:1
+// for a screen ratio that is 1.6:1 we get a ratio of 3.87:1 width/height
+// this can give us either 80x21 resolution, or about 
 
 var frequency = [40, 7, 14, 21, 64, 11, 10, 31, 35, 1, 4, 20, 12, 33, 37, 10, 1, 30, 31, 45, 14, 5, 12, 1, 10, 1]
 var letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -57,6 +58,8 @@ function outputSize() {
 function create() {
 	//outputSize();
 	//testMetrics();
+	var style = {font:'50px serif', fill:'#ff0077', align:'left'};
+	game.add.text(0, 250, 'Phaser test', style);
 	testHeights();
 };
 

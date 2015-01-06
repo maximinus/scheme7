@@ -230,11 +230,13 @@ function render() {
 	 game.debug.text('Xpos/Ypos:' + (s7.player.x|0) + ',' + (s7.player.y|0) + ' - ' + HEIGHT, 32, 32);
 };
 
-var s7 = new Game();
+//var s7 = new Game();
+var terminal = new Terminal();
 
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
-	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
+	//var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
+	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {create:interface_create}); }
 else {
 	var game = null;
 }
