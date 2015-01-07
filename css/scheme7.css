@@ -5,21 +5,3 @@ body {
 	padding: 0;
 }
 
-@font-face {
-	font-family: 'scheme7-standard';
-	src: url('../data/fonts/anonymouspro.eot');
-	src: url('../data/fonts/anonymouspro.eot?#iefix') format('embedded-opentype'),
-		 url('../data/fonts/anonymouspro.woff2') format('woff2'),
-	     url('../data/fonts/anonymouspro.woff') format('woff'),
-   		 url('../data/fonts/anonymouspro.ttf') format('truetype'),
-   		 url('../data/fonts/anonymouspro.svg#vegurmedium') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
-.fontPreload {
-    position:absolute;
-    left:-100px;
-    font-family: "scheme7-standard";
-}
-
