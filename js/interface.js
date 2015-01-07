@@ -47,8 +47,8 @@ function Terminal() {
 	};
 
 	this.create = function() {
-		this.print(0, 0, 'Scheme 0.1 by Chris Handy');
-		this.print(0, 1, 'Test font functions');
+		this.print(0, 0, 'Scheme 0.1 by Chris Handy qyp_');
+		//this.print(0, 1, 'Test font functions');
 	};
 };
 
