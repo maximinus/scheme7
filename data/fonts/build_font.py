@@ -31,6 +31,7 @@ def buildFont():
 		xpos += width
 	pygame.image.save(base_image, filename)
 	print 'Saved as ' + filename
+	print 'Height ratio = ' + str(float(height)/float(width)) + ' (' + str(width) + ':' + str(height) + ')'
 
 def parseArgs(args):
 	global FONT, SIZE
