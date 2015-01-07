@@ -10,34 +10,27 @@ GLYPH_START = 32
 GLYPH_END = 126
 FONT = ''
 
-def makeFolder():
-	name = FONT.split('.')[0] + '_bitmap'
-	# delete if exists and make
-	shutil.rmtree(name)
-	os.mkdir(name)
-	return(name)
+def makeFilename():
+	return(FONT.split('.')[0] + '.png')
 
 def buildFont():
-	folder = makeFolder()
+	filename = makeFilename()
 	pygame.init()
 	font = pygame.font.Font('anonymouspro.ttf', SIZE)
 	letters = []
 	for i in range(GLYPH_START, GLYPH_END + 1):
-		image = font.render(chr(i), True, (255, 255, 255))
-		letters.append(str(image.get_width()) + ':' + str(image.get_height()))
-		# save the image
-		pygame.image.save(image, folder + '/' + 'glyph' + str(i) + '.png')
-	unique = set(letters)
-	# how many?
-	print 'Size, Total Glyphs:'
-	for i in unique:
-		print ' ', i, letters.count(i)
-		# print glyphs if not too large
-		if(letters.count(i) < 3):
-			counts = [x for x, j in enumerate(letters) if j == i]
-			for i in counts:
-				print '    ' + chr(i + GLYPH_START) + ' - chr(' + str(i + GLYPH_START) + ')'
-	print 'Saved in ./' + folder
+		letters.append(font.render(chr(i), True, (255, 255, 255)))
+	# from experimentation, some are maybe 1 or 2 pixels larger (depends on size)
+	# we just use the smallest.
+	width = min([x.get_width() for x in letters])
+	height = min([x.get_height() for x in letters])
+	base_image = pygame.Surface(((GLYPH_END - GLYPH_START) * width, height), pygame.SRCALPHA, 32)
+	xpos = 0
+	for i in letters:
+		base_image.blit(i, (xpos, 0))
+		xpos += width
+	pygame.image.save(base_image, filename)
+	print 'Saved as ' + filename
 
 def parseArgs(args):
 	global FONT, SIZE
@@ -60,8 +53,8 @@ def parseArgs(args):
 if __name__ == '__main__':
 	# get the fontname and size from command line
 	if(len(sys.argv) != 3):
-		print 'Usage: build_font.py fontname size'
-		print '   Ex: build_font.py my_font.ttf 132'
+		print 'Builds png of fixed width fonts'
+		print '    Ex: build_font.py my_font.ttf size'
 	elif(parseArgs(sys.argv) == True):
 		buildFont()
 
