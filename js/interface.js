@@ -5,12 +5,22 @@ var FONT_WIDTH = 49;
 var FONT_HEIGHT = 102;
 var CHAR_WIDTH = 60;
 
+function RandomNumber() {
+	this.seed = (new Date.getTime()) % 32768;
+	
+	this.getRand = function() {
+		var r = ((this.seed * 7621) + 1) % 32768;
+		this.seed = r;
+		return(r / 32768);
+	};
+};
+
 function loadFonts() {
 	game.load.image('monofur', 'data/fonts/monofur.png');
 };
 
 function createInterface() {
-	terminal.setup();
+	start_screen.setup();
 };
 
 function ColourClass(r, g, b) {
@@ -18,6 +28,40 @@ function ColourClass(r, g, b) {
 	this.r = r;
 	this.g = g;
 	this.b = b;
+};
+
+function StartScreen() {
+	// this is an object to handle the start screen, which is:
+	// some text that cn be chosen
+	// a simple procedural mountains + sky scrolling backdrop
+	this.scrolling = new ScrollingBackdrop();
+	this.terminal = new Terminal();
+	
+	this.setup = function() {
+		terminal.setup();
+	}
+};
+
+function ScrollingBackdrop() {
+	this.rand = new RandomNumber();
+	this.land = new Array();
+	
+	this.setup = function() {
+		// we need to fill the array until at least the screen width is done
+		this.land.push([0, Math.floor(this.rand.getRand() * LANDSCAPE_YSCALE)]);
+		this.getNextPoints();
+	};
+	
+	this.getNextPoints() {
+		// generate a point:
+		var xpos = 0;
+		while(xpos < WIDTH) {
+			var xdiff = Math.floor(this.rand.getRand() * LANDSCAPE_XSCALE);
+			var height = Math.floor(this.rand.getRand() * LANDSCAPE_YSCALE);
+			xpos = this.land[this.land.length - 1][0] + xdiff;
+			this.land.push([xpos, height]);
+		}
+	};
 };
 
 // class to handle text on a screen
@@ -67,33 +111,12 @@ function Terminal() {
 			image.copyRect('monofur', source_rect, xpos, 0);
 			xpos += FONT_WIDTH;
 		}
-		//var fimage = game.add.bitmapData(this.px_width * chars.length, this.px_height);
-		
-		//fimage.copy(image, 0, 0, image.width, image.height, 0, 0, fimage.width, fimage.height);
 		image.update();
 		image.processPixelRGB(this.processPixel, this, 0, 0, image.width, image.height)
 		
 		return(image);
 	};
-	
-	this.test1 = function(string) {
-		// given a string, render to the correct size
-		// convert the string to an array of ASCII and subtract 32
-		var chars = new Array();
-		for(var i=0; i<string.length; i++) {
-			chars.push(string.charCodeAt(i) - 32); }
-		// make an empty image and blit font to it
-		var image = game.add.bitmapData(FONT_WIDTH * chars.length, FONT_HEIGHT);
-		// blit the letters
-		var xpos = 0;
-		for(var i in chars) {
-			var source_rect = new Phaser.Rectangle(chars[i] * FONT_WIDTH, 0, FONT_WIDTH, FONT_HEIGHT);			
-			image.copyRect('monofur', source_rect, xpos, 0);
-			xpos += FONT_WIDTH;
-		}
-		return(image);
-	};
-	
+
 	this.processPixel = function(colour) {
 		// colour is { r: number, g: number, b: number, a: number, color: number, rgba: string }
 		// we just preserve the alpha value

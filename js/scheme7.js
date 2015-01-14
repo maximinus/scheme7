@@ -231,7 +231,7 @@ function render() {
 };
 
 //var s7 = new Game();
-var terminal = new Terminal();
+var start_screen = new StartScreen();
 
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
