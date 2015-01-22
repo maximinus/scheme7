@@ -236,7 +236,7 @@ var start_screen = new StartScreen();
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
 	//var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
-	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:loadFonts, create:createInterface}); }
+	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:loadFiles, create:createInterface, update:start_screen.update.bind(start_screen) }); }
 else {
 	var game = null;
 }

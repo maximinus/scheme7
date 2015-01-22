@@ -4,19 +4,23 @@
 var FONT_WIDTH = 49;
 var FONT_HEIGHT = 102;
 var CHAR_WIDTH = 60;
+var STAR_TYPES
 
-function RandomNumber() {
-	this.seed = (new Date.getTime()) % 32768;
-	
-	this.getRand = function() {
-		var r = ((this.seed * 7621) + 1) % 32768;
-		this.seed = r;
-		return(r / 32768);
-	};
+function loadFiles() {
+	loadFonts();
+	loadImages();
 };
 
 function loadFonts() {
 	game.load.image('monofur', 'data/fonts/monofur.png');
+};
+
+function loadImages() {
+	game.load.image('star1', 'data/gfx/stars/star1.png');
+	game.load.image('star2', 'data/gfx/stars/star2.png');
+	game.load.image('star3', 'data/gfx/stars/star3.png');
+	game.load.image('star4', 'data/gfx/stars/star4.png');
+	game.load.image('star5', 'data/gfx/stars/star5.png');
 };
 
 function createInterface() {
@@ -33,12 +37,64 @@ function ColourClass(r, g, b) {
 function StartScreen() {
 	// this is an object to handle the start screen, which is:
 	// some text that cn be chosen
-	// a simple procedural mountains + sky scrolling backdrop
+	// some kind of background
 	this.terminal = new Terminal();
+	this.stars = new StarField();
 	
 	this.setup = function() {
-		terminal.setup();
-	}
+		this.terminal.setup();
+		this.stars.setup();
+		// add out options
+		this.terminal.print(0, 0, 'Scheme7 v0.01', Terminal.WHITE);
+		this.terminal.print(0, 2, '1: New Game', Terminal.CYAN);
+		this.terminal.print(0, 3, '2: Load Game', Terminal.GREY);
+		this.terminal.print(0, 5, '3: About Scheme7', Terminal.CYAN);
+		this.terminal.print(0, 6, '4: Exit Game', Terminal.CYAN);
+	};
+	
+	this.update = function() {
+		this.stars.update();
+	};
+};
+
+function StarField() {
+	// handles a starfield
+	this.distance = 600;
+	this.speed = 1.8;
+	this.stars = [];
+	this.max_stars = 400;
+	this.xpos = [];
+	this.ypos = [];
+	this.zpos = [];
+
+	this.setup = function() {
+		this.sprites = game.add.spriteBatch();
+		for(var i = 0; i < this.max_stars; i++) {
+			// TODO: Fix magic numbers
+			this.xpos[i] = Math.floor(Math.random() * 1600) - 800;
+    	    this.ypos[i] = Math.random() > 0.5 ? 80:-80;
+    	    this.zpos[i] = Math.floor(Math.random() * 2700) + 320;
+
+			// choose a star in the form star[1-5]
+			var starname = 'star' +  (Math.floor(Math.random() * (6 - 1)) + 1).toString();
+			var star = game.make.sprite(0, 0, starname);
+			star.anchor.set(0.5);
+			this.sprites.addChild(star);
+			this.stars.push(star);
+		}
+    };
+
+	this.update = function update() {
+		for(var i = 0; i < this.max_stars; i++) {
+			this.stars[i].perspective = this.distance / (this.distance - this.zpos[i]);
+			this.stars[i].x = game.world.centerX + this.xpos[i] * this.stars[i].perspective;
+			this.stars[i].y = game.world.centerY + this.ypos[i] * this.stars[i].perspective;
+			this.zpos[i] += this.speed;
+			if(this.zpos[i] > 550) {
+				this.zpos[i] -= 1500; }
+			this.stars[i].scale.set(Math.abs(this.stars[i].perspective / 12));
+    	}
+	};
 };
 
 // class to handle text on a screen
@@ -50,7 +106,6 @@ function Terminal() {
 		// precalculate sides
 		this.calculateArea()
 		this.calculateFontSize();
-		this.create();
 	};
 
 	this.calculateArea = function() {
@@ -90,7 +145,6 @@ function Terminal() {
 		}
 		image.update();
 		image.processPixelRGB(this.processPixel, this, 0, 0, image.width, image.height)
-		
 		return(image);
 	};
 
@@ -104,8 +158,10 @@ function Terminal() {
 	};
 
 	this.print = function(x, y, text, colour) {
+		var old_colour = this.colour;
+		if(colour != undefined) {
+			this.colour = colour; }
 		// get the image
-		console.log(colour);
 		var image = this.renderStringImage(text);
 		var xpos = (x * this.px_width) + this.xoffset;
 		var ypos = (y * this.px_height) + this.yoffset;
@@ -114,6 +170,7 @@ function Terminal() {
 		// scale image
 		sprite.scale = new PIXI.Point(scale, scale);
 		this.strings.push(sprite);
+		this.colour = old_colour;
 	};
 	
 	this.cls = function(x, y, text) {
@@ -122,10 +179,18 @@ function Terminal() {
 			this.strings[i].destroy();
 		}
 	};
-
-	this.create = function() {
-		this.print(0, 0, 'Scheme7 v0.01');
-		this.print(0, 1, 'Code & Design Chris Handy 2014');
-	};
 };
+
+// some static colours
+Terminal.RED = new ColourClass(255, 0, 0);
+Terminal.GREEN = new ColourClass(0, 255, 0);
+Terminal.BLUE = new ColourClass(0, 0, 255);
+Terminal.WHITE = new ColourClass(255, 255, 255);
+Terminal.BLACK = new ColourClass(0, 0, 0);
+Terminal.YELLOW = new ColourClass(255, 255, 0);
+Terminal.ORANGE = new ColourClass(255, 127, 0);
+Terminal.CYAN = new ColourClass(0, 255, 255);
+Terminal.PURPLE = new ColourClass(255, 0, 255);
+Terminal.BROWN = new ColourClass(150, 100, 50);
+Terminal.GREY = new ColourClass(127, 127, 127);
 
