@@ -34,34 +34,11 @@ function StartScreen() {
 	// this is an object to handle the start screen, which is:
 	// some text that cn be chosen
 	// a simple procedural mountains + sky scrolling backdrop
-	this.scrolling = new ScrollingBackdrop();
 	this.terminal = new Terminal();
 	
 	this.setup = function() {
 		terminal.setup();
 	}
-};
-
-function ScrollingBackdrop() {
-	this.rand = new RandomNumber();
-	this.land = new Array();
-	
-	this.setup = function() {
-		// we need to fill the array until at least the screen width is done
-		this.land.push([0, Math.floor(this.rand.getRand() * LANDSCAPE_YSCALE)]);
-		this.getNextPoints();
-	};
-	
-	this.getNextPoints() {
-		// generate a point:
-		var xpos = 0;
-		while(xpos < WIDTH) {
-			var xdiff = Math.floor(this.rand.getRand() * LANDSCAPE_XSCALE);
-			var height = Math.floor(this.rand.getRand() * LANDSCAPE_YSCALE);
-			xpos = this.land[this.land.length - 1][0] + xdiff;
-			this.land.push([xpos, height]);
-		}
-	};
 };
 
 // class to handle text on a screen
