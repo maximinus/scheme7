@@ -21,6 +21,7 @@ function loadImages() {
 	game.load.image('star3', 'data/gfx/stars/star3.png');
 	game.load.image('star4', 'data/gfx/stars/star4.png');
 	game.load.image('star5', 'data/gfx/stars/star5.png');
+	game.load.image('stargrey', 'data/gfx/stars/stargrey.png');
 };
 
 function createInterface() {
@@ -50,6 +51,7 @@ function StartScreen() {
 		this.terminal.print(0, 3, '2: Load Game', Terminal.GREY);
 		this.terminal.print(0, 5, '3: About Scheme7', Terminal.CYAN);
 		this.terminal.print(0, 6, '4: Exit Game', Terminal.CYAN);
+		this.terminal.print(0, 8, 'Please enter a number', Terminal.WHITE);
 	};
 	
 	this.update = function() {
@@ -57,44 +59,69 @@ function StartScreen() {
 	};
 };
 
+function Star(speed, starname) {
+	// set position
+	var pos = Math.floor(Math.random() * 600) - 300;
+	this.xpos = pos;
+	this.ypos = Math.random() > 0.5 ? pos + 90: pos - 90;
+    this.zpos = Math.floor(Math.random() * 2200) + 320;
+	if(starname === undefined) {
+		var starname = 'star' +  (Math.floor(Math.random() * (6 - 1)) + 1).toString(); }
+	this.sprite = game.make.sprite(0, 0, starname);
+	this.sprite.anchor.set(0.5);
+	this.speed = speed;
+	this.distance = 600;
+	this.scaling = true;
+
+	this.update = function() {
+		this.sprite.perspective = this.distance / (this.distance - this.zpos);
+		this.sprite.x = game.world.centerX + this.xpos * this.sprite.perspective;
+		this.sprite.y = game.world.centerY + this.ypos * this.sprite.perspective;
+		this.zpos += this.speed;
+		if(this.zpos > 550) {
+			this.zpos -= 1500; }
+		this.sprite.alpha = Math.min(this.sprite.perspective / 2, 1);
+		if(this.scaling == true) {
+			this.sprite.scale.set(Math.abs(this.sprite.perspective) / 10); }
+   	};
+};
+
 function StarField() {
 	// handles a starfield
-	this.distance = 600;
-	this.speed = 1.8;
 	this.stars = [];
-	this.max_stars = 400;
-	this.xpos = [];
-	this.ypos = [];
-	this.zpos = [];
+	// must be an even number
+	this.max_stars = 300;
 
 	this.setup = function() {
 		this.sprites = game.add.spriteBatch();
 		for(var i = 0; i < this.max_stars; i++) {
-			// TODO: Fix magic numbers
-			this.xpos[i] = Math.floor(Math.random() * 1600) - 800;
-    	    this.ypos[i] = Math.random() > 0.5 ? 80:-80;
-    	    this.zpos[i] = Math.floor(Math.random() * 2700) + 320;
-
-			// choose a star in the form star[1-5]
-			var starname = 'star' +  (Math.floor(Math.random() * (6 - 1)) + 1).toString();
-			var star = game.make.sprite(0, 0, starname);
-			star.anchor.set(0.5);
-			this.sprites.addChild(star);
-			this.stars.push(star);
+			var new_star = new Star(2.8);
+			this.sprites.addChild(new_star.sprite);
+			this.stars.push(new_star);
+			
+			new_star = new Star(1.2, 'stargrey');
+			new_star.scaling = false;
+			this.sprites.addChild(new_star.sprite);
+			this.stars.push(new_star);
 		}
-    };
+	};
 
-	this.update = function update() {
-		for(var i = 0; i < this.max_stars; i++) {
-			this.stars[i].perspective = this.distance / (this.distance - this.zpos[i]);
-			this.stars[i].x = game.world.centerX + this.xpos[i] * this.stars[i].perspective;
-			this.stars[i].y = game.world.centerY + this.ypos[i] * this.stars[i].perspective;
-			this.zpos[i] += this.speed;
-			if(this.zpos[i] > 550) {
-				this.zpos[i] -= 1500; }
-			this.stars[i].scale.set(Math.abs(this.stars[i].perspective / 12));
+	this.update = function() {
+		for(var i in this.stars) {
+			this.stars[i].update();
     	}
 	};
+};
+
+function getWindow(xsize, ysize, colour, transparency) {
+	// contains a glass effect window with transparency and colour
+	if(colour === undefined) {
+		var colour = Terminal.GREY; }
+	if(transparency === undefined) {
+		var transparency = 127; }
+	// build the image
+	var window = 0;
+	return(window);
 };
 
 // class to handle text on a screen
