@@ -33,6 +33,14 @@ function ColourClass(r, g, b) {
 	this.r = r;
 	this.g = g;
 	this.b = b;
+	
+	this.getHexString = function() {
+		return('#' + this.r.toString(16) + this.g.toString(16) + this.b.toString(16));
+	};
+	
+	this.getRBGA = function(alpha) {
+		return('rgba(' + [this.r, this.g, this.b, alpha].join() + ')');
+	};
 };
 
 function StartScreen() {
@@ -46,12 +54,13 @@ function StartScreen() {
 		this.terminal.setup();
 		this.stars.setup();
 		// add out options
-		this.terminal.print(0, 0, 'Scheme7 v0.01', Terminal.WHITE);
-		this.terminal.print(0, 2, '1: New Game', Terminal.CYAN);
-		this.terminal.print(0, 3, '2: Load Game', Terminal.GREY);
-		this.terminal.print(0, 5, '3: About Scheme7', Terminal.CYAN);
-		this.terminal.print(0, 6, '4: Exit Game', Terminal.CYAN);
-		this.terminal.print(0, 8, 'Please enter a number', Terminal.WHITE);
+		this.terminal.addWindow(0, 0, 23, 11, Terminal.DARKGREY.getRBGA('0.35'));
+		this.terminal.print(1, 1, 'Scheme7 v0.01', Terminal.WHITE);
+		this.terminal.print(1, 3, '1: New Game', Terminal.CYAN);
+		this.terminal.print(1, 4, '2: Load Game', Terminal.GREY);
+		this.terminal.print(1, 6, '3: About Scheme7', Terminal.CYAN);
+		this.terminal.print(1, 7, '4: Exit Game', Terminal.CYAN);
+		this.terminal.print(1, 9, 'Please enter a number', Terminal.WHITE);
 	};
 	
 	this.update = function() {
@@ -89,7 +98,6 @@ function Star(speed, starname) {
 function StarField() {
 	// handles a starfield
 	this.stars = [];
-	// must be an even number
 	this.max_stars = 300;
 
 	this.setup = function() {
@@ -113,15 +121,29 @@ function StarField() {
 	};
 };
 
-function getWindow(xsize, ysize, colour, transparency) {
+function getWindow(width, height, colour) {
 	// contains a glass effect window with transparency and colour
 	if(colour === undefined) {
-		var colour = Terminal.GREY; }
-	if(transparency === undefined) {
-		var transparency = 127; }
+		var colour = Terminal.GREY.getRBGA(0.5); }
+	var radius = 5;
 	// build the image
-	var window = 0;
-	return(window);
+	var image = game.add.bitmapData(width, height);
+	// clear to black and dcoords lines all over
+	image.ctx.fillStyle = colour;
+	image.ctx.beginPath();
+	image.ctx.moveTo(0 + radius, 0);
+	image.ctx.lineTo(width - radius, 0);
+	image.ctx.quadraticCurveTo(width, 0, width, radius);
+	image.ctx.lineTo(width, height - radius);
+	image.ctx.quadraticCurveTo(width, height, width - radius, height);
+	image.ctx.lineTo(radius, height);
+	image.ctx.quadraticCurveTo(0, height, 0, height - radius);
+	image.ctx.lineTo(0, radius);
+	image.ctx.quadraticCurveTo(0, 0, radius, 0);
+	image.ctx.closePath();
+	image.ctx.stroke();
+	image.ctx.fill();
+	return(image);
 };
 
 // class to handle text on a screen
@@ -206,6 +228,17 @@ function Terminal() {
 			this.strings[i].destroy();
 		}
 	};
+	
+	this.addWindow = function(xpos, ypos, width, height, colour) {
+		var xpos = (xpos * this.px_width) + this.xoffset;
+		var ypos = (ypos * this.px_height) + this.yoffset;
+		// convert to real height and width
+		width *= this.px_width;
+		height *= this.px_height;
+		var window = getWindow(width, height, colour);
+		var sprite = game.add.sprite(xpos, ypos, window)
+		this.strings.push(sprite);
+	};
 };
 
 // some static colours
@@ -219,5 +252,7 @@ Terminal.ORANGE = new ColourClass(255, 127, 0);
 Terminal.CYAN = new ColourClass(0, 255, 255);
 Terminal.PURPLE = new ColourClass(255, 0, 255);
 Terminal.BROWN = new ColourClass(150, 100, 50);
+Terminal.LIGHTGREY = new ColourClass(208, 208, 208);
 Terminal.GREY = new ColourClass(127, 127, 127);
+Terminal.DARKGREY = new ColourClass(48, 48, 48);
 
