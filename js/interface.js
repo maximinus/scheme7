@@ -4,7 +4,7 @@
 var FONT_WIDTH = 49;
 var FONT_HEIGHT = 102;
 var CHAR_WIDTH = 60;
-var CHAR_HEIGHT = 38;
+var CHAR_HEIGHT = 18;
 
 function loadFiles() {
 	loadFonts();
@@ -48,19 +48,29 @@ function StartScreen() {
 	// some text that cn be chosen, some kind of background and the key handlers
 	this.terminal = new Terminal();
 	this.stars = new StarField();
-	this.keys = ['1', '2', '3', '4'];
+	this.keys = [['1', 'Messages'], ['2', 'I want to print'], ['3', 'Are all here'], ['4', 'Do you understand?']];
+	this.texts = {'windows':[[0, 0, 23, 11, Terminal.DARKGREY.getRBGA('0.35')]],
+				   'strings':[[1, 1, 'Scheme7 v' + scheme7.version, Terminal.WHITE],
+				   			  [1, 3, '1: New Game', Terminal.CYAN],
+				   			  [1, 4, '2: Load Game', Terminal.GREY],
+				   			  [1, 6, '3: About Scheme7', Terminal.CYAN],
+				   			  [1, 7, '4: Exit Game', Terminal.CYAN],
+				   			  [1, 9, 'Please enter a number', Terminal.WHITE]]};
 	
 	this.setup = function() {
 		this.terminal.setup();
 		this.stars.setup();
-		// add out options
-		this.terminal.addWindow(0, 0, 23, 11, Terminal.DARKGREY.getRBGA('0.35'));
-		this.terminal.print(1, 1, 'Scheme7 v' + scheme7.version, Terminal.WHITE);
-		this.terminal.print(1, 3, '1: New Game', Terminal.CYAN);
-		this.terminal.print(1, 4, '2: Load Game', Terminal.GREY);
-		this.terminal.print(1, 6, '3: About Scheme7', Terminal.CYAN);
-		this.terminal.print(1, 7, '4: Exit Game', Terminal.CYAN);
-		this.terminal.print(1, 9, 'Please enter a number', Terminal.WHITE);
+		this.setupKeys();
+		this.addText();
+	};
+	
+	this.addText = function() {
+		var windows = this.texts['windows'];
+		var strings = this.texts['strings'];
+		for(var i in windows) {
+			this.terminal.addWindow.apply(this.terminal, windows[i]); }
+		for(var i in strings) {
+			this.terminal.print.apply(this.terminal, strings[i]); }
 	};
 	
 	this.update = function() {
@@ -68,8 +78,24 @@ function StartScreen() {
 		this.stars.update();
 		this.terminal.update();
 	};
-	
+
+	this.setupKeys = function() {
+		// false is current status of key_pressed
+		this.keys = this.keys.map(function(x) { return([x[0].charCodeAt(0), x[1], false]); });
+	};
+
 	this.checkKeys = function() {
+		for(var i in this.keys) {
+			if(game.input.keyboard.isDown(this.keys[i][0])) {
+				// if still down, ignore
+				if(this.keys[i][2] == false) {
+					this.terminal.addToast(this.keys[i][1]);
+					this.keys[i][2] = true;
+				}
+			}
+			// it is not down, flag as up
+			this.keys[i][2] == false;
+		}
 	};
 };
 
@@ -151,7 +177,7 @@ function getWindow(width, height, colour) {
 	return(image);
 };
 
-function ToastMessage(time, sprite) {
+function ToastMessage(sprite, time) {
 	this.time = time;
 	this.sprite = sprite;
 	this.alpha_delta = 0.05;
@@ -165,10 +191,11 @@ function ToastMessage(time, sprite) {
 			this.alpha += this.alpha_delta;
 			if(this.alpha >= 1) {
 				// faded in complete. start timer
-				this.alpha = 0;
+				this.alpha = 1;
+				this.fade = false;
 				window.setTimeout(this.startFadeOut.bind(this), this.time);
 			}
-			else if(this.alpha <= 0) {
+			else if(this.alpha < 0) {
 				// faded out, can destroy this sprite
 				this.sprite.destroy()
 				return(true);
@@ -190,7 +217,7 @@ function Terminal() {
 		this.strings = new Array();
 		this.toast = new Array();
 		// normal is white
-		this.colour = new ColourClass(255, 255, 255);8
+		this.colour = new ColourClass(255, 255, 255);
 		// precalculate sides
 		this.calculateArea()
 		this.calculateFontSize();
@@ -292,8 +319,8 @@ function Terminal() {
 		// build the sprite
 		// must be in the middle of the screen, at the bottom
 		var xpos = Math.floor((CHAR_WIDTH - string.length) / 2);
-		var sprite = this.buildSprite(xpos, CHAR_HEIGHT - 1, string);
-		this.toast.push(new Toast(sprite, time));
+		var sprite = this.buildSprite(xpos, 17, string);
+		this.toast.push(new ToastMessage(sprite, time));
 	};
 	
 	this.update = function() {
