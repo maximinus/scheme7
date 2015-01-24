@@ -4,7 +4,7 @@
 var FONT_WIDTH = 49;
 var FONT_HEIGHT = 102;
 var CHAR_WIDTH = 60;
-var STAR_TYPES
+var CHAR_HEIGHT = 38;
 
 function loadFiles() {
 	loadFonts();
@@ -45,17 +45,17 @@ function ColourClass(r, g, b) {
 
 function StartScreen() {
 	// this is an object to handle the start screen, which is:
-	// some text that cn be chosen
-	// some kind of background
+	// some text that cn be chosen, some kind of background and the key handlers
 	this.terminal = new Terminal();
 	this.stars = new StarField();
+	this.keys = ['1', '2', '3', '4'];
 	
 	this.setup = function() {
 		this.terminal.setup();
 		this.stars.setup();
 		// add out options
 		this.terminal.addWindow(0, 0, 23, 11, Terminal.DARKGREY.getRBGA('0.35'));
-		this.terminal.print(1, 1, 'Scheme7 v0.01', Terminal.WHITE);
+		this.terminal.print(1, 1, 'Scheme7 v' + scheme7.version, Terminal.WHITE);
 		this.terminal.print(1, 3, '1: New Game', Terminal.CYAN);
 		this.terminal.print(1, 4, '2: Load Game', Terminal.GREY);
 		this.terminal.print(1, 6, '3: About Scheme7', Terminal.CYAN);
@@ -64,7 +64,12 @@ function StartScreen() {
 	};
 	
 	this.update = function() {
+		this.checkKeys();
 		this.stars.update();
+		this.terminal.update();
+	};
+	
+	this.checkKeys = function() {
 	};
 };
 
@@ -125,7 +130,7 @@ function getWindow(width, height, colour) {
 	// contains a glass effect window with transparency and colour
 	if(colour === undefined) {
 		var colour = Terminal.GREY.getRBGA(0.5); }
-	var radius = 5;
+	var radius = 10;
 	// build the image
 	var image = game.add.bitmapData(width, height);
 	// clear to black and dcoords lines all over
@@ -146,12 +151,46 @@ function getWindow(width, height, colour) {
 	return(image);
 };
 
+function ToastMessage(time, sprite) {
+	this.time = time;
+	this.sprite = sprite;
+	this.alpha_delta = 0.05;
+	// toast alphas always start at 0, i.e. not showing
+	this.alpha = 0;
+	this.fade = true;
+	this.sprite.alpha = this.alpha;
+	
+	this.update = function() {
+		if(this.fade ==  true) {
+			this.alpha += this.alpha_delta;
+			if(this.alpha >= 1) {
+				// faded in complete. start timer
+				this.alpha = 0;
+				window.setTimeout(this.startFadeOut.bind(this), this.time);
+			}
+			else if(this.alpha <= 0) {
+				// faded out, can destroy this sprite
+				this.sprite.destroy()
+				return(true);
+			}
+			this.sprite.alpha = this.alpha;
+		}
+		return(false);
+	};
+	
+	this.startFadeOut = function() {
+		this.fade = true;
+		this.alpha_delta *= -1;
+	};
+};
+
 // class to handle text on a screen
 function Terminal() {
 	this.setup = function(width, height) {
 		this.strings = new Array();
+		this.toast = new Array();
 		// normal is white
-		this.colour = new ColourClass(255, 255, 255);
+		this.colour = new ColourClass(255, 255, 255);8
 		// precalculate sides
 		this.calculateArea()
 		this.calculateFontSize();
@@ -172,7 +211,7 @@ function Terminal() {
 	};
 	
 	this.calculateFontSize = function() {
-		// width and height are set by this point. 80 characters across
+		// width and height are set by this point. CHAR_WIDTH characters across
 		this.px_width = Math.floor(this.width / CHAR_WIDTH);
 		this.px_height = Math.floor(this.px_width * (FONT_HEIGHT / FONT_WIDTH));
 	};
@@ -207,6 +246,11 @@ function Terminal() {
 	};
 
 	this.print = function(x, y, text, colour) {
+		var sprite = this.buildSprite(x, y, text, colour);
+		this.strings.push(sprite);
+	};
+
+	this.buildSprite = function(x, y, text, colour) {
 		var old_colour = this.colour;
 		if(colour != undefined) {
 			this.colour = colour; }
@@ -218,8 +262,8 @@ function Terminal() {
 		var sprite = game.add.sprite(xpos, ypos, image)
 		// scale image
 		sprite.scale = new PIXI.Point(scale, scale);
-		this.strings.push(sprite);
 		this.colour = old_colour;
+		return(sprite);
 	};
 	
 	this.cls = function(x, y, text) {
@@ -238,6 +282,29 @@ function Terminal() {
 		var window = getWindow(width, height, colour);
 		var sprite = game.add.sprite(xpos, ypos, window)
 		this.strings.push(sprite);
+	};
+	
+	this.addToast = function(string, time) {
+		// add a toast message, simialar to android
+		// it will fade in, stay around for time seconds, and then clear
+		if(time === undefined) {
+			var time = 5000; }
+		// build the sprite
+		// must be in the middle of the screen, at the bottom
+		var xpos = Math.floor((CHAR_WIDTH - string.length) / 2);
+		var sprite = this.buildSprite(xpos, CHAR_HEIGHT - 1, string);
+		this.toast.push(new Toast(sprite, time));
+	};
+	
+	this.update = function() {
+		// normally we do very little, but we have to check toast...
+		if(this.toast.length == 0) {
+			return; }
+		// handle the current toast only. this.toast is a queue
+		if(this.toast[0].update() == true) {
+			// toast has ended, delete the first one
+			this.toast.shift()
+		}
 	};
 };
 

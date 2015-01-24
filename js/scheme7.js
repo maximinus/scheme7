@@ -1,5 +1,12 @@
 "use strict";
 
+function Scheme7Globals() {
+	// use this as a singleton to dump static data
+	this.credits = ['Chris Handy'];
+	this.version = '0.02';
+	this.last_update = '23rd Jan 2015';
+};
+
 // global constants
 var MAX_COLLISIONS = 5;
 // how much time between bullets?
@@ -231,6 +238,7 @@ function render() {
 };
 
 //var s7 = new Game();
+var scheme7 = new Scheme7Globals();
 var start_screen = new StartScreen();
 
 // game can be seen as the view
