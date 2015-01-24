@@ -28,34 +28,11 @@ function createInterface() {
 	start_screen.setup();
 };
 
-function ColourClass(r, g, b) {
-	// store colour values
-	this.r = r;
-	this.g = g;
-	this.b = b;
-	
-	this.getHexString = function() {
-		return('#' + this.r.toString(16) + this.g.toString(16) + this.b.toString(16));
-	};
-	
-	this.getRBGA = function(alpha) {
-		return('rgba(' + [this.r, this.g, this.b, alpha].join() + ')');
-	};
-};
-
 function StartScreen() {
 	// this is an object to handle the start screen, which is:
 	// some text that cn be chosen, some kind of background and the key handlers
 	this.terminal = new Terminal();
 	this.stars = new StarField();
-	this.keys = [['1', 'Messages'], ['2', 'I want to print'], ['3', 'Are all here'], ['4', 'Do you understand?']];
-	this.texts = {'windows':[[0, 0, 23, 11, Terminal.DARKGREY.getRBGA('0.35')]],
-				   'strings':[[1, 1, 'Scheme7 v' + scheme7.version, Terminal.WHITE],
-				   			  [1, 3, '1: New Game', Terminal.CYAN],
-				   			  [1, 4, '2: Load Game', Terminal.GREY],
-				   			  [1, 6, '3: About Scheme7', Terminal.CYAN],
-				   			  [1, 7, '4: Exit Game', Terminal.CYAN],
-				   			  [1, 9, 'Please enter a number', Terminal.WHITE]]};
 	
 	this.setup = function() {
 		this.terminal.setup();
@@ -65,8 +42,8 @@ function StartScreen() {
 	};
 	
 	this.addText = function() {
-		var windows = this.texts['windows'];
-		var strings = this.texts['strings'];
+		var windows = MENUS.MAIN_SCREEN['windows'];
+		var strings = MENUS.MAIN_SCREEN['strings'];
 		for(var i in windows) {
 			this.terminal.addWindow.apply(this.terminal, windows[i]); }
 		for(var i in strings) {
@@ -81,7 +58,7 @@ function StartScreen() {
 
 	this.setupKeys = function() {
 		// false is current status of key_pressed
-		this.keys = this.keys.map(function(x) { return([x[0].charCodeAt(0), x[1], false]); });
+		this.keys = MENUS.MAIN_SCREEN['keys'].map(function(x) { return([x[0].charCodeAt(0), x[1], false]); });
 	};
 
 	this.checkKeys = function() {
@@ -334,19 +311,4 @@ function Terminal() {
 		}
 	};
 };
-
-// some static colours
-Terminal.RED = new ColourClass(255, 0, 0);
-Terminal.GREEN = new ColourClass(0, 255, 0);
-Terminal.BLUE = new ColourClass(0, 0, 255);
-Terminal.WHITE = new ColourClass(255, 255, 255);
-Terminal.BLACK = new ColourClass(0, 0, 0);
-Terminal.YELLOW = new ColourClass(255, 255, 0);
-Terminal.ORANGE = new ColourClass(255, 127, 0);
-Terminal.CYAN = new ColourClass(0, 255, 255);
-Terminal.PURPLE = new ColourClass(255, 0, 255);
-Terminal.BROWN = new ColourClass(150, 100, 50);
-Terminal.LIGHTGREY = new ColourClass(208, 208, 208);
-Terminal.GREY = new ColourClass(127, 127, 127);
-Terminal.DARKGREY = new ColourClass(48, 48, 48);
 
