@@ -15,7 +15,7 @@ function ColourClass(r, g, b) {
 	};
 };
 
-var COLOURS = {
+S7['COLOURS'] = {
 	RED:new ColourClass(255, 0, 0),
 	GREEN:new ColourClass(0, 255, 0),
 	BLUE:new ColourClass(0, 0, 255),

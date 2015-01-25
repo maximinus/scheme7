@@ -1,39 +1,10 @@
 "use strict";
 
-function Scheme7Globals() {
-	// use this as a singleton to dump static data
-	this.credits = ['Chris Handy'];
-	this.version = '0.02';
-	this.last_update = '23rd Jan 2015';
-};
-
-// global constants
-var MAX_COLLISIONS = 5;
-// how much time between bullets?
-var BULLET_PAUSE = 5;
-
 // calculate view size on page load
 if(typeof window.innerWidth != 'undefined') {
-	var WIDTH = window.innerWidth;
-	var HEIGHT = window.innerHeight; }
-else {
-	// some error, use a small default
-	var WIDTH = 640;
-	var HEIGHT = 400; }
-
-// a state is a section of something that acts differently. 1 of these states is the game
-// the other is the UI. The game is run via the keyboard.
-function TextInterface() {
-	this.preload = function() {
-	
-	};
-	
-	this.create = function() {
-	};
-	
-	this.render = function() {
-	};
-};
+	S7.WIDTH = window.innerWidth;
+	S7.HEIGHT = window.innerHeight;
+}
 
 function generateSpriteImage(width, height, colour) {
 	var image = game.add.bitmapData(width, height);
@@ -238,13 +209,12 @@ function render() {
 };
 
 //var s7 = new Game();
-var scheme7 = new Scheme7Globals();
 var start_screen = new StartScreen();
 
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
-	//var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
-	var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:loadFiles, create:createInterface, update:start_screen.update.bind(start_screen) }); }
+	//var game = new Phaser.Game(S7.WIDTH, S7.HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
+	var game = new Phaser.Game(S7.WIDTH, S7.HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:loadFiles, create:createInterface, update:start_screen.update.bind(start_screen) }); }
 else {
 	var game = null;
 }

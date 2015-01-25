@@ -1,11 +1,5 @@
 "use strict";
 
-// font characterisitics
-var FONT_WIDTH = 49;
-var FONT_HEIGHT = 102;
-var CHAR_WIDTH = 60;
-var CHAR_HEIGHT = 18;
-
 function loadFiles() {
 	loadFonts();
 	loadImages();
@@ -42,8 +36,8 @@ function StartScreen() {
 	};
 	
 	this.addText = function() {
-		var windows = MENUS.MAIN_SCREEN['windows'];
-		var strings = MENUS.MAIN_SCREEN['strings'];
+		var windows = S7.MENUS.MAIN_SCREEN['windows'];
+		var strings = S7.MENUS.MAIN_SCREEN['strings'];
 		for(var i in windows) {
 			this.terminal.addWindow.apply(this.terminal, windows[i]); }
 		for(var i in strings) {
@@ -58,7 +52,7 @@ function StartScreen() {
 
 	this.setupKeys = function() {
 		// false is current status of key_pressed
-		this.keys = MENUS.MAIN_SCREEN['keys'].map(function(x) { return([x[0].charCodeAt(0), x[1], false]); });
+		this.keys = S7.MENUS.MAIN_SCREEN['keys'].map(function(x) { return([x[0].charCodeAt(0), x[1], false]); });
 	};
 
 	this.checkKeys = function() {
@@ -70,8 +64,10 @@ function StartScreen() {
 					this.keys[i][2] = true;
 				}
 			}
-			// it is not down, flag as up
-			this.keys[i][2] == false;
+			else {
+				// it is not down, flag as up
+				this.keys[i][2] = false;
+			}
 		}
 	};
 };
@@ -132,7 +128,7 @@ function StarField() {
 function getWindow(width, height, colour) {
 	// contains a glass effect window with transparency and colour
 	if(colour === undefined) {
-		var colour = Terminal.GREY.getRBGA(0.5); }
+		var colour = S7.COLOURS.GREY.getRBGA(0.5); }
 	var radius = 10;
 	// build the image
 	var image = game.add.bitmapData(width, height);
@@ -162,6 +158,7 @@ function ToastMessage(sprite, time) {
 	this.alpha = 0;
 	this.fade = true;
 	this.sprite.alpha = this.alpha;
+	this.timer = null;
 	
 	this.update = function() {
 		if(this.fade ==  true) {
@@ -170,21 +167,35 @@ function ToastMessage(sprite, time) {
 				// faded in complete. start timer
 				this.alpha = 1;
 				this.fade = false;
-				window.setTimeout(this.startFadeOut.bind(this), this.time);
+				this.timer = setTimeout(this.startFadeOut.bind(this), this.time);
 			}
 			else if(this.alpha < 0) {
 				// faded out, can destroy this sprite
 				this.sprite.destroy()
-				return(true);
+				return(false);
 			}
 			this.sprite.alpha = this.alpha;
 		}
-		return(false);
+		return(true);
 	};
 	
 	this.startFadeOut = function() {
+		// end timer to be certain
 		this.fade = true;
 		this.alpha_delta *= -1;
+	};
+	
+	this.fadeOutEarly = function(height) {
+		// adjust height
+		this.sprite.y -= height;
+		// start the fade out now. stop the timer
+		if(this.timer != null) {
+			clearTimeout(this.timer); }
+		// ensure fade delta is negative
+		if(this.alpha_delta > 0) {
+			this.alpha_delta *= -1;
+			this.fade = true;
+		}
 	};
 };
 
@@ -202,22 +213,22 @@ function Terminal() {
 
 	this.calculateArea = function() {
 		// we need a border of 5%
-		this.width = WIDTH * 0.9;
-		this.height = HEIGHT * 0.9;
+		this.width = S7.WIDTH * 0.9;
+		this.height = S7.HEIGHT * 0.9;
 		if((this.width / this.height) > 1.6) {
 			// too wide, adjust width
 			this.width = this.height * 1.6; }
 		else {
 			// too tall
 			this.height = this.width * 1.6; }
-		this.xoffset = Math.floor((WIDTH - this.width) / 2);
-		this.yoffset = Math.floor((HEIGHT - this.height) / 2);
+		this.xoffset = Math.floor((S7.WIDTH - this.width) / 2);
+		this.yoffset = Math.floor((S7.HEIGHT - this.height) / 2);
 	};
 	
 	this.calculateFontSize = function() {
 		// width and height are set by this point. CHAR_WIDTH characters across
-		this.px_width = Math.floor(this.width / CHAR_WIDTH);
-		this.px_height = Math.floor(this.px_width * (FONT_HEIGHT / FONT_WIDTH));
+		this.px_width = Math.floor(this.width / S7.TERMINAL.CHAR_WIDTH);
+		this.px_height = Math.floor(this.px_width * (S7.TERMINAL.FONT_HEIGHT / S7.TERMINAL.FONT_WIDTH));
 	};
 
 	this.renderStringImage = function(string) {
@@ -227,13 +238,13 @@ function Terminal() {
 		for(var i=0; i<string.length; i++) {
 			chars.push(string.charCodeAt(i) - 32); }
 		// make an empty image and blit font to it
-		var image = game.add.bitmapData(FONT_WIDTH * chars.length, FONT_HEIGHT);
+		var image = game.add.bitmapData(S7.TERMINAL.FONT_WIDTH * chars.length, S7.TERMINAL.FONT_HEIGHT);
 		// blit the letters
 		var xpos = 0;
 		for(var i in chars) {
-			var source_rect = new Phaser.Rectangle(chars[i] * FONT_WIDTH, 0, FONT_WIDTH, FONT_HEIGHT);			
+			var source_rect = new Phaser.Rectangle(chars[i] * S7.TERMINAL.FONT_WIDTH, 0, S7.TERMINAL.FONT_WIDTH, S7.TERMINAL.FONT_HEIGHT);			
 			image.copyRect('monofur', source_rect, xpos, 0);
-			xpos += FONT_WIDTH;
+			xpos += S7.TERMINAL.FONT_WIDTH;
 		}
 		image.update();
 		image.processPixelRGB(this.processPixel, this, 0, 0, image.width, image.height)
@@ -291,24 +302,28 @@ function Terminal() {
 	this.addToast = function(string, time) {
 		// add a toast message, simialar to android
 		// it will fade in, stay around for time seconds, and then clear
+		this.endCurrentToasts();
 		if(time === undefined) {
-			var time = 5000; }
+			var time = 3500; }
 		// build the sprite
 		// must be in the middle of the screen, at the bottom
-		var xpos = Math.floor((CHAR_WIDTH - string.length) / 2);
+		var xpos = Math.floor((S7.TERMINAL.CHAR_WIDTH - string.length) / 2);
 		var sprite = this.buildSprite(xpos, 17, string);
 		this.toast.push(new ToastMessage(sprite, time));
 	};
 	
+	this.endCurrentToasts = function() {
+		// all toasts except index 0 must be raised in height, and faded out
+		
+		console.log(this.toast);
+		
+		for(var i in this.toast) {
+			this.toast[i].fadeOutEarly(this.px_height); }
+	};
+	
 	this.update = function() {
 		// normally we do very little, but we have to check toast...
-		if(this.toast.length == 0) {
-			return; }
-		// handle the current toast only. this.toast is a queue
-		if(this.toast[0].update() == true) {
-			// toast has ended, delete the first one
-			this.toast.shift()
-		}
+		this.toast = this.toast.filter(function(x) { return(x.update()); });
 	};
 };
 

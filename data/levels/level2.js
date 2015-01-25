@@ -1,7 +1,7 @@
 "use strict";
 
 // A level, defined as a javascript literal object
-var LEVEL = {
+S7.LEVELS.push({
 	'name':'Level 2',
 	'area_colour':'#027689',
 	'physics':{'gravity':24,
@@ -17,5 +17,5 @@ var LEVEL = {
 			 {'coords':[[920,640], [1200,640], [1200,1440], [920,1440]]},
 			 {'coords':[[1200,640], [1280,520], [1280,1440], [1200,1440]]},
 			 {'coords':[[1280, 440], [2000,440], [2000,1440], [1280,1440]]}],
-};
+});
 
