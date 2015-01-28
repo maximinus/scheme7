@@ -52,21 +52,24 @@ function StartScreen() {
 
 	this.setupKeys = function() {
 		// false is current status of key_pressed
-		this.keys = S7.MENUS.MAIN_SCREEN['keys'].map(function(x) { return([x[0].charCodeAt(0), x[1], false]); });
+		this.keys = S7.MENUS.MAIN_SCREEN['keys'].map(function(x) { return([x[0].charCodeAt(0), x[1], x[2], false]); });
 	};
 
 	this.checkKeys = function() {
 		for(var i in this.keys) {
 			if(game.input.keyboard.isDown(this.keys[i][0])) {
 				// if still down, ignore
-				if(this.keys[i][2] == false) {
-					this.terminal.addToast(this.keys[i][1]);
-					this.keys[i][2] = true;
+				if(this.keys[i][3] == false) {
+				
+					console.log(this.keys[i]);
+				
+					S7.MENUS.runMenu(this.keys[i]);
+					this.keys[i][3] = true;
 				}
 			}
 			else {
 				// it is not down, flag as up
-				this.keys[i][2] = false;
+				this.keys[i][3] = false;
 			}
 		}
 	};
@@ -209,6 +212,8 @@ function Terminal() {
 		// precalculate sides
 		this.calculateArea()
 		this.calculateFontSize();
+		// we only ever have 1 terminal at a time. replace old terminal with this one
+		D7.terminal = this;
 	};
 
 	this.calculateArea = function() {
@@ -314,9 +319,6 @@ function Terminal() {
 	
 	this.endCurrentToasts = function() {
 		// all toasts except index 0 must be raised in height, and faded out
-		
-		console.log(this.toast);
-		
 		for(var i in this.toast) {
 			this.toast[i].fadeOutEarly(this.px_height); }
 	};
