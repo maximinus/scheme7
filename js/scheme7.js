@@ -208,13 +208,32 @@ function render() {
 	 game.debug.text('Xpos/Ypos:' + (s7.player.x|0) + ',' + (s7.player.y|0) + ' - ' + HEIGHT, 32, 32);
 };
 
+function loadFiles() {
+	loadFonts();
+	loadImages();
+};
+
+function loadFonts() {
+	game.load.image('monofur', 'data/fonts/monofur.png');
+};
+
+function loadImages() {
+	game.load.image('star1', 'data/gfx/stars/star1.png');
+	game.load.image('star2', 'data/gfx/stars/star2.png');
+	game.load.image('star3', 'data/gfx/stars/star3.png');
+	game.load.image('star4', 'data/gfx/stars/star4.png');
+	game.load.image('star5', 'data/gfx/stars/star5.png');
+	game.load.image('stargrey', 'data/gfx/stars/stargrey.png');
+};
+
 //var s7 = new Game();
-var start_screen = new StartScreen();
+var menu_screen = new MenuHandler();
 
 // game can be seen as the view
 if(typeof CODE_TESTING == 'undefined') {
 	//var game = new Phaser.Game(S7.WIDTH, S7.HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:preload, create:create, update:s7.update.bind(s7), render:render }); }
-	var game = new Phaser.Game(S7.WIDTH, S7.HEIGHT, Phaser.CANVAS, 'Scheme7', {preload:loadFiles, create:createInterface, update:start_screen.update.bind(start_screen) }); }
+	var p_args = {preload:loadFiles, create:menu_screen.setup.bind(menu_screen), update:menu_screen.update.bind(menu_screen) }
+	var game = new Phaser.Game(S7.WIDTH, S7.HEIGHT, Phaser.CANVAS, 'Scheme7', p_args); }
 else {
 	var game = null;
 }

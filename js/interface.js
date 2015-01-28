@@ -1,77 +1,119 @@
 "use strict";
 
-function loadFiles() {
-	loadFonts();
-	loadImages();
+function MenuKey(key_data) {
+	this.keycode = key_data[0].charCodeAt(0);
+	this.can_press = true;
+	if(key_data.length == 2) {
+		this.buildMenuKey(key_data); }
+	else {
+		this.buildFunctionKey(key_data); }
 };
 
-function loadFonts() {
-	game.load.image('monofur', 'data/fonts/monofur.png');
+MenuKey.prototype.buildFunctionKey = function(key_data) {
+	this.key_function = key_data[1];
+	this.f_data = key_data[2];
+	this.menu = '';
+};
+	
+MenuKey.prototype.buildMenuKey = function(key_data) {
+	this.key_function = null;
+	this.f_data = null;
+	this.menu = key_data[1];
 };
 
-function loadImages() {
-	game.load.image('star1', 'data/gfx/stars/star1.png');
-	game.load.image('star2', 'data/gfx/stars/star2.png');
-	game.load.image('star3', 'data/gfx/stars/star3.png');
-	game.load.image('star4', 'data/gfx/stars/star4.png');
-	game.load.image('star5', 'data/gfx/stars/star5.png');
-	game.load.image('stargrey', 'data/gfx/stars/stargrey.png');
+MenuKey.prototype.action = function() {
+	// perform whatever we have to do...
+	if(this.key_function != null) {
+		S7.MENUS.runMenu(this.key_function, this.f_data); }
+	else {
+		return(this.menu);
+	}
+	// no menu change
+	return('');
+};
+	
+MenuKey.prototype.checkKey = function() {
+	if(game.input.keyboard.isDown(this.keycode)) {
+		// if still down, ignore
+		if(this.can_press) {
+			// only ever check 1 thing
+			this.can_press = false;
+			return(this.action()); }
+	}
+	else {
+		this.can_press = true; }
+	return('');
 };
 
-function createInterface() {
-	start_screen.setup();
-};
-
-function StartScreen() {
-	// this is an object to handle the start screen, which is:
+function MenuHandler() {
+	// this is an object to handle switching menus
 	// some text that cn be chosen, some kind of background and the key handlers
 	this.terminal = new Terminal();
 	this.stars = new StarField();
+	this.menu = S7.MENUS['MAIN_SCREEN'];
+	this.read_keys = true;
 	
 	this.setup = function() {
 		this.terminal.setup();
 		this.stars.setup();
-		this.setupKeys();
-		this.addText();
+		this.initMenu();
 	};
 	
-	this.addText = function() {
-		var windows = S7.MENUS.MAIN_SCREEN['windows'];
-		var strings = S7.MENUS.MAIN_SCREEN['strings'];
+	this.initMenu = function() {
+		this.setupKeys();
+		this.populateTerminal();
+	};
+	
+	this.populateTerminal = function() {
+		var windows = this.menu['windows'];
+		var strings = this.menu['strings'];
 		for(var i in windows) {
 			this.terminal.addWindow.apply(this.terminal, windows[i]); }
 		for(var i in strings) {
 			this.terminal.print.apply(this.terminal, strings[i]); }
 	};
 	
+	this.menuChange = function(new_menu) {
+		this.read_keys = false;
+		this.menu = S7.MENUS[new_menu];
+		// clear terminal and wait
+		this.terminal.fadeOut(this);
+	};
+	
+	this.terminalFadeOutComplete = function() {	
+		// callback when menu has finished
+		this.initMenu();
+		this.read_keys = true;
+	};
+	
 	this.update = function() {
-		this.checkKeys();
+		if(this.read_keys) {
+			var new_menu = this.checkKeys();
+			if(new_menu != '') {
+				// new menu
+				this.menuChange(new_menu);
+			}
+		}
 		this.stars.update();
 		this.terminal.update();
 	};
 
 	this.setupKeys = function() {
 		// false is current status of key_pressed
-		this.keys = S7.MENUS.MAIN_SCREEN['keys'].map(function(x) { return([x[0].charCodeAt(0), x[1], x[2], false]); });
+		this.keys = [];
+		for(var i in this.menu['keys']) {
+			this.keys.push(new MenuKey(this.menu['keys'][i])); }
 	};
 
 	this.checkKeys = function() {
 		for(var i in this.keys) {
-			if(game.input.keyboard.isDown(this.keys[i][0])) {
-				// if still down, ignore
-				if(this.keys[i][3] == false) {
-				
-					console.log(this.keys[i]);
-				
-					S7.MENUS.runMenu(this.keys[i]);
-					this.keys[i][3] = true;
-				}
-			}
-			else {
-				// it is not down, flag as up
-				this.keys[i][3] = false;
+			var new_menu = this.keys[i].checkKey();
+			if(new_menu != '') {
+				// return now with new menu, ignoring other keys
+				return(new_menu);
 			}
 		}
+		return('');
 	};
 };
 
@@ -212,7 +254,8 @@ function Terminal() {
 		// precalculate sides
 		this.calculateArea()
 		this.calculateFontSize();
-		// we only ever have 1 terminal at a time. replace old terminal with this one
+		this.fade = null;
+		// we only ever have 1 terminal at a time
 		D7.terminal = this;
 	};
 
@@ -317,15 +360,47 @@ function Terminal() {
 		this.toast.push(new ToastMessage(sprite, time));
 	};
 	
-	this.endCurrentToasts = function() {
+	this.endCurrentToasts = function(height) {
 		// all toasts except index 0 must be raised in height, and faded out
+		if(height === undefined) {
+			var height = this.px_height; }
 		for(var i in this.toast) {
-			this.toast[i].fadeOutEarly(this.px_height); }
+			this.toast[i].fadeOutEarly(height); }
 	};
 	
 	this.update = function() {
 		// normally we do very little, but we have to check toast...
 		this.toast = this.toast.filter(function(x) { return(x.update()); });
+		// and maybe a fadeout
+		if(this.fade != null) {
+			this.fadeSprites();
+		}
+	};
+
+	this.fadeSprites = function() {
+		var non_zero = false;
+		// change all the sprites alpha until they are all zero
+		for(var i in this.strings) {
+			var a = this.strings[i].alpha;
+			a -= 0.1;
+			if(a <= 0) {
+				a = 0; }
+			else {
+				non_zero = true; }
+			this.strings[i].alpha = a;
+		}
+		if(non_zero == false) {
+			// we are all done
+			this.cls;
+			var func = this.fade;
+			this.fade = null;
+			func.terminalFadeOutComplete();;
+		}
+	};
+	
+	this.fadeOut = function(t_handler) {
+		this.endCurrentToasts(0);
+		this.fade = t_handler;
 	};
 };
 
