@@ -7,7 +7,7 @@ import sys
 
 # 0: top left, 1: top right, 2: bottom right. 3: bottom left
 
-# 64x64
+SIZES = [[0,0], [1,0], [1,1], [1,0]]
 
 TILES_1x1 = [[0,1,2,3], [0,2,3], [0,1,3], [0,1,2], [1,2,3]]
 
@@ -22,12 +22,23 @@ ALL_TILES = [[[1,1], TILES_1x1],
 			 [[2,1], TILES_2x1],
 			]
 
+def convertTileSizes(tiles):
+	new_tiles = []
+	for i in tiles:
+		points = []
+		for j in i:
+			# each j is one point
+			points.append([SIZES[j][0], SIZES[j][1]])
+		new_tiles.append(points)
+	return(new_tiles)
+
 # some helper functions
 def getTilesetMatch(width, height):
 	for i in ALL_TILES:
 		if((width == i[0][0]) and (height == i[0][1])):
 			# return the array of values
-			return(i[1])
+			# convert array to sizes and return
+			return(convertTileSizes(i[1]))
 	# no tie, kill with error
 	print 'Error: No matching tileset'
 	sys.exit()

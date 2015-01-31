@@ -17,7 +17,7 @@ def makeArray(tilesets):
 			parray[str(index + i['firstgid'])] = j
 			index += 1
 	# we should have a set of numbers 0->something, put in an array and return
-	print sorted(parray.iteritems())
+	return(	[x[1] for x in sorted(parray.iteritems())])
 
 def showError(error_text):
 	print 'Error: ' + error_text
@@ -33,31 +33,45 @@ def loadData(filename):
 
 def convertLevel(json_data):
 	data = grabData(json_data)
-	array = makeArray(data['tilesets'])
 	physics = getObjects(data)
 	exportLevel(physics)
 	
 def grabData(data):
-	'Just grab the data we need'
+	# Just grab the data we need"""
 	converted = {}
 	# one layer, and we just want to grab the grid
 	converted['grid'] = data['layers'][0]['data']
 	# now grab the data from the tileset offsets
-	width = data['tilewidth']
-	height = data['tileheight']
+	# tiles must be squares
+	size = data['tilewidth']
 	converted['width'] = data['width']
 	converted['height'] = data['height']
 	tilesets = []
 	for i in data['tilesets']:
-		tilesets.append({'width':i['tilewidth']//width, 'height':i['tileheight']//height, 'firstgid':i['firstgid']})
+		tilesets.append({'width':i['tilewidth']//size, 'height':i['tileheight']//size, 'firstgid':i['firstgid']})
 	converted['tilesets'] = tilesets
 	return(converted)
 
 def getObjects(level):
-	pass
+	array = makeArray(level['tilesets'])
+	# we have the indexed array and the real objects, let us now sort through them
+	objects = []
+	width = level['width']
+	for x in range(width):
+		for y in range(level['height']):
+			index = level['grid'][x + (y * width)]
+			if(index != 0):
+				# add our xpos and ypos to all points in the array
+				objects.append([[pos[0] + x, pos[1] + y] for pos in array[index]])
+	return(objects)
 
 def exportLevel(data):
-	print(data)
+	# we have an array of objects that contain the x/y cords of their points
+	# output that to the fike 'leveltest.json'
+	foo = open('leveltest.json', 'w')
+	foo.write('test_level = ')
+	with foo as outfile:
+		json.dump(data, outfile, indent=4)
 
 if __name__ == '__main__':
 	# make sure we have an input file
@@ -67,5 +81,5 @@ if __name__ == '__main__':
 		showError('No json file given')
 	dict_data = loadData(sys.argv[1])
 	new_dict = convertLevel(dict_data)
-
+	print 'Level converted to json at leveltest.json'
 
