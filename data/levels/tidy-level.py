@@ -1,8 +1,23 @@
 #!/usr/bin/python
 
 import sys,json
+from tiles import *
 
 # load a json file, throw away the data we don't use and convert to our format
+
+def makeArray(tilesets):
+	"""Return an array that matches the index values found the level file"""
+	# zero should be ignored as a null file
+	parray = {'0':None}
+	# now go through the tilesets
+	for i in tilesets:
+		index = 0
+		matched_set = getTilesetMatch(i['width'], i['height'])
+		for j in matched_set:
+			parray[str(index + i['firstgid'])] = j
+			index += 1
+	# we should have a set of numbers 0->something, put in an array and return
+	print sorted(parray.iteritems())
 
 def showError(error_text):
 	print 'Error: ' + error_text
@@ -16,14 +31,20 @@ def loadData(filename):
 	level = json.loads(open(filename).read())
 	return(level)
 
-def convertLevel(data):
+def convertLevel(json_data):
+	data = grabData(json_data)
+	array = makeArray(data['tilesets'])
+	physics = getObjects(data)
+	exportLevel(physics)
+	
+def grabData(data):
 	'Just grab the data we need'
 	converted = {}
 	# one layer, and we just want to grab the grid
 	converted['grid'] = data['layers'][0]['data']
 	# now grab the data from the tileset offsets
-	width = data['width']
-	height = data['height']
+	width = data['tilewidth']
+	height = data['tileheight']
 	converted['width'] = data['width']
 	converted['height'] = data['height']
 	tilesets = []
@@ -32,7 +53,10 @@ def convertLevel(data):
 	converted['tilesets'] = tilesets
 	return(converted)
 
-def saveLevel(data):
+def getObjects(level):
+	pass
+
+def exportLevel(data):
 	print(data)
 
 if __name__ == '__main__':
@@ -43,5 +67,5 @@ if __name__ == '__main__':
 		showError('No json file given')
 	dict_data = loadData(sys.argv[1])
 	new_dict = convertLevel(dict_data)
-	saveLevel(new_dict)
+
 
