@@ -57,7 +57,7 @@ def grabData(data):
 	return(converted)
 
 def getObjects(level):
-	array = makeArray(level['tilesets'])	
+	array = makeArray(level['tilesets'])
 	# we have the indexed array and the real objects, let us now sort through them
 	objects = []
 	width = level['width']
@@ -65,8 +65,13 @@ def getObjects(level):
 		for y in range(level['height']):
 			index = level['grid'][x + (y * width)]
 			if(index != 0):
-				# add our xpos and ypos to all points in the array
-				objects.append([[pos[0] + x, pos[1] + y] for pos in array[index]])
+				# TODO: Fix this magix number
+				if index >= 10:
+					# tall objects have the wrong y position
+					objects.append([[pos[0] + x, pos[1] + y -1] for pos in array[index]])
+				else:
+					# add our xpos and ypos to all points in the array
+					objects.append([[pos[0] + x, pos[1] + y] for pos in array[index]])
 	return(objects)
 
 def exportLevel(data):
