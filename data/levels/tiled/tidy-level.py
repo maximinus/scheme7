@@ -17,7 +17,11 @@ def makeArray(tilesets):
 			parray[str(index + i['firstgid'])] = j
 			index += 1
 	# we should have a set of numbers 0->something, put in an array and return
-	return(	[x[1] for x in sorted(parray.iteritems())])
+	# we start by making the array and then running with it
+	sorted_list = parray.keys()
+	for i in parray.keys():
+		sorted_list[int(i)] = parray[i]
+	return(sorted_list)
 
 def showError(error_text):
 	print 'Error: ' + error_text
@@ -53,7 +57,7 @@ def grabData(data):
 	return(converted)
 
 def getObjects(level):
-	array = makeArray(level['tilesets'])
+	array = makeArray(level['tilesets'])	
 	# we have the indexed array and the real objects, let us now sort through them
 	objects = []
 	width = level['width']

@@ -7,7 +7,7 @@ import sys
 
 # 0: top left, 1: top right, 2: bottom right. 3: bottom left
 
-SIZES = [[0,0], [1,0], [1,1], [1,0]]
+SIZES = [[0,0], [1,0], [1,1], [0,1]]
 
 TILES_1x1 = [[0,1,2,3], [0,2,3], [0,1,3], [0,1,2], [1,2,3]]
 

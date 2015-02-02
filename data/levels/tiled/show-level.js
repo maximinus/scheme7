@@ -20,7 +20,6 @@ function MapDraw() {
 	};
 	
 	this.drawShape = function(shape) {
-		var old_shape = shape;
 		// offsets already included in file. Just multiply by size and we are done.
 		// we draw a shape in green and a line in black. Shape first
 		this.ctx.strokeStyle = '#00ff00';
@@ -36,7 +35,7 @@ function MapDraw() {
 		this.ctx.fill();
 		this.ctx.closePath();
 
-		shape = old_shape;		
+		shape.unshift(end_point);
 		this.ctx.strokeStyle = '#000000';
 		this.ctx.lineWidth = 2;
 		this.ctx.beginPath();
