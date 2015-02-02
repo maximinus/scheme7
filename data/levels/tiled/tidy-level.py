@@ -68,7 +68,7 @@ def getObjects(level):
 def exportLevel(data):
 	# we have an array of objects that contain the x/y cords of their points
 	# output that to the fike 'leveltest.json'
-	foo = open('leveltest.json', 'w')
+	foo = open('leveltest.js', 'w')
 	foo.write('test_level = ')
 	with foo as outfile:
 		json.dump(data, outfile, indent=4)
@@ -81,5 +81,5 @@ if __name__ == '__main__':
 		showError('No json file given')
 	dict_data = loadData(sys.argv[1])
 	new_dict = convertLevel(dict_data)
-	print 'Level converted to json at leveltest.json'
+	print 'Level converted to json at leveltest.js'
 
