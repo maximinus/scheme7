@@ -1,12 +1,8 @@
 "use strict";
 
-function drawShape() {
-	// given a shape, draw it
-};
-
 function MapDraw() {
 	this.clearScreen = function() {
-		this.fillStyle = '#ffffff';
+		this.ctx.fillStyle = '#ffffff';
 		this.ctx.fillRect(0, 0, this.width, this.height);
 	};
 	
@@ -14,12 +10,12 @@ function MapDraw() {
 		// use the variable test-level
 		console.log(test_level.length + ' shapes to render');
 		for(var i in test_level) {
-			console.log(test_level[i]);
 			this.drawShape(test_level[i]);
 		}
 	};
 	
 	this.drawShape = function(shape) {
+		console.log(shape)
 		// offsets already included in file. Just multiply by size and we are done.
 		// we draw a shape in green and a line in black. Shape first
 		this.ctx.strokeStyle = '#00ff00';
@@ -29,6 +25,9 @@ function MapDraw() {
 		this.ctx.moveTo((shape[0][0] * this.size), (shape[0][1] * this.size));
 		var end_point = shape.shift()
 		for(var i in shape) {
+		
+			console.log(shape[i][0] * this.size, shape[i][1] * this.size);
+		
 			this.ctx.lineTo((shape[i][0] * this.size), (shape[i][1] * this.size)); }
 		this.ctx.lineTo(end_point[0] * this.size, end_point[1] * this.size);
 		this.ctx.stroke();
@@ -50,8 +49,10 @@ function MapDraw() {
 
 	this.canvas = document.getElementById('map-canvas');
 	this.ctx = this.canvas.getContext('2d');
+	this.width = 768;
+	this.height = 512;
 	this.clearScreen();
-	this.size = 80;
+	this.size = 32;
 };
 
 function drawMap() {
@@ -60,4 +61,5 @@ function drawMap() {
 };
 
 window.addEventListener('load', drawMap, false);
+
 
