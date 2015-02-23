@@ -29,7 +29,7 @@ function Grid(width, height) {
 			}
 		}
 		// copy the canvas and store elsewhere
-		back_ctx.drawImage(this.canvas, 0, 0);
+		this.back_ctx.drawImage(this.canvas, 0, 0);
 	};
 	
 	this.drawLine = function(start, end) {
@@ -40,23 +40,60 @@ function Grid(width, height) {
 		this.ctx.closePath();
 	};
 	
+	this.drawMousePoint = function(p) {
+		if(this.points.length == 0) {
+			return; }			
+		var smallest = 100000;
+		for(var i in this.points) {
+			var d = Math.pow(Math.abs(this.points[i][0] - p[0]), 2) + Math.pow(Math.abs(this.points[i][1] - p[1]), 2);
+			if(d < smallest) {
+				smallest = d;
+				var point = this.points[i]; }
+		}
+		this.drawGridPoint(point);
+	};
+	
+	this.clearGridPoint = function() {
+		if(this.highlight_point == null) {
+			return; }
+		// redraw the grid surrounding the point by 13 pixels
+		var x = this.highlight_point[0] - 13;
+		var y = this.highlight_point[1] - 13;
+		// copy over from back image
+		this.ctx.drawImage(this.back, x, y, 26, 26, x, y, 26, 26);
+	};
+	
+	this.drawGridPoint = function(point) {
+		this.clearGridPoint();
+		// draw the circle at the given point
+		this.ctx.beginPath();
+		this.ctx.arc(point[0], point[1], 12, 0, 2 * Math.PI, false);
+		this.ctx.fillStyle = 'green';
+		this.ctx.fill();
+		this.ctx.lineWidth = 2;
+		this.ctx.strokeStyle = '#003300';
+		this.ctx.stroke();
+		this.highlight_point = point;
+	};
+	
 	this.updateMouse = function(e) {
 		// convert to real co-ords
 		var rect = this.canvas.getBoundingClientRect();
-		console.log([e.clientX - rect.left, e.clientY - rect.top]);
+		var point = this.drawMousePoint([e.clientX - rect.left, e.clientY - rect.top])
 	};
 	
 	this.canvas = document.getElementById('grid-canvas');
-	this.canvas.style.cursor = 'none'
+	//this.canvas.style.cursor = 'none'
 	this.ctx = this.canvas.getContext('2d');
 	this.canvas.addEventListener('mousemove', this.updateMouse.bind(this));
 	this.width = width;
 	this.height = height;
-	var back = document.createElement('canvas');
-	var back_ctx = back.getContext('2d');
-	back.width = this.width;
-	back.height = this.height;
+	this.back = document.createElement('canvas');
+	this.back_ctx = this.back.getContext('2d');
+	this.back.width = this.width;
+	this.back.height = this.height;
 	this.points = [];
+	this.highlight_point = null;
 	// vars for grid
 	this.zoom = 1;
 };
