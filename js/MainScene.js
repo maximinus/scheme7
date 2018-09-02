@@ -1,6 +1,8 @@
 var SPRITES = {'rock': 'rock.png',
                'player': 'test.png',
-               'background': 'background.png'};
+               'background': 'background.png',
+               'spark': 'spark.png',
+               'blue': 'blue.png'};
 
 class MainScene extends Phaser.Scene {
     constructor() {
@@ -43,17 +45,16 @@ class MainScene extends Phaser.Scene {
         // make the camera follow the player
         this.cameras.main.startFollow(this.player, true, 1, 1, 0, 0);
 
+        // TODO: Bug in 3.11 means you must NOT add the blend mode,
+        // otherwise the emitter will not show up
+        this.spark_emitter = this.add.particles('spark');
+
         // handle collisions
         this.matter.world.on("collisionstart", event => {
             // loop through all paired events
             event.pairs.forEach(pair => {
                 this.checkCollision(pair);
             });
-        });
-
-        // if the mouse is clicked, add some particles there
-        this.input.on('pointerdown', pointer => {
-            console.log('Clicked!');
         });
     };
 
@@ -94,8 +95,10 @@ class MainScene extends Phaser.Scene {
     };
 
     checkCollision(collide_data) {
-        var a = pair.bodyA;
-        var b = pair.bodyB;
+        this.addCollisionSpark();
+
+        var a = collide_data.bodyA;
+        var b = collide_data.bodyB;
         // did the player collide?
         if(a.gameObject === this.player) {
             return this.handlePlayerCollision(b, collide_data.collision);
@@ -112,4 +115,17 @@ class MainScene extends Phaser.Scene {
         // we need 2 things: the force of the collision, and the location
         console.log(collision);
     }
+
+    addCollisionSpark() {
+        var xpos = this.player.x;
+        var ypos = this.player.y;
+        var emitter = this.spark_emitter.createEmitter({
+            x: xpos,
+            y: ypos,
+            speed: {min: 50, max: 100},
+            gravityY: 200,
+            lifespan: 1500
+        });
+        emitter.explode(30, xpos, ypos);
+    };
 };

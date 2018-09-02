@@ -8,10 +8,10 @@ var config = {
             enableSleeping: false,
             debug: true,
             gravity: {x: 0,
-                      y: 0.3}
+                      y: 0.4}
         }
     },
-    scene: [IntroScene, MainScene]
+    scene: [MainScene, IntroScene]
 };
 
 var game = new Phaser.Game(config);
