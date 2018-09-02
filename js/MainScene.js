@@ -62,8 +62,8 @@ class MainScene extends Phaser.Scene {
         // check all input
         if(this.cursors.up.isDown) {
             // do the thrust based on the angle that we get
-            var x = Math.sin(this.player.rotation) * 0.06;
-            var y = Math.cos(this.player.rotation) * -0.06;
+            var x = Math.sin(this.player.rotation) * 0.08;
+            var y = Math.cos(this.player.rotation) * -0.08;
             this.player.applyForce(new Phaser.Math.Vector2(x, y));
         }
 
@@ -95,8 +95,6 @@ class MainScene extends Phaser.Scene {
     };
 
     checkCollision(collide_data) {
-        this.addCollisionSpark();
-
         var a = collide_data.bodyA;
         var b = collide_data.bodyB;
         // did the player collide?
@@ -113,12 +111,12 @@ class MainScene extends Phaser.Scene {
         // collider - what we smashed into
         // collision - the data from the collision
         // we need 2 things: the force of the collision, and the location
-        console.log(collision);
+        for(var i of collision.supports) {
+            this.addCollisionSpark(i.x, i.y);
+        }
     }
 
-    addCollisionSpark() {
-        var xpos = this.player.x;
-        var ypos = this.player.y;
+    addCollisionSpark(xpos, ypos) {
         var emitter = this.spark_emitter.createEmitter({
             x: xpos,
             y: ypos,
