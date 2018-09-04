@@ -1,0 +1,15 @@
+
+UI Elements:
+
+    Fuel
+    Battery
+    Engine Heat
+    Structural Integrity
+    Missiles
+    Warnings: Wind / Objects / EMD interference / Gravity
+    Engine Mode Selection
+    Height
+
+Elements should have some amount of flicker / wobble
+Mainly monochrome
+Mainly vector based
