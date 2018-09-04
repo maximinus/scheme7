@@ -78,7 +78,11 @@ class MainScene extends Phaser.Scene {
     };
 
     addPlayer(xpos) {
-        var player = this.matter.add.sprite(xpos, 0, 'player')
+        // make the points first
+        // string is [x y x y x y] etc
+        var player_shape = this.matter.world.fromPath('2 0 4 4 2 3 0 4');
+        var player = this.matter.add.image(xpos, 0, 'player', null, 
+                                            {shape: {type: 'fromVerts', verts: player_shape}});
         player.setRectangle(32, 64, {});
         player.setFriction(0.005);
         player.setBounce(1.0);
