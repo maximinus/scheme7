@@ -1,27 +1,16 @@
 Programming:
-
-Chris Handy
-
+    Chris Handy (maximinus@gmail.com)
 
 Graphics:
-
-Chris Handy
-
-FAR Colony - Stars: CC-BY-SA 3.0, by farcodev
-	- http://opengameart.org/content/far-colony-stars-pictures
-
+    Chris Handy
 
 Music:
-
-Dream 2: Public Domain, by TokyoGeisha
-	- http://opengameart.org/content/dream-2-ambience
-
-Galactic Temple: Public Domain, by yd
-	- http://opengameart.org/content/galactic-temple
-
-Dark Intro: Public Domain, by Nikke
-	- http://opengameart.org/content/dark-intro
-
-Space Atmosphere: CC-BY 3.0, by Alexandr Zhelanov, https://soundcloud.com/alexandr-zhelanov
-	- http://opengameart.org/content/space-atmospere
+    Dream 2: Public Domain, by TokyoGeisha
+        http://opengameart.org/content/dream-2-ambience
+    Galactic Temple: Public Domain, by yd
+        http://opengameart.org/content/galactic-temple
+    Dark Intro: Public Domain, by Nikke
+        http://opengameart.org/content/dark-intro
+    Space Atmosphere: CC-BY 3.0, by Alexandr Zhelanov, https://soundcloud.com/alexandr-zhelanov
+        http://opengameart.org/content/space-atmospere
 
