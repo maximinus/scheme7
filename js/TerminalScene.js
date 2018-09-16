@@ -27,8 +27,11 @@ var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%
 // prevent key bubbling
 const BACKSPACE = 8;
 const RETURN =13;
-const STOP_BUBBLING = [BACKSPACE. RETURN];
-
+const STOP_BUBBLING = [BACKSPACE, RETURN];
+const TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
+const FONT = {fontFamily: 'scheme7-terminal',
+              fontSize: '32px',
+              color: '#C85746'};
 
 function can_render(char) {
     if(char.length > 1) {
@@ -39,9 +42,10 @@ function can_render(char) {
 };
 
 class TerminalCharacter {
-    constructor(character, text_image) {
+    constructor(character, text_image, can_delete=true) {
         this.character = character;
         this.image = text_image;
+        this.can_delete = true;
     };
 
     destroy() {
@@ -51,15 +55,13 @@ class TerminalCharacter {
 
 
 class Cursor {
-    constructor(width, height, font, scene) {
-        this.position = new Phaser.Geom.Rectangle(16, 16, width, height);
-        this.font = font;
+    constructor(scene) {
         this.timer = null;
         this.scene = scene;
     };
 
-    add(text_function) {
-        this.cursor = text_function(this.position.x, this.position.y, '█', this.font);
+    add(text_function, position) {
+        this.cursor = text_function(position.x, position.y, '█', FONT);
         this.startFlash();
     };
 
@@ -68,7 +70,6 @@ class Cursor {
     };
 
     startFlash() {
-        console.log(this.scene.time.addEvent);
         this.timer = this.scene.time.addEvent({delay: 800, callback: this.flash,
                                                callbackScope: this, loop: true});
     };
@@ -80,12 +81,12 @@ class Cursor {
         };
     };
 
-    update(deltax, deltay) {
+    update(position) {
         this.stopFlash();
         this.cursor.visible = true;
         // move to new place
-        this.cursor.x += deltax;
-        this.cursor.y += deltay;
+        this.cursor.x = position.x;
+        this.cursor.y = position.y;
         this.startFlash();
     };
 
@@ -95,17 +96,59 @@ class Cursor {
 };
 
 
+class TextHolder {
+    constructor(line_length, prompt, fadd) {
+        this.line_length = line_length;
+        this.line_position = 0;
+        this.text = [];
+        this.ypos = 0;
+        this.prompt = prompt;
+        this.addText = fadd;
+        this.addPrompt();
+    };
+
+    getCursorPos() {
+        // where should the cursor be?
+        var x = this.text.length % this.line_length;
+        var y = Math.trunc(this.text.length / this.line_length);
+        return new Phaser.Geom.Point((x * TEXT_SIZE.width) + TEXT_SIZE.x,
+                                     (y * TEXT_SIZE.height) + this.ypos + TEXT_SIZE.y);
+    };
+
+    add(new_char, fadd, can_delete=true) {
+        var pos = this.getCursorPos();
+        var new_text = this.addText(pos.x, pos.y, new_char, FONT);
+        this.text.push(new TerminalCharacter(new_char, new_text, can_delete));
+    };
+
+    delete() {
+        // delete if possible
+        if(!this.text.slice(-1).can_delete) {
+            return;
+        }
+        if(this.text.length > 0) {
+            this.text.pop().destroy();
+        }
+    };
+
+    newline() {
+        // cursor moves to next line and input is removed
+        this.text = [];
+        this.ypos += TEXT_SIZE.height;
+    };
+
+    addPrompt() {
+        // add a prompt and move the cursor over
+        for(var c of this.prompt) {
+            this.add(c, false);
+        }
+    };
+};
+
 class TerminalScene extends Phaser.Scene {
     constructor() {
         super({key: 'TerminalScene'});
         this.current_line = [];
-        this.font = {fontFamily: 'scheme7-terminal',
-                     fontSize: '32px',
-                     color: '#C85746'};
-        this.char_width = 20;
-        this.char_height = 35;
-        this.xpos = 16;
-        this.ypos = 16;
     };
 
     preload() {
@@ -113,8 +156,9 @@ class TerminalScene extends Phaser.Scene {
     };
 
     create() {
-        this.cursor = new Cursor(this.char_width, this.char_height, this.font, this);
-        this.cursor.add(this.add.text.bind(this.add));
+        this.text = new TextHolder(38, 'S7> ', this.add.text.bind(this.add));
+        this.cursor = new Cursor(this);
+        this.cursor.add(this.add.text.bind(this.add), this.text.getCursorPos());
         // we need to tell Phaser what keys to not bubble
         for(var keycode of STOP_BUBBLING) {
             this.input.keyboard.addKey(keycode);
@@ -130,28 +174,21 @@ class TerminalScene extends Phaser.Scene {
         console.log(event);
         // we start by looking for special keys
         if(event.keyCode === BACKSPACE) {
-            this.cursor.update(-this.char.width, 0);
-            // delete the last character if we have one
-            if(this.current_line.length > 0) {
-                this.current_line.pop().destroy();
-                this.xpos -= this.char_width;
-            }
+            this.text.delete();
+            this.cursor.update(this.text.getCursorPos());
             return;
+        }
+
+        if(event.keyCode === RETURN) {
+            this.text.newline();
+            this.cursor.update(this.text.getCursorPos());
         }
 
         // if we can't render, don't
         if(!can_render(event.key)) {
             return;
         }
-        this.cursor.update(this.char_width, 0);
-        var new_text = this.printCharacter(event.key);
-        this.current_line.push(new TerminalCharacter(event.key, new_text));
-    };
-
-    printCharacter(character) {
-        // print the character, move the cursor
-        var new_text = this.add.text(this.xpos, this.ypos, character, this.font);
-        this.xpos += this.char_width;
-        return new_text;
+        this.text.add(event.key);
+        this.cursor.update(this.text.getCursorPos());
     };
 };
