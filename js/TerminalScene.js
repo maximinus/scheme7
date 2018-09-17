@@ -45,7 +45,7 @@ class TerminalCharacter {
     constructor(character, text_image, can_delete=true) {
         this.character = character;
         this.image = text_image;
-        this.can_delete = true;
+        this.can_delete = can_delete;
     };
 
     destroy() {
@@ -60,8 +60,8 @@ class Cursor {
         this.scene = scene;
     };
 
-    add(text_function, position) {
-        this.cursor = text_function(position.x, position.y, '█', FONT);
+    add(position) {
+        this.cursor = this.scene.add.text(position.x, position.y, '█', FONT);
         this.startFlash();
     };
 
@@ -97,13 +97,17 @@ class Cursor {
 
 
 class TextHolder {
-    constructor(line_length, prompt, fadd) {
+    // TODO: Add left / right / up  / down cursor
+    //       Allow terminal to scroll up
+    //       Accept size argument for the terminal
+
+    constructor(scene, line_length, prompt) {
         this.line_length = line_length;
         this.line_position = 0;
         this.text = [];
         this.ypos = 0;
         this.prompt = prompt;
-        this.addText = fadd;
+        this.scene = scene;
         this.addPrompt();
     };
 
@@ -115,15 +119,24 @@ class TextHolder {
                                      (y * TEXT_SIZE.height) + this.ypos + TEXT_SIZE.y);
     };
 
-    add(new_char, fadd, can_delete=true) {
+    add(new_char, can_delete=true, color=null) {
         var pos = this.getCursorPos();
-        var new_text = this.addText(pos.x, pos.y, new_char, FONT);
+        // reset color?
+        if(color != null) {
+            var old_color = FONT.color;
+            FONT.color = color;
+            var new_text = this.scene.add.text(pos.x, pos.y, new_char, FONT);
+            FONT.color = old_color;
+        }
+        else {
+            var new_text = this.scene.add.text(pos.x, pos.y, new_char, FONT);
+        }
         this.text.push(new TerminalCharacter(new_char, new_text, can_delete));
     };
 
     delete() {
         // delete if possible
-        if(!this.text.slice(-1).can_delete) {
+        if(this.text[this.text.length - 1].can_delete == false) {
             return;
         }
         if(this.text.length > 0) {
@@ -133,14 +146,22 @@ class TextHolder {
 
     newline() {
         // cursor moves to next line and input is removed
-        this.text = [];
-        this.ypos += TEXT_SIZE.height;
+        // do we add more chars because of overflow?
+        var total_lines = Math.trunc(this.text.length / this.line_length) + 1
+        this.ypos += total_lines * TEXT_SIZE.height;
+        this.resetText();
+        this.addPrompt();
     };
+
+    resetText() {
+        // clean up the existing text
+        this.text = [];
+    }
 
     addPrompt() {
         // add a prompt and move the cursor over
         for(var c of this.prompt) {
-            this.add(c, false);
+            this.add(c, false, '#BBBBBB');
         }
     };
 };
@@ -156,9 +177,9 @@ class TerminalScene extends Phaser.Scene {
     };
 
     create() {
-        this.text = new TextHolder(38, 'S7> ', this.add.text.bind(this.add));
+        this.text = new TextHolder(this, 38, 'S7> ');
         this.cursor = new Cursor(this);
-        this.cursor.add(this.add.text.bind(this.add), this.text.getCursorPos());
+        this.cursor.add(this.text.getCursorPos());
         // we need to tell Phaser what keys to not bubble
         for(var keycode of STOP_BUBBLING) {
             this.input.keyboard.addKey(keycode);
@@ -171,7 +192,7 @@ class TerminalScene extends Phaser.Scene {
     };
 
     keydown(event) {
-        console.log(event);
+        //console.log(event);
         // we start by looking for special keys
         if(event.keyCode === BACKSPACE) {
             this.text.delete();
