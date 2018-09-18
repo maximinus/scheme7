@@ -29,6 +29,10 @@ const TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
 const FONT = {fontFamily: 'scheme7-terminal',
               fontSize: '32px',
               color: '#C85746'};
+const CURSOR_FONT = {fontFamily: 'scheme7-terminal',
+                     fontSize: '32px',
+                     color: '#000000',
+                     backgroundColor: '#C85746'};
 
 function can_render(char) {
     if(char.length > 1) {
@@ -59,7 +63,7 @@ class Cursor {
     constructor(scene, position) {
         this.timer = null;
         this.scene = scene;
-        this.cursor = this.scene.add.text(position.x, position.y, '█', FONT);
+        this.cursor = this.scene.add.text(position.x, position.y, ' ', CURSOR_FONT);
         this.startFlash();
     };
 
@@ -79,17 +83,20 @@ class Cursor {
         };
     };
 
-    update(position) {
-        this.stopFlash();
+    update(position, character) {
+        this.updateImage(position, character);
         this.cursor.visible = true;
-        // move to new place
-        this.cursor.x = position.x;
-        this.cursor.y = position.y;
         this.startFlash();
     };
 
+    updateImage(position, character) {
+        this.stopFlash();
+        this.cursor.destroy();
+        this.cursor = this.scene.add.text(position.x, position.y, character, CURSOR_FONT);
+    };
+
     destroy() {
-        this.image.destroy()
+        this.cursor.destroy()
     };
 };
 
@@ -115,6 +122,11 @@ class TextLine {
     };
 
     remove(index=-1) {
+        // the cursor is to the RIGHT of what we want to delete
+        if(index == 0) {
+            return false;
+        }
+        index -= 1;
         var size = this.text.length;
         if((index < 0) || (index > this.text.length)) {
             // remove from end
@@ -159,6 +171,14 @@ class TextLine {
         var old_chars = this.text.map(x => x.image);
         this.text = [];
         return old_chars;
+    };
+
+    getChar(index) {
+        // get character at index, or space if out of range
+        if((index < 0) || (index >= this.text.length)) {
+            return ' ';
+        }
+        return this.text[index].character;
     };
 
     size() {
@@ -220,14 +240,14 @@ class TextHolder {
         var new_text = this.buildChar(new_char, pos, color);
         this.text.add(new TerminalCharacter(new_char, new_text, can_edit), this.index);
         this.index += 1;
-        this.cursor.update(this.text.getPosition(this.index));
+        this.updateCursor();
     };
 
     delete() {
-        if(this.text.remove() == true) {
+        if(this.text.remove(this.index) == true) {
             this.index -= 1;
         }
-        this.cursor.update(this.text.getPosition(this.index));
+        this.updateCursor();
     };
 
     newline() {
@@ -237,8 +257,14 @@ class TextHolder {
         var offset = TEXT_SIZE.height - TEXT_SIZE.y;
         this.text.yoffset = this.displayed[this.displayed.length - 1].y + offset;
         this.addPrompt();
-        this.cursor.update(this.text.getPosition(this.index));
+        this.updateCursor();
     };
+
+    updateCursor() {
+        // render the cursor properly
+        var over_char = this.text.getChar(this.index);
+        this.cursor.update(this.text.getPosition(this.index), over_char);
+    }
 
     addPrompt() {
         // reset the cursor and add a prompt
@@ -253,7 +279,7 @@ class TextHolder {
         if((this.index > 0) && (this.text.editable(this.index - 1))) {
             this.index -= 1;
         }
-        this.cursor.update(this.text.getPosition(this.index));
+        this.updateCursor();
     };
 
     cursorRight() {
@@ -261,7 +287,7 @@ class TextHolder {
         if(this.index < this.text.size()) {
             this.index += 1;
         }
-        this.cursor.update(this.text.getPosition(this.index));
+        this.updateCursor();
     };
 };
 
