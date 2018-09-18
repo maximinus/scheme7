@@ -115,6 +115,7 @@ class TextLine {
     };
 
     remove(index=-1) {
+        var size = this.text.length;
         if((index < 0) || (index > this.text.length)) {
             // remove from end
             if(this.text[this.text.length - 1].can_edit == true) {
@@ -129,9 +130,14 @@ class TextLine {
             }
         }
         this.arrange();
+        // return true if something deleted
+        return (size != this.text.length);
     };
 
-    getPosition(index) {
+    getPosition(index=-1) {
+        if(index == -1) {
+            index = this.text.length;
+        }
         // given the index position, return where this should be
         var xpos = index % this.line_length;
         var ypos = Math.trunc(index / this.line_length);
@@ -148,16 +154,25 @@ class TextLine {
         }
     };
 
-    getEndPos() {
-        // normally where the cursor should be
-        return this.getPosition(this.text.length);
-    }
-
     clear() {
         // return the current images and clear the current text
         var old_chars = this.text.map(x => x.image);
         this.text = [];
         return old_chars;
+    };
+
+    size() {
+        return this.text.length;
+    }
+
+    editable(index=-1) {
+        if(this.text.length == 0) {
+            return false;
+        }
+        if(index == -1) {
+            index = this.text.length - 1;
+        }
+        return this.text[index].can_edit;
     };
 
     toString() {
@@ -181,7 +196,8 @@ class TextHolder {
         this.prompt = prompt;
         this.scene = scene;
         this.displayed = [];
-        this.cursor = new Cursor(scene, this.text.getEndPos());
+        this.cursor = new Cursor(scene, this.text.getPosition());
+        this.index = 0;
         this.addPrompt();
     };
 
@@ -200,15 +216,18 @@ class TextHolder {
     };
 
     add(new_char, can_edit=true, color=null) {
-        var pos = this.text.getEndPos();
+        var pos = this.text.getPosition();
         var new_text = this.buildChar(new_char, pos, color);
-        this.text.add(new TerminalCharacter(new_char, new_text, can_edit));
-        this.cursor.update(this.text.getEndPos());
+        this.text.add(new TerminalCharacter(new_char, new_text, can_edit), this.index);
+        this.index += 1;
+        this.cursor.update(this.text.getPosition(this.index));
     };
 
     delete() {
-        this.text.remove();
-        this.cursor.update(this.text.getEndPos());
+        if(this.text.remove() == true) {
+            this.index -= 1;
+        }
+        this.cursor.update(this.text.getPosition(this.index));
     };
 
     newline() {
@@ -218,25 +237,32 @@ class TextHolder {
         var offset = TEXT_SIZE.height - TEXT_SIZE.y;
         this.text.yoffset = this.displayed[this.displayed.length - 1].y + offset;
         this.addPrompt();
-        this.cursor.update(this.text.getEndPos());
+        this.cursor.update(this.text.getPosition(this.index));
     };
 
     addPrompt() {
-        // add a prompt
+        // reset the cursor and add a prompt
+        this.index = 0;
         for(var c of this.prompt) {
             this.add(c, false, '#BBBBBB');
         }
     };
 
     cursorLeft() {
-        // if there is text to the left
-        console.log('Left');
-    }
+        // can move left if index > 0 and index - 1 can be edited
+        if((this.index > 0) && (this.text.editable(this.index - 1))) {
+            this.index -= 1;
+        }
+        this.cursor.update(this.text.getPosition(this.index));
+    };
 
     cursorRight() {
-        // if there is text to the right
-        console.log('Right');
-    }
+        // can move right if less than text size
+        if(this.index < this.text.size()) {
+            this.index += 1;
+        }
+        this.cursor.update(this.text.getPosition(this.index));
+    };
 };
 
 class TerminalScene extends Phaser.Scene {
