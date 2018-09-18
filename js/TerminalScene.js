@@ -13,12 +13,6 @@ Pressing up/down cycles through previous commands
 If a button is held down, there is a pause and then the character is drawn again
 Repeated buttondown events are instant
 
-Functions we need:
-
-* Get the size of a character
-* Draw the cursor
-* Accept a keypress
-
 */
 
 // only render these chars
@@ -27,6 +21,9 @@ var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%
 // prevent key bubbling
 const BACKSPACE = 8;
 const RETURN =13;
+const CURSOR_RIGHT = 39;
+const CURSOR_LEFT = 37;
+
 const STOP_BUBBLING = [BACKSPACE, RETURN];
 const TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
 const FONT = {fontFamily: 'scheme7-terminal',
@@ -42,25 +39,26 @@ function can_render(char) {
 };
 
 class TerminalCharacter {
-    constructor(character, text_image, can_delete=true) {
+    constructor(character, text_image, can_edit=true) {
         this.character = character;
         this.image = text_image;
-        this.can_delete = can_delete;
+        this.can_edit = can_edit;
     };
 
     destroy() {
         this.image.destroy()
     };
+
+    setPosition(position) {
+        this.image.x = position.x;
+        this.image.y = position.y;
+    };
 };
 
-
 class Cursor {
-    constructor(scene) {
+    constructor(scene, position) {
         this.timer = null;
         this.scene = scene;
-    };
-
-    add(position) {
         this.cursor = this.scene.add.text(position.x, position.y, '█', FONT);
         this.startFlash();
     };
@@ -96,74 +94,149 @@ class Cursor {
 };
 
 
+class TextLine {
+    // a line of text, or one command, currently in the terminal
+    constructor(line_length, yoffset=0) {
+        this.line_length = line_length;
+        this.yoffset = yoffset;
+        this.text = [];
+    };
+
+    add(t_char, index=-1) {
+        if((index < 0) || (index > this.text.length)) {
+            // append to end
+            this.text.push(t_char);
+        }
+        else {
+            this.text.splice(index, 0, t_char);
+        }
+        // update places
+        this.arrange();
+    };
+
+    remove(index=-1) {
+        if((index < 0) || (index > this.text.length)) {
+            // remove from end
+            if(this.text[this.text.length - 1].can_edit == true) {
+                this.text.pop().destroy();
+            }
+        }
+        else {
+            // remove this index position
+            if(this.text[index].can_edit == true) {
+                this.text[index].destroy()
+                this.text.splice(index, 1);
+            }
+        }
+        this.arrange();
+    };
+
+    getPosition(index) {
+        // given the index position, return where this should be
+        var xpos = index % this.line_length;
+        var ypos = Math.trunc(index / this.line_length);
+        xpos = (xpos * TEXT_SIZE.width) + TEXT_SIZE.x;
+        ypos = (ypos * TEXT_SIZE.height) + TEXT_SIZE.y + this.yoffset;
+        return new Phaser.Geom.Point(xpos, ypos);
+    };
+
+    arrange() {
+        // given the offset and size, make sure
+        // they are in the right place
+        for(var i = 0; i < this.text.length; i++) {
+            this.text[i].setPosition(this.getPosition(i));
+        }
+    };
+
+    getEndPos() {
+        // normally where the cursor should be
+        return this.getPosition(this.text.length);
+    }
+
+    clear() {
+        // return the current images and clear the current text
+        var old_chars = this.text.map(x => x.image);
+        this.text = [];
+        return old_chars;
+    };
+
+    toString() {
+        var string = [];
+        for(var i of this.text) {
+            if(i.can_edit == true) {
+                string.push(i.character);
+            }
+        }
+        return string.join('');
+    };
+};
+
 class TextHolder {
-    // TODO: Add left / right / up  / down cursor
+    // TODO: Move cursor object into textholder
+    //       Add left / right / up  / down cursor
     //       Allow terminal to scroll up
     //       Accept size argument for the terminal
-
     constructor(scene, line_length, prompt) {
-        this.line_length = line_length;
-        this.line_position = 0;
-        this.text = [];
-        this.ypos = 0;
+        this.text = new TextLine(line_length);
         this.prompt = prompt;
         this.scene = scene;
+        this.displayed = [];
+        this.cursor = new Cursor(scene, this.text.getEndPos());
         this.addPrompt();
     };
 
-    getCursorPos() {
-        // where should the cursor be?
-        var x = this.text.length % this.line_length;
-        var y = Math.trunc(this.text.length / this.line_length);
-        return new Phaser.Geom.Point((x * TEXT_SIZE.width) + TEXT_SIZE.x,
-                                     (y * TEXT_SIZE.height) + this.ypos + TEXT_SIZE.y);
-    };
-
-    add(new_char, can_delete=true, color=null) {
-        var pos = this.getCursorPos();
+    buildChar(new_char, pos, color=null) {
         // reset color?
         if(color != null) {
             var old_color = FONT.color;
             FONT.color = color;
-            var new_text = this.scene.add.text(pos.x, pos.y, new_char, FONT);
+            var new_char = this.scene.add.text(pos.x, pos.y, new_char, FONT);
             FONT.color = old_color;
         }
         else {
-            var new_text = this.scene.add.text(pos.x, pos.y, new_char, FONT);
+            var new_char = this.scene.add.text(pos.x, pos.y, new_char, FONT);
         }
-        this.text.push(new TerminalCharacter(new_char, new_text, can_delete));
+        return new_char
+    };
+
+    add(new_char, can_edit=true, color=null) {
+        var pos = this.text.getEndPos();
+        var new_text = this.buildChar(new_char, pos, color);
+        this.text.add(new TerminalCharacter(new_char, new_text, can_edit));
+        this.cursor.update(this.text.getEndPos());
     };
 
     delete() {
-        // delete if possible
-        if(this.text[this.text.length - 1].can_delete == false) {
-            return;
-        }
-        if(this.text.length > 0) {
-            this.text.pop().destroy();
-        }
+        this.text.remove();
+        this.cursor.update(this.text.getEndPos());
     };
 
     newline() {
         // cursor moves to next line and input is removed
-        // do we add more chars because of overflow?
-        var total_lines = Math.trunc(this.text.length / this.line_length) + 1
-        this.ypos += total_lines * TEXT_SIZE.height;
-        this.resetText();
+        this.displayed.push(...this.text.clear());
+        // letters already have the offset baked in
+        var offset = TEXT_SIZE.height - TEXT_SIZE.y;
+        this.text.yoffset = this.displayed[this.displayed.length - 1].y + offset;
         this.addPrompt();
+        this.cursor.update(this.text.getEndPos());
     };
 
-    resetText() {
-        // clean up the existing text
-        this.text = [];
-    }
-
     addPrompt() {
-        // add a prompt and move the cursor over
+        // add a prompt
         for(var c of this.prompt) {
             this.add(c, false, '#BBBBBB');
         }
     };
+
+    cursorLeft() {
+        // if there is text to the left
+        console.log('Left');
+    }
+
+    cursorRight() {
+        // if there is text to the right
+        console.log('Right');
+    }
 };
 
 class TerminalScene extends Phaser.Scene {
@@ -178,8 +251,6 @@ class TerminalScene extends Phaser.Scene {
 
     create() {
         this.text = new TextHolder(this, 38, 'S7> ');
-        this.cursor = new Cursor(this);
-        this.cursor.add(this.text.getCursorPos());
         // we need to tell Phaser what keys to not bubble
         for(var keycode of STOP_BUBBLING) {
             this.input.keyboard.addKey(keycode);
@@ -195,14 +266,18 @@ class TerminalScene extends Phaser.Scene {
         //console.log(event);
         // we start by looking for special keys
         if(event.keyCode === BACKSPACE) {
-            this.text.delete();
-            this.cursor.update(this.text.getCursorPos());
-            return;
+            return this.text.delete();
         }
 
         if(event.keyCode === RETURN) {
-            this.text.newline();
-            this.cursor.update(this.text.getCursorPos());
+            return this.text.newline();
+        }
+
+        if(event.keyCode == CURSOR_RIGHT) {
+            return this.text.cursorRight();
+        }
+        if(event.keyCode == CURSOR_LEFT) {
+            return this.text.cursorLeft();
         }
 
         // if we can't render, don't
@@ -210,6 +285,5 @@ class TerminalScene extends Phaser.Scene {
             return;
         }
         this.text.add(event.key);
-        this.cursor.update(this.text.getCursorPos());
     };
 };
