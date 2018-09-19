@@ -27,6 +27,7 @@ const CURSOR_FONT = {fontFamily: 'scheme7-terminal',
                      fontSize: '32px',
                      color: '#000000',
                      backgroundColor: '#C85746'};
+const MAX_LINES = 18;
 
 function can_render(char) {
     if(char.length > 1) {
@@ -202,12 +203,11 @@ class TextLine {
 
 class TextHolder {
     constructor(scene, line_length, prompt) {
+        this.scene = scene;
         this.text = new TextLine(line_length);
         this.line_length = line_length;
         this.display = [];
         this.prompt = prompt;
-        this.scene = scene;
-        this.rendered_lines = [];
         this.cursor = new Cursor(scene, this.text.getPosition());
         this.index = 0;
         this.addPrompt();
@@ -244,23 +244,44 @@ class TextHolder {
         // cursor moves to next line and input is removed
         //this.convertOld(this.text.clear());
         this.convertOld(this.text.clear());
-        // TODO: push all lines up
+        // are we at the end?
+        if(this.display.length == MAX_LINES) {
+            this.moveLinesUp();
+        }
         // letters already have the offset baked in
-        var offset = TEXT_SIZE.height - TEXT_SIZE.y;
         this.text.yoffset = (this.display.length * TEXT_SIZE.height);
         this.addPrompt();
         this.updateCursor();
     };
 
+    moveLinesUp() {
+        // remove the first line
+        var old_images = this.display.splice(0, 1)[0];
+        for(var i of old_images) {
+            i.destroy();
+        }
+        // move all others up by 1 line
+        for(var line of this.display) {
+            for(var image of line) {
+                image.y -= TEXT_SIZE.height;
+            }
+        }
+    };
+
     convertOld(old_chars) {
+        if(old_chars.length == 0) {
+            // no chars, do nothing (although we still add a line)
+            this.display.push([]);
+            return;
+        }
         // old_chars is a list of TerminalCharacters
+        // delete all the images
+        for(var i of old_chars) {
+            i.destroy();
+        }
         // we start by splitting up the lines
         while(old_chars.length) {
             this.display.push(this.renderLine(old_chars.splice(0, this.line_length)));
-        }
-        // delete all the old ones
-        for(var i of old_chars) {
-            i.delete();
         }
     };
 
@@ -270,10 +291,14 @@ class TextHolder {
         var images = [];
         var prompt = [];
         var index = 0;
-        while(line[index].can_edit == false) {
+        while(index < line.length) {
+            if(line[index].can_edit == true) {
+                break;
+            }
             prompt.push(line[index]);
             index += 1;
         }
+
         if(prompt.length > 0) {
             line.splice(0, prompt.length);
             // render the prompt
@@ -283,11 +308,11 @@ class TextHolder {
                                             Object.assign({}, FONT, {color: PROMPT_COLOR})));
         }
         // render and add if needed
-        if(index.lengh > 0) {
-            images.push(this.scene.add.text(index[0].image.x,
-                                            index[0],image.y,
-                                            index.map(x => x.character).join(''),
-                                            Object.assign({}, FONT, {color: PROMPT_COLOR})));
+        if(line.length > 0) {
+            images.push(this.scene.add.text(line[0].image.x,
+                                            line[0].image.y,
+                                            line.map(x => x.character).join(''),
+                                            Object.assign({}, FONT, {color: TEXT_COLOR})));
         }
         return images;
     };
