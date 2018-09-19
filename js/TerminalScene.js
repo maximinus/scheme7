@@ -1,18 +1,10 @@
 /*
-
-How does the terminal work?
-
-There is a flashing block at one point
-When buttons are pressed, a character is drawn and the console moved to the right
-If the characters move too far to the right, they move to the next line down
-When the console moves, it switches to the start of the 'ON' pattern
-Backspace moves the cursor left and deletes the character
-Left moves the cursor OVER the character and reverses the character when the cursor flashes on
-When return is pressed, the cursor moves down a line and to the left, and the screen scrolls up
-Pressing up/down cycles through previous commands
-If a button is held down, there is a pause and then the character is drawn again
-Repeated buttondown events are instant
-
+TODO: Scroll Terminal up
+      Add print callback
+      Allow cursor up and down
+      Check other blocking keys
+      Capture and uncapture input
+      Handle differnt fonts
 */
 
 // only render these chars
@@ -26,9 +18,11 @@ const CURSOR_LEFT = 37;
 
 const STOP_BUBBLING = [BACKSPACE, RETURN];
 const TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
+const PROMPT_COLOR = '#BBBBBB';
+const TEXT_COLOR = '#C85746';
 const FONT = {fontFamily: 'scheme7-terminal',
               fontSize: '32px',
-              color: '#C85746'};
+              color: TEXT_COLOR};
 const CURSOR_FONT = {fontFamily: 'scheme7-terminal',
                      fontSize: '32px',
                      color: '#000000',
@@ -168,7 +162,7 @@ class TextLine {
 
     clear() {
         // return the current images and clear the current text
-        var old_chars = this.text.map(x => x.image);
+        var old_chars = this.text;
         this.text = [];
         return old_chars;
     };
@@ -207,15 +201,13 @@ class TextLine {
 };
 
 class TextHolder {
-    // TODO: Move cursor object into textholder
-    //       Add left / right / up  / down cursor
-    //       Allow terminal to scroll up
-    //       Accept size argument for the terminal
     constructor(scene, line_length, prompt) {
         this.text = new TextLine(line_length);
+        this.line_length = line_length;
+        this.display = [];
         this.prompt = prompt;
         this.scene = scene;
-        this.displayed = [];
+        this.rendered_lines = [];
         this.cursor = new Cursor(scene, this.text.getPosition());
         this.index = 0;
         this.addPrompt();
@@ -224,10 +216,8 @@ class TextHolder {
     buildChar(new_char, pos, color=null) {
         // reset color?
         if(color != null) {
-            var old_color = FONT.color;
-            FONT.color = color;
-            var new_char = this.scene.add.text(pos.x, pos.y, new_char, FONT);
-            FONT.color = old_color;
+            var new_char = this.scene.add.text(pos.x, pos.y, new_char,
+                                               Object.assign({}, FONT, {'color': color}));
         }
         else {
             var new_char = this.scene.add.text(pos.x, pos.y, new_char, FONT);
@@ -252,12 +242,54 @@ class TextHolder {
 
     newline() {
         // cursor moves to next line and input is removed
-        this.displayed.push(...this.text.clear());
+        //this.convertOld(this.text.clear());
+        this.convertOld(this.text.clear());
+        // TODO: push all lines up
         // letters already have the offset baked in
         var offset = TEXT_SIZE.height - TEXT_SIZE.y;
-        this.text.yoffset = this.displayed[this.displayed.length - 1].y + offset;
+        this.text.yoffset = (this.display.length * TEXT_SIZE.height);
         this.addPrompt();
         this.updateCursor();
+    };
+
+    convertOld(old_chars) {
+        // old_chars is a list of TerminalCharacters
+        // we start by splitting up the lines
+        while(old_chars.length) {
+            this.display.push(this.renderLine(old_chars.splice(0, this.line_length)));
+        }
+        // delete all the old ones
+        for(var i of old_chars) {
+            i.delete();
+        }
+    };
+
+    renderLine(line) {
+        // render a line in the right location and return it
+        // first we start with possible prompts
+        var images = [];
+        var prompt = [];
+        var index = 0;
+        while(line[index].can_edit == false) {
+            prompt.push(line[index]);
+            index += 1;
+        }
+        if(prompt.length > 0) {
+            line.splice(0, prompt.length);
+            // render the prompt
+            images.push(this.scene.add.text(prompt[0].image.x,
+                                            prompt[0].image.y,
+                                            prompt.map(x => x.character).join(''),
+                                            Object.assign({}, FONT, {color: PROMPT_COLOR})));
+        }
+        // render and add if needed
+        if(index.lengh > 0) {
+            images.push(this.scene.add.text(index[0].image.x,
+                                            index[0],image.y,
+                                            index.map(x => x.character).join(''),
+                                            Object.assign({}, FONT, {color: PROMPT_COLOR})));
+        }
+        return images;
     };
 
     updateCursor() {
@@ -270,7 +302,7 @@ class TextHolder {
         // reset the cursor and add a prompt
         this.index = 0;
         for(var c of this.prompt) {
-            this.add(c, false, '#BBBBBB');
+            this.add(c, false, PROMPT_COLOR);
         }
     };
 
