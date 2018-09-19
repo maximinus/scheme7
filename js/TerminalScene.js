@@ -393,7 +393,7 @@ class TerminalScene extends Phaser.Scene {
     };
 
     keydown(event) {
-        console.log(event);
+        //console.log(event);
         // we start by looking for special keys
         if(event.keyCode === BACKSPACE) {
             return this.text.delete();
