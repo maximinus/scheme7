@@ -4,7 +4,13 @@ TODO: Scroll Terminal up
       Allow cursor up and down
       Check other blocking keys
       Capture and uncapture input
-      Handle differnt fonts
+      Handle different fonts
+
+      Keys:
+        Handle:
+          End - Cursor to end of line
+          Home - Cursor to start of line
+        Key repeat
 */
 
 // only render these chars
@@ -15,6 +21,9 @@ const BACKSPACE = 8;
 const RETURN =13;
 const CURSOR_RIGHT = 39;
 const CURSOR_LEFT = 37;
+const END = 35;
+const HOME = 36;
+
 
 const STOP_BUBBLING = [BACKSPACE, RETURN];
 const TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
@@ -346,6 +355,18 @@ class TextHolder {
         }
         this.updateCursor();
     };
+
+    cursorToStart() {
+        while((this.index > 0) && (this.text.editable(this.index - 1))) {
+            this.index -= 1;
+        }
+        this.updateCursor();
+    };
+
+    cursorToEnd() {
+        this.index = this.text.size()
+        this.updateCursor();
+    };
 };
 
 class TerminalScene extends Phaser.Scene {
@@ -372,7 +393,7 @@ class TerminalScene extends Phaser.Scene {
     };
 
     keydown(event) {
-        //console.log(event);
+        console.log(event);
         // we start by looking for special keys
         if(event.keyCode === BACKSPACE) {
             return this.text.delete();
@@ -387,6 +408,14 @@ class TerminalScene extends Phaser.Scene {
         }
         if(event.keyCode == CURSOR_LEFT) {
             return this.text.cursorLeft();
+        }
+
+        if(event.keyCode == END) {
+            return this.text.cursorToEnd();
+        }
+
+        if(event.keyCode == HOME) {
+            return this.text.cursorToStart();
         }
 
         // if we can't render, don't
