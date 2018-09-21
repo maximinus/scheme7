@@ -1,42 +1,47 @@
 /*
 TODO: Scroll Terminal up
       Add print callback
-      Allow cursor up and down
-      Check other blocking keys
       Capture and uncapture input
       Handle different fonts
-
-      Keys:
-        Handle:
-          End - Cursor to end of line
-          Home - Cursor to start of line
-        Key repeat
 */
 
-// only render these chars
+// keycodes we wish to render
 var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=<>?,./:";\'{}[] '
 
-// prevent key bubbling
-const BACKSPACE = 8;
-const RETURN =13;
-const CURSOR_RIGHT = 39;
-const CURSOR_LEFT = 37;
-const END = 35;
-const HOME = 36;
+// keycodes that have special meanings
+const KEYS = {
+    BACKSPACE: 8,
+    RETURN: 13,
+    CURSOR_RIGHT: 39,
+    CURSOR_LEFT: 37,
+    END: 35,
+    HOME: 36
+};
 
+// keycodes we prevent from passing up the event tree
+const STOP_BUBBLING = [KEYS.BACKSPACE, KEYS.RETURN];
 
-const STOP_BUBBLING = [BACKSPACE, RETURN];
-const TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
-const PROMPT_COLOR = '#BBBBBB';
-const TEXT_COLOR = '#C85746';
-const FONT = {fontFamily: 'scheme7-terminal',
-              fontSize: '32px',
-              color: TEXT_COLOR};
-const CURSOR_FONT = {fontFamily: 'scheme7-terminal',
-                     fontSize: '32px',
-                     color: '#000000',
-                     backgroundColor: '#C85746'};
-const MAX_LINES = 18;
+// the params that are passed or calculated
+const PARAMS = {PROMPT_COLOR: '#BBBBBB',
+                TEXT_COLOR: '#C85746',
+                TEXT_SIZE: null,
+                CHARS_PER_LINE: 0,
+                MAX_LINES: 0,
+                FONT: {fontFamily: 'scheme7-terminal',
+                       fontSize: '32px',
+                       color: '#000000'},
+                CURSOR_FONT: {fontFamily: 'scheme7-terminal',
+                              fontSize: '32px',
+                              color: '#000000',
+                              backgroundColor: '#000000'}};
+
+function setParams() {
+    PARAMS.FONT.color = PARAMS.TEXT_COLOR;
+    PARAMS.CURSOR_FONT.backgroundColor = PARAMS.TEXT_COLOR;
+    PARAMS.TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
+    PARAMS.MAX_LINES = 18;
+    PARAMS.CHARS_PER_LINE = 38;
+};
 
 function can_render(char) {
     if(char.length > 1) {
@@ -67,7 +72,7 @@ class Cursor {
     constructor(scene, position) {
         this.timer = null;
         this.scene = scene;
-        this.cursor = this.scene.add.text(position.x, position.y, ' ', CURSOR_FONT);
+        this.cursor = this.scene.add.text(position.x, position.y, ' ', PARAMS.CURSOR_FONT);
         this.startFlash();
     };
 
@@ -96,7 +101,7 @@ class Cursor {
     updateImage(position, character) {
         this.stopFlash();
         this.cursor.destroy();
-        this.cursor = this.scene.add.text(position.x, position.y, character, CURSOR_FONT);
+        this.cursor = this.scene.add.text(position.x, position.y, character, PARAMS.CURSOR_FONT);
     };
 
     destroy() {
@@ -107,8 +112,7 @@ class Cursor {
 
 class TextLine {
     // a line of text, or one command, currently in the terminal
-    constructor(line_length, yoffset=0) {
-        this.line_length = line_length;
+    constructor(yoffset=0) {
         this.yoffset = yoffset;
         this.text = [];
     };
@@ -155,10 +159,10 @@ class TextLine {
             index = this.text.length;
         }
         // given the index position, return where this should be
-        var xpos = index % this.line_length;
-        var ypos = Math.trunc(index / this.line_length);
-        xpos = (xpos * TEXT_SIZE.width) + TEXT_SIZE.x;
-        ypos = (ypos * TEXT_SIZE.height) + TEXT_SIZE.y + this.yoffset;
+        var xpos = index % PARAMS.CHARS_PER_LINE;
+        var ypos = Math.trunc(index / PARAMS.CHARS_PER_LINE);
+        xpos = (xpos * PARAMS.TEXT_SIZE.width) + PARAMS.TEXT_SIZE.x;
+        ypos = (ypos * PARAMS.TEXT_SIZE.height) + PARAMS.TEXT_SIZE.y + this.yoffset;
         return new Phaser.Geom.Point(xpos, ypos);
     };
 
@@ -211,10 +215,9 @@ class TextLine {
 };
 
 class TextHolder {
-    constructor(scene, line_length, prompt) {
+    constructor(scene, prompt) {
         this.scene = scene;
-        this.text = new TextLine(line_length);
-        this.line_length = line_length;
+        this.text = new TextLine();
         this.display = [];
         this.prompt = prompt;
         this.cursor = new Cursor(scene, this.text.getPosition());
@@ -226,10 +229,10 @@ class TextHolder {
         // reset color?
         if(color != null) {
             var new_char = this.scene.add.text(pos.x, pos.y, new_char,
-                                               Object.assign({}, FONT, {'color': color}));
+                                               Object.assign({}, PARAMS.FONT, {'color': color}));
         }
         else {
-            var new_char = this.scene.add.text(pos.x, pos.y, new_char, FONT);
+            var new_char = this.scene.add.text(pos.x, pos.y, new_char, PARAMS.FONT);
         }
         return new_char
     };
@@ -254,11 +257,11 @@ class TextHolder {
         //this.convertOld(this.text.clear());
         this.convertOld(this.text.clear());
         // are we at the end?
-        if(this.display.length == MAX_LINES) {
+        if(this.display.length == PARAMS.MAX_LINES) {
             this.moveLinesUp();
         }
         // letters already have the offset baked in
-        this.text.yoffset = (this.display.length * TEXT_SIZE.height);
+        this.text.yoffset = (this.display.length * PARAMS.TEXT_SIZE.height);
         this.addPrompt();
         this.updateCursor();
     };
@@ -272,7 +275,7 @@ class TextHolder {
         // move all others up by 1 line
         for(var line of this.display) {
             for(var image of line) {
-                image.y -= TEXT_SIZE.height;
+                image.y -= PARAMS.TEXT_SIZE.height;
             }
         }
     };
@@ -290,7 +293,7 @@ class TextHolder {
         }
         // we start by splitting up the lines
         while(old_chars.length) {
-            this.display.push(this.renderLine(old_chars.splice(0, this.line_length)));
+            this.display.push(this.renderLine(old_chars.splice(0, PARAMS.CHARS_PER_LINE)));
         }
     };
 
@@ -314,14 +317,14 @@ class TextHolder {
             images.push(this.scene.add.text(prompt[0].image.x,
                                             prompt[0].image.y,
                                             prompt.map(x => x.character).join(''),
-                                            Object.assign({}, FONT, {color: PROMPT_COLOR})));
+                                            Object.assign({}, PARAMS.FONT, {color: PARAMS.PROMPT_COLOR})));
         }
         // render and add if needed
         if(line.length > 0) {
             images.push(this.scene.add.text(line[0].image.x,
                                             line[0].image.y,
                                             line.map(x => x.character).join(''),
-                                            Object.assign({}, FONT, {color: TEXT_COLOR})));
+                                            Object.assign({}, PARAMS.FONT, {color: PARAMS.TEXT_COLOR})));
         }
         return images;
     };
@@ -336,7 +339,7 @@ class TextHolder {
         // reset the cursor and add a prompt
         this.index = 0;
         for(var c of this.prompt) {
-            this.add(c, false, PROMPT_COLOR);
+            this.add(c, false, PARAMS.PROMPT_COLOR);
         }
     };
 
@@ -372,7 +375,7 @@ class TextHolder {
 class TerminalScene extends Phaser.Scene {
     constructor() {
         super({key: 'TerminalScene'});
-        this.current_line = [];
+        setParams();
     };
 
     preload() {
@@ -380,7 +383,7 @@ class TerminalScene extends Phaser.Scene {
     };
 
     create() {
-        this.text = new TextHolder(this, 38, 'S7> ');
+        this.text = new TextHolder(this, 'S7> ');
         // we need to tell Phaser what keys to not bubble
         for(var keycode of STOP_BUBBLING) {
             this.input.keyboard.addKey(keycode);
@@ -395,26 +398,26 @@ class TerminalScene extends Phaser.Scene {
     keydown(event) {
         //console.log(event);
         // we start by looking for special keys
-        if(event.keyCode === BACKSPACE) {
+        if(event.keyCode === KEYS.BACKSPACE) {
             return this.text.delete();
         }
 
-        if(event.keyCode === RETURN) {
+        if(event.keyCode === KEYS.RETURN) {
             return this.text.newline();
         }
 
-        if(event.keyCode == CURSOR_RIGHT) {
+        if(event.keyCode === KEYS.CURSOR_RIGHT) {
             return this.text.cursorRight();
         }
-        if(event.keyCode == CURSOR_LEFT) {
+        if(event.keyCode === KEYS.CURSOR_LEFT) {
             return this.text.cursorLeft();
         }
 
-        if(event.keyCode == END) {
+        if(event.keyCode === KEYS.END) {
             return this.text.cursorToEnd();
         }
 
-        if(event.keyCode == HOME) {
+        if(event.keyCode === KEYS.HOME) {
             return this.text.cursorToStart();
         }
 
