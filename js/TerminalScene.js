@@ -21,6 +21,17 @@ const KEYS = {
 // keycodes we prevent from passing up the event tree
 const STOP_BUBBLING = [KEYS.BACKSPACE, KEYS.RETURN];
 
+// params we want:
+
+DATA_SENT = {PROMPT_COLOR: '#BBBBBB',
+             TEXT_COLOR: '#C85746',
+             FONT: {fontFamily: 'scheme7-terminal',
+                       fontSize: '16px',
+                       color: '#000000'},
+             BACKGROUND_COLOR: '#000000',
+             PROMPT_TEXT: 'Hello >',
+             TERMINAL: new Phaser.Geom.Rectangle(0, 0, 500, 400)};
+
 // the params that are passed or calculated
 const PARAMS = {PROMPT_COLOR: '#BBBBBB',
                 TEXT_COLOR: '#C85746',
@@ -28,19 +39,19 @@ const PARAMS = {PROMPT_COLOR: '#BBBBBB',
                 CHARS_PER_LINE: 0,
                 MAX_LINES: 0,
                 FONT: {fontFamily: 'scheme7-terminal',
-                       fontSize: '32px',
+                       fontSize: '20px',
                        color: '#000000'},
                 CURSOR_FONT: {fontFamily: 'scheme7-terminal',
-                              fontSize: '32px',
                               color: '#000000',
                               backgroundColor: '#000000'}};
 
-function setParams() {
+function setParams(text_size) {
     PARAMS.FONT.color = PARAMS.TEXT_COLOR;
     PARAMS.CURSOR_FONT.backgroundColor = PARAMS.TEXT_COLOR;
-    PARAMS.TEXT_SIZE = new Phaser.Geom.Rectangle(20, 20, 20, 32);
-    PARAMS.MAX_LINES = 18;
+    PARAMS.TEXT_SIZE = text_size;
+    PARAMS.MAX_LINES = 10;
     PARAMS.CHARS_PER_LINE = 38;
+    PARAMS.CURSOR_FONT.fontSize = PARAMS.FONT.fontSize;
 };
 
 function can_render(char) {
@@ -90,6 +101,11 @@ class Cursor {
         if(this.timer != null) {
             this.timer.destroy();
         };
+        this.cursor.visible = true;
+    };
+
+    hide() {
+        this.cursor.visible = false;
     };
 
     update(position, character) {
@@ -223,6 +239,7 @@ class TextHolder {
         this.cursor = new Cursor(scene, this.text.getPosition());
         this.index = 0;
         this.addPrompt();
+        this.interpreter = new MalLanguage(this.printLine.bind(this));
     };
 
     buildChar(new_char, pos, color=null) {
@@ -253,17 +270,26 @@ class TextHolder {
     };
 
     newline() {
+        // get the current text
+        var command = this.text.toString();
+        // pause the cursor and hide
+        this.cursor.stopFlash();
+        this.cursor.hide();
         // cursor moves to next line and input is removed
-        //this.convertOld(this.text.clear());
         this.convertOld(this.text.clear());
-        // are we at the end?
+        // run the command, which may print a line
+        this.interpreter.runCommand(command);
+        this.updateCursorYpos();
+        this.addPrompt();
+        this.updateCursor();
+    };
+
+    updateCursorYpos() {
         if(this.display.length == PARAMS.MAX_LINES) {
             this.moveLinesUp();
         }
         // letters already have the offset baked in
         this.text.yoffset = (this.display.length * PARAMS.TEXT_SIZE.height);
-        this.addPrompt();
-        this.updateCursor();
     };
 
     moveLinesUp() {
@@ -370,12 +396,24 @@ class TextHolder {
         this.index = this.text.size()
         this.updateCursor();
     };
+
+    printLine(string) {
+        console.log('Printing: ' + string);
+        // build the string and push to the display
+        // cursor is always on the line above where we want to print
+        var pos = this.text.getPosition(0);
+        pos.y += PARAMS.TEXT_SIZE.height;
+        var text = this.scene.add.text(pos.x, pos.y, string, PARAMS.FONT);
+        this.display.push([text]);
+        this.updateCursorYpos();
+    };
 };
 
 class TerminalScene extends Phaser.Scene {
     constructor() {
         super({key: 'TerminalScene'});
-        setParams();
+        // this.calculateData();
+        
     };
 
     preload() {
@@ -383,6 +421,7 @@ class TerminalScene extends Phaser.Scene {
     };
 
     create() {
+        setParams(this.getFontSize());
         this.text = new TextHolder(this, 'S7> ');
         // we need to tell Phaser what keys to not bubble
         for(var keycode of STOP_BUBBLING) {
@@ -391,8 +430,30 @@ class TerminalScene extends Phaser.Scene {
         this.input.keyboard.on('keydown', this.keydown, this);
     };
 
-    update() {
-        // pass
+    getFontSize() {
+        var text = this.add.text(0, 0, 'X', PARAMS.FONT);
+        // this is a rectangle
+        var size = text.getBounds();
+        text.destroy();
+        return size;
+    };
+
+    calculateData(data) {
+        // convert data we have to decent params
+        // what is the size of the font?
+        var char = this.add.text(0, 0, 'X', DATA_SENT.FONT);
+        size = char.getBounds();
+        data.TEXT_SIZE = new Phaser.Geom.Rectangle(size.x, size.y, size.width, size.height);
+        char.destroy();
+        // if prompt color does not exist, it equals color
+        if(!data.hasOwnProperty('PROMPT_COLOR')) {
+            data.PROMPT_COLOR = data.TEXT_COLOR;
+        }
+        data.FONT.color = data.TEXT_COLOR;
+        data.CURSOR_FONT = Object.assign({}, DATA.FONT, {'COLOR': DATA.PROMPT_COLOR})
+        data.CURSOR_FONT.backgroundColor = '#000000';
+        DATA.CHARS_PER_LINE = Math.trunc((DATA.TERMINAL.width - DATA.TERMINAL.x) / DATA.TEXT_SIZE.width);
+        DATA.MAX_LINES = Math.trunc((DATA.TERMINAL.height - DATA.TERMINAL.y) / DATA.TEXT_SIZE.height);
     };
 
     keydown(event) {
@@ -403,6 +464,9 @@ class TerminalScene extends Phaser.Scene {
         }
 
         if(event.keyCode === KEYS.RETURN) {
+            // stop the cursor flashing
+            // send the text to the interpretor
+            // flush a newline
             return this.text.newline();
         }
 
