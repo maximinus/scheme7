@@ -1,8 +1,6 @@
 /*
-TODO: Scroll Terminal up
-      Add print callback
-      Capture and uncapture input
-      Handle different fonts
+TODO: Scroll terminal on long input
+      Handle terminal offsets
 */
 
 // keycodes we wish to render
@@ -43,16 +41,10 @@ const PARAMS = {PROMPT_COLOR: '#BBBBBB',
                        color: '#000000'},
                 CURSOR_FONT: {fontFamily: 'scheme7-terminal',
                               color: '#000000',
-                              backgroundColor: '#000000'}};
-
-function setParams(text_size) {
-    PARAMS.FONT.color = PARAMS.TEXT_COLOR;
-    PARAMS.CURSOR_FONT.backgroundColor = PARAMS.TEXT_COLOR;
-    PARAMS.TEXT_SIZE = text_size;
-    PARAMS.MAX_LINES = 10;
-    PARAMS.CHARS_PER_LINE = 38;
-    PARAMS.CURSOR_FONT.fontSize = PARAMS.FONT.fontSize;
-};
+                              backgroundColor: '#000000'},
+                MARGIN: 10,
+                TERMINAL_BACKGROUND: '#202060AA',
+                TERMINAL_SIZE: new Phaser.Geom.Rectangle(0, 0, 740, 595)};
 
 function can_render(char) {
     if(char.length > 1) {
@@ -293,10 +285,8 @@ class TextHolder {
     };
 
     printLine(string) {
-        console.log('Printing: ' + string);
         // build the string and push to the display
         var pos = this.text.getPosition(0);
-        console.log(pos);
         var text = this.scene.add.text(pos.x, pos.y, string, PARAMS.FONT);
         this.display.push([text]);
         this.updateCursorYpos();
@@ -420,7 +410,8 @@ class TerminalScene extends Phaser.Scene {
     };
 
     create() {
-        setParams(this.getFontSize());
+        this.setParams(this.getFontSize());
+        this.drawBackground();
         this.text = new TextHolder(this, 'S7> ');
         // we need to tell Phaser what keys to not bubble
         for(var keycode of STOP_BUBBLING) {
@@ -437,57 +428,58 @@ class TerminalScene extends Phaser.Scene {
         return size;
     };
 
-    calculateData(data) {
-        // convert data we have to decent params
-        // what is the size of the font?
-        var char = this.add.text(0, 0, 'X', DATA_SENT.FONT);
-        size = char.getBounds();
-        data.TEXT_SIZE = new Phaser.Geom.Rectangle(size.x, size.y, size.width, size.height);
-        char.destroy();
-        // if prompt color does not exist, it equals color
-        if(!data.hasOwnProperty('PROMPT_COLOR')) {
-            data.PROMPT_COLOR = data.TEXT_COLOR;
-        }
-        data.FONT.color = data.TEXT_COLOR;
-        data.CURSOR_FONT = Object.assign({}, DATA.FONT, {'COLOR': DATA.PROMPT_COLOR})
-        data.CURSOR_FONT.backgroundColor = '#000000';
-        DATA.CHARS_PER_LINE = Math.trunc((DATA.TERMINAL.width - DATA.TERMINAL.x) / DATA.TEXT_SIZE.width);
-        DATA.MAX_LINES = Math.trunc((DATA.TERMINAL.height - DATA.TERMINAL.y) / DATA.TEXT_SIZE.height);
+    setParams(text_size) {
+        PARAMS.FONT.color = PARAMS.TEXT_COLOR;
+        PARAMS.CURSOR_FONT.backgroundColor = PARAMS.TEXT_COLOR;
+        text_size.x = PARAMS.MARGIN;
+        text_size.y = PARAMS.MARGIN;
+        PARAMS.TEXT_SIZE = text_size;
+        var draw_width = PARAMS.TERMINAL_SIZE.width - (PARAMS.MARGIN * 2);
+        var draw_height = PARAMS.TERMINAL_SIZE.height - (PARAMS.MARGIN * 2);
+        PARAMS.CHARS_PER_LINE = Math.trunc(draw_width / PARAMS.TEXT_SIZE.width);
+        PARAMS.MAX_LINES = Math.trunc(draw_height / PARAMS.TEXT_SIZE.height);
+        PARAMS.CURSOR_FONT.fontSize = PARAMS.FONT.fontSize;
+    };
+
+    drawBackground() {
+        // white outline around the outside
+        // blue backdrop
+        var gfx = this.add.graphics();
+        gfx.fillStyle(0x202040, 0.5);
+        gfx.fillRect(0, 0, PARAMS.TERMINAL_SIZE.width, PARAMS.TERMINAL_SIZE.height);
+        gfx.lineStyle(1, PARAMS.TERMINAL_SIZE.width, PARAMS.TERMINAL_SIZE.height);
+        var render = gfx.strokeRect(0, 0, PARAMS.TERMINAL_SIZE.width, PARAMS.TERMINAL_SIZE.height);
+        render.generateTexture('gen_terminal', PARAMS.TERMINAL_SIZE.width, PARAMS.TERMINAL_SIZE.height);
+        render.destroy()
+        this.backdrop = this.add.image(0, 0, 'gen_terminal');
+        this.backdrop.setOrigin(0, 0);
     };
 
     keydown(event) {
-        //console.log(event);
         // we start by looking for special keys
         if(event.keyCode === KEYS.BACKSPACE) {
             return this.text.delete();
         }
-
         if(event.keyCode === KEYS.RETURN) {
-            // stop the cursor flashing
-            // send the text to the interpretor
-            // flush a newline
             return this.text.newline();
         }
-
         if(event.keyCode === KEYS.CURSOR_RIGHT) {
             return this.text.cursorRight();
         }
         if(event.keyCode === KEYS.CURSOR_LEFT) {
             return this.text.cursorLeft();
         }
-
         if(event.keyCode === KEYS.END) {
             return this.text.cursorToEnd();
         }
-
         if(event.keyCode === KEYS.HOME) {
             return this.text.cursorToStart();
         }
-
         // if we can't render, don't
         if(!can_render(event.key)) {
             return;
         }
+        // just some normal text, so render it
         this.text.add(event.key);
     };
 };

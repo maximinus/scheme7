@@ -39,7 +39,7 @@ class MalLanguage {
 
     printHistory() {
         for(var i of this.history) {
-            this.print_callback(i);
+            this.print(i);
         }
     };
 };
