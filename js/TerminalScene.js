@@ -277,19 +277,29 @@ class TextHolder {
         this.cursor.hide();
         // cursor moves to next line and input is removed
         this.convertOld(this.text.clear());
+        this.updateCursorYpos();
         // run the command, which may print a line
         this.interpreter.runCommand(command);
-        this.updateCursorYpos();
         this.addPrompt();
         this.updateCursor();
     };
 
     updateCursorYpos() {
-        if(this.display.length == PARAMS.MAX_LINES) {
+        while(this.display.length >= PARAMS.MAX_LINES) {
             this.moveLinesUp();
         }
         // letters already have the offset baked in
         this.text.yoffset = (this.display.length * PARAMS.TEXT_SIZE.height);
+    };
+
+    printLine(string) {
+        console.log('Printing: ' + string);
+        // build the string and push to the display
+        var pos = this.text.getPosition(0);
+        console.log(pos);
+        var text = this.scene.add.text(pos.x, pos.y, string, PARAMS.FONT);
+        this.display.push([text]);
+        this.updateCursorYpos();
     };
 
     moveLinesUp() {
@@ -395,17 +405,6 @@ class TextHolder {
     cursorToEnd() {
         this.index = this.text.size()
         this.updateCursor();
-    };
-
-    printLine(string) {
-        console.log('Printing: ' + string);
-        // build the string and push to the display
-        // cursor is always on the line above where we want to print
-        var pos = this.text.getPosition(0);
-        pos.y += PARAMS.TEXT_SIZE.height;
-        var text = this.scene.add.text(pos.x, pos.y, string, PARAMS.FONT);
-        this.display.push([text]);
-        this.updateCursorYpos();
     };
 };
 
