@@ -370,9 +370,12 @@ class TextHolder {
 
     updateCursor() {
         // extra check: if the cursor position y has overflowed
+        // OR the end of text pointer has overflowed
         // we need to move everything UP by 1, and reset the cursor again
-        var pos = this.text.getPosition(this.index);
-        if(pos.y > ((PARAMS.MAX_LINES + 1) * PARAMS.TEXT_SIZE.height)) {
+        var pos_curs = this.text.getPosition(this.index);
+        var pos_eol = this.text.getPosition(this.text.size() - 1);
+        var overflow = (PARAMS.MAX_LINES + 1) * PARAMS.TEXT_SIZE.height;
+        if((pos_curs.y > overflow) || (pos_eol.y > overflow)) {
             // everything must scroll up a line
             this.moveLinesUp();
             // we also need to move all the letters, and reset the cursor
