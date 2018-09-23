@@ -1,6 +1,5 @@
 /*
 TODO: Scroll terminal on long input
-      Handle terminal offsets
 */
 
 // keycodes we wish to render
@@ -44,7 +43,7 @@ const PARAMS = {PROMPT_COLOR: '#BBBBBB',
                               backgroundColor: '#000000'},
                 MARGIN: 10,
                 TERMINAL_BACKGROUND: '#202060AA',
-                TERMINAL_SIZE: new Phaser.Geom.Rectangle(0, 0, 740, 595)};
+                TERMINAL_SIZE: new Phaser.Geom.Rectangle(30, 30, 668, 480)};
 
 function can_render(char) {
     if(char.length > 1) {
@@ -285,11 +284,17 @@ class TextHolder {
     };
 
     printLine(string) {
-        // build the string and push to the display
-        var pos = this.text.getPosition(0);
-        var text = this.scene.add.text(pos.x, pos.y, string, PARAMS.FONT);
-        this.display.push([text]);
-        this.updateCursorYpos();
+        var index = 0;
+        // split line up if it goes over the bounds
+        while(index < string.length) {
+            var line_string = string.slice(index, index + PARAMS.CHARS_PER_LINE);
+            // build the string and push to the display
+            var pos = this.text.getPosition(0);
+            var text = this.scene.add.text(pos.x, pos.y, line_string, PARAMS.FONT);
+            this.display.push([text]);
+            this.updateCursorYpos();
+            index += PARAMS.CHARS_PER_LINE;
+        }
     };
 
     moveLinesUp() {
@@ -431,8 +436,8 @@ class TerminalScene extends Phaser.Scene {
     setParams(text_size) {
         PARAMS.FONT.color = PARAMS.TEXT_COLOR;
         PARAMS.CURSOR_FONT.backgroundColor = PARAMS.TEXT_COLOR;
-        text_size.x = PARAMS.MARGIN;
-        text_size.y = PARAMS.MARGIN;
+        text_size.x = PARAMS.MARGIN + PARAMS.TERMINAL_SIZE.x;
+        text_size.y = PARAMS.MARGIN + PARAMS.TERMINAL_SIZE.y;
         PARAMS.TEXT_SIZE = text_size;
         var draw_width = PARAMS.TERMINAL_SIZE.width - (PARAMS.MARGIN * 2);
         var draw_height = PARAMS.TERMINAL_SIZE.height - (PARAMS.MARGIN * 2);
@@ -451,7 +456,8 @@ class TerminalScene extends Phaser.Scene {
         var render = gfx.strokeRect(0, 0, PARAMS.TERMINAL_SIZE.width, PARAMS.TERMINAL_SIZE.height);
         render.generateTexture('gen_terminal', PARAMS.TERMINAL_SIZE.width, PARAMS.TERMINAL_SIZE.height);
         render.destroy()
-        this.backdrop = this.add.image(0, 0, 'gen_terminal');
+        this.backdrop = this.add.image(PARAMS.TERMINAL_SIZE.x,
+                                       PARAMS.TERMINAL_SIZE.y, 'gen_terminal');
         this.backdrop.setOrigin(0, 0);
     };
 

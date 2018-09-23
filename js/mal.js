@@ -9,10 +9,6 @@ class MalLanguage {
     };
 
     runCommand(string) {
-        this.history.push(string);
-        while(this.history.length > 5) {
-            this.history.shift();
-        }
         this.history = this.history.slice(0, 5);
         // ignore empty lines
         if(string.length == 0) {
@@ -33,6 +29,10 @@ class MalLanguage {
         else {
             this.print('Command not recognised');
             return false;
+        }
+        this.history.push(string);
+        while(this.history.length > 5) {
+            this.history.shift();
         }
         return true;
     };
