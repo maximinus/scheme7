@@ -1,5 +1,7 @@
 /*
-TODO: Scroll terminal on long input
+TODO: Handle backspace key repeats
+      Sort out data parameters
+      Fix line around terminal
 */
 
 // keycodes we wish to render
