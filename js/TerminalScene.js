@@ -210,6 +210,14 @@ class TextLine {
         return this.text[index].can_edit;
     };
 
+    scrollLetters() {
+        // move all letters up by one line
+        for(var i of this.text) {
+            i.image.y -= PARAMS.TEXT_SIZE.height;
+        }
+        this.yoffset -= PARAMS.TEXT_SIZE.height;
+    };
+
     toString() {
         var string = [];
         for(var i of this.text) {
@@ -361,6 +369,15 @@ class TextHolder {
     };
 
     updateCursor() {
+        // extra check: if the cursor position y has overflowed
+        // we need to move everything UP by 1, and reset the cursor again
+        var pos = this.text.getPosition(this.index);
+        if(pos.y > ((PARAMS.MAX_LINES + 1) * PARAMS.TEXT_SIZE.height)) {
+            // everything must scroll up a line
+            this.moveLinesUp();
+            // we also need to move all the letters, and reset the cursor
+            this.text.scrollLetters();
+        }
         // render the cursor properly
         var over_char = this.text.getChar(this.index);
         this.cursor.update(this.text.getPosition(this.index), over_char);
