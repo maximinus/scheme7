@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
     width: 800,
-    height: 616,
+    height: 600,
     physics: {
         default: 'matter',
         matter: {
@@ -11,7 +11,7 @@ var config = {
                       y: 0.4}
         }
     },
-    scene: [TerminalScene, MainScene, IntroScene]
+    scene: [TerminalScene, IntroScene]
 };
 
 var game = new Phaser.Game(config);

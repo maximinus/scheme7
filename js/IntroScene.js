@@ -6,6 +6,7 @@ class IntroScene extends Phaser.Scene {
     constructor() {
         super({key: 'IntroScene'});
         this.balls = new Array();
+        Phaser.Scene.call(this, {key: 'intro', active: true});
     };
 
     preload() {
@@ -19,9 +20,11 @@ class IntroScene extends Phaser.Scene {
 
     create() {
         // add lots of balls
-        for(var i = 0; i < 150; i++) {
+        for(var i = 0; i < 75; i++) {
             this.addBall(true);
         }
+
+        /*
         // and then the logo
         this.logo = this.add.sprite(400, 240, 'logo');
         this.logo.setDepth(1);
@@ -49,6 +52,7 @@ class IntroScene extends Phaser.Scene {
 
         // change the scene when a key is pressed
         this.input.keyboard.on('keydown', () => this.scene.start('MainScene'));
+        */
     };
 
     update() {

@@ -2,6 +2,7 @@
 TODO: Handle backspace key repeats
       Sort out data parameters
       Fix line around terminal
+      Enhancement: Allow different colours in language output
 */
 
 // keycodes we wish to render
@@ -45,7 +46,7 @@ const PARAMS = {PROMPT_COLOR: '#BBBBBB',
                               backgroundColor: '#000000'},
                 MARGIN: 10,
                 TERMINAL_BACKGROUND: '#202060AA',
-                TERMINAL_SIZE: new Phaser.Geom.Rectangle(30, 30, 668, 480)};
+                TERMINAL_SIZE: new Phaser.Geom.Rectangle(66, 60, 668, 480)};
 
 function can_render(char) {
     if(char.length > 1) {
@@ -428,8 +429,7 @@ class TextHolder {
 class TerminalScene extends Phaser.Scene {
     constructor() {
         super({key: 'TerminalScene'});
-        // this.calculateData();
-        
+        Phaser.Scene.call(this, {key: 'terminal', active: true});
     };
 
     preload() {
@@ -481,6 +481,7 @@ class TerminalScene extends Phaser.Scene {
         this.backdrop = this.add.image(PARAMS.TERMINAL_SIZE.x,
                                        PARAMS.TERMINAL_SIZE.y, 'gen_terminal');
         this.backdrop.setOrigin(0, 0);
+        console.log(PARAMS.TERMINAL_SIZE);
     };
 
     keydown(event) {
