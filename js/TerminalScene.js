@@ -2,6 +2,8 @@
 TODO: Handle backspace key repeats
       Sort out data parameters
       Fix line around terminal
+      Handle delete key
+      Fix key repeat bug
       Enhancement: Allow different colours in language output
 */
 
@@ -15,11 +17,13 @@ const KEYS = {
     CURSOR_RIGHT: 39,
     CURSOR_LEFT: 37,
     END: 35,
-    HOME: 36
+    HOME: 36,
+    EQUALS: 61,
+    MINUS: 45
 };
 
 // keycodes we prevent from passing up the event tree
-const STOP_BUBBLING = [KEYS.BACKSPACE, KEYS.RETURN];
+const STOP_BUBBLING = [KEYS.BACKSPACE, KEYS.RETURN, KEYS.EQUALS, KEYS.MINUS];
 
 // params we want:
 
@@ -481,11 +485,11 @@ class TerminalScene extends Phaser.Scene {
         this.backdrop = this.add.image(PARAMS.TERMINAL_SIZE.x,
                                        PARAMS.TERMINAL_SIZE.y, 'gen_terminal');
         this.backdrop.setOrigin(0, 0);
-        console.log(PARAMS.TERMINAL_SIZE);
     };
 
     keydown(event) {
         // we start by looking for special keys
+        console.log(event);
         if(event.keyCode === KEYS.BACKSPACE) {
             return this.text.delete();
         }

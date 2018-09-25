@@ -2,7 +2,8 @@ var SPRITES = {'rock': 'rock.png',
                'player': 'test.png',
                'background': 'background.png',
                'spark': 'spark.png',
-               'blue': 'blue.png'};
+               'blue': 'blue.png',
+               'ship': 'ship.png'};
 
 class MainScene extends Phaser.Scene {
     constructor() {
@@ -78,14 +79,13 @@ class MainScene extends Phaser.Scene {
     };
 
     addPlayer(xpos) {
-        // make the points first
-        // string is [x y x y x y] etc
-        var player_shape = this.matter.world.fromPath('2 0 4 4 2 3 0 4');
-        var player = this.matter.add.image(xpos, 0, 'player', null, 
+        // make the points first: string is [x y x y x y] etc
+        var player_shape = this.matter.world.fromPath('25 0 49 59 26 50 23 50 0 59 24 0');
+        var player = this.matter.add.image(xpos, 0, 'ship', null, 
                                             {shape: {type: 'fromVerts', verts: player_shape}});
-        player.setRectangle(32, 64, {});
+        //player.setRectangle(32, 64, {});
         player.setFriction(0.005);
-        player.setBounce(1.0);
+        player.setBounce(0.2);
         player.setFrictionAir(0.05);
         player.setMass(100);
         return(player);
@@ -108,7 +108,7 @@ class MainScene extends Phaser.Scene {
         if(b.gameObject === this.player) {
             return this.handlePlayerCollision(a, collide_data.collision);
         }
-        this.handlePlayerCollision(player, collide_data.collision);
+        this.handlePlayerCollision(this.player, collide_data.collision);
     };
 
     handlePlayerCollision(collider, collision) {

@@ -11,7 +11,7 @@ var config = {
                       y: 0.4}
         }
     },
-    scene: [TerminalScene, IntroScene]
+    scene: [MainScene]
 };
 
 var game = new Phaser.Game(config);

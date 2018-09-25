@@ -20,7 +20,7 @@ class IntroScene extends Phaser.Scene {
 
     create() {
         // add lots of balls
-        for(var i = 0; i < 75; i++) {
+        for(var i = 0; i < 50; i++) {
             this.addBall(true);
         }
 
