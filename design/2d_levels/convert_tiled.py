@@ -3,6 +3,10 @@ import json
 import pygame
 
 # example of loading data from an svg file
+# TODO: Handle ploygons
+#       Save as filled in image
+#       Get correct height and width
+#       Export as correct objects for Phaser
 
 
 class Point:
@@ -69,7 +73,7 @@ def convertAllPaths(path_data):
 
 def drawPaths(paths):
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    screen = pygame.display.set_mode((800, 800))
     # now draw to the screen
     screen.fill((0, 0, 0))
     for i in paths:
@@ -88,7 +92,9 @@ def drawPaths(paths):
 
 
 if __name__ == '__main__':
-    paths = loadPathsFromJson('tiled.json')
+    if len(sys.argv) != 2:
+        die('Needs 1 param - the name of the file')
+    paths = loadPathsFromJson(sys.argv[1])
     paths = convertAllPaths(paths)
     drawPaths(paths)
     print('  * Done')
