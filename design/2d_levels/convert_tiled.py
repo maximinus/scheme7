@@ -3,9 +3,8 @@ import json
 import pygame
 
 # example of loading data from an svg file
-# TODO: Handle ploygons
+# TODO: Handle polygons
 #       Save as filled in image
-#       Get correct height and width
 #       Export as correct objects for Phaser
 
 
@@ -33,6 +32,10 @@ class Path:
             ypos = i['y'] + y
             self.points.append(Point(xpos, ypos))
 
+    def extend(self, map_data):
+        self.points.append(Point(map_data.width, map_data.height))
+        self.points.append(Point(0, map_data.height))
+
     @property
     def width(self):
         return max([x.x for x in self.points])
@@ -53,35 +56,64 @@ class Path:
         return '->'.join(point_string)
 
 
+class GameMap:
+    def __init__(self, data, filename, poly):
+        try:
+            self.width = data['width'] * data['tilewidth']
+            self.height = data['height'] * data['tileheight']
+            self.name = filename.split('.')[0]
+            self.poly = poly
+            self.poly.extend(self)
+        except Exception as e:
+            die(e)
+
+    @property
+    def map_size(self):
+        # return map size as a tuple
+        return (self.width, self.height)
+
+
 def die(message='Unknown'):
     """Helper function to print error and quit"""
     print('  Error: {0}'.format(message))
     sys.exit(False)
 
 
-def loadPathsFromJson(filename):
+def loadJson(filename):
     json_text = open(filename).read()
     json_data = json.loads(json_text)
-    for i in json_data['layers']:
-        if i['name'] == 'Polygons':
-            return i['objects']
+    return json_data
 
 
-def convertAllPaths(path_data):
-    return [Path(x['polyline'], x['x'], x['y']) for x in path_data]
+def getPaths(json_data):
+    try:
+        for i in json_data['layers']:
+            if i['name'] == 'Polygons':
+                return i['objects']
+    except Exception as e:
+        die(e)
 
 
-def drawPaths(paths):
+def convertPolyline(path_data):
+    # ignore if there is no polyline for now
+    for i in path_data:
+        if 'polyline' in i:
+            return Path(i['polyline'], i['x'], i['y'])
+
+
+def drawPaths(game_map):
     pygame.init()
-    screen = pygame.display.set_mode((800, 800))
+    screen = pygame.display.set_mode(game_map.map_size)
     # now draw to the screen
     screen.fill((0, 0, 0))
-    for i in paths:
-        # start at point 1, continue
-        start = i.points[0]
-        for j in i.points[1:]:
-            pygame.draw.line(screen, (255, 255, 255), start.as_tuple, j.as_tuple)
-            start = j
+    # start at point 1, continue
+    start = game_map.poly.points[0]
+    for i in game_map.poly.points[1:]:
+        pygame.draw.line(screen, (255, 255, 255), start.as_tuple, i.as_tuple)
+        start = i
+    pygame.draw.line(screen, (255, 255, 255),
+                     game_map.poly.points[-1].as_tuple,
+                     game_map.poly.points[0].as_tuple)
     pygame.display.flip()
     while True:
         for event in pygame.event.get():
@@ -94,7 +126,8 @@ def drawPaths(paths):
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         die('Needs 1 param - the name of the file')
-    paths = loadPathsFromJson(sys.argv[1])
-    paths = convertAllPaths(paths)
-    drawPaths(paths)
-    print('  * Done')
+    data = loadJson(sys.argv[1])
+    paths = getPaths(data)
+    poly = convertPolyline(paths)
+    map_data = GameMap(data, sys.argv[1], poly)
+    drawPaths(map_data)

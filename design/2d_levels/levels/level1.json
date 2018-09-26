@@ -2,7 +2,7 @@
  "layers":[
         {
          "draworder":"topdown",
-         "height":100,
+         "height":0,
          "name":"Polygons",
          "objects":[
                 {
@@ -75,24 +75,24 @@
                          "y":400
                         }, 
                         {
-                         "x":32,
-                         "y":368
+                         "x":40,
+                         "y":376
                         }, 
                         {
-                         "x":8,
+                         "x":16,
                          "y":424
                         }, 
                         {
-                         "x":0,
+                         "x":8,
                          "y":488
                         }, 
                         {
-                         "x":8,
+                         "x":16,
                          "y":536
                         }, 
                         {
-                         "x":32,
-                         "y":552
+                         "x":48,
+                         "y":560
                         }, 
                         {
                          "x":112,
@@ -204,7 +204,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":60,
+         "width":0,
          "x":0,
          "y":0
         }],
