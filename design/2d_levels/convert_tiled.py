@@ -1,10 +1,14 @@
+import os
 import sys
 import json
+import random
 import pygame
+
+import matplotlib.pyplot as plt
+from triangle import triangulate, plot as tplot
 
 # example of loading data from an svg file
 # TODO: Handle polygons
-#       Save as filled in image
 #       Export as correct objects for Phaser
 
 
@@ -21,6 +25,10 @@ class Point:
     @property
     def as_tuple(self):
         return (self.x, self.y)
+
+    @property
+    def as_array(self):
+        return [self.x, self.y]
 
 
 class Path:
@@ -51,6 +59,10 @@ class Path:
         # loop of 1 elements is always closed
         return self.points[0] == self.points[-1]
 
+    @property
+    def vertices(self):
+        return [x.as_array for x in self.points]
+
     def __repr__(self):
         point_string = ['[{0},{1}]'.format(x.x, x.y) for x in self.points]
         return '->'.join(point_string)
@@ -66,6 +78,21 @@ class GameMap:
             self.poly.extend(self)
         except Exception as e:
             die(e)
+
+    def triangulate(self):
+        return triangulate(self.triangle_data, 'p')
+
+    @property
+    def triangle_data(self):
+        # first, we gather all the points
+        vertices = self.poly.vertices
+        # if the first in the list is not at zero, reverse the list
+        if vertices[0][0] != 0:
+            vertices.reverse()
+        segments = [[x, x + 1] for x in range(len(vertices) - 1)]
+        # wrap to first
+        segments.append([len(vertices) - 1, 0])
+        return {'vertices': vertices, 'segments': segments}
 
     @property
     def map_size(self):
@@ -101,6 +128,15 @@ def convertPolyline(path_data):
             return Path(i['polyline'], i['x'], i['y'])
 
 
+def pygameWait():
+    while True:
+        for event in pygame.event.get():
+            # listening for the the X button at the top
+            if event.type == pygame.QUIT:
+                return
+    pygame.quit()
+
+
 def drawPaths(game_map):
     pygame.init()
     screen = pygame.display.set_mode(game_map.map_size)
@@ -115,12 +151,45 @@ def drawPaths(game_map):
                      game_map.poly.points[-1].as_tuple,
                      game_map.poly.points[0].as_tuple)
     pygame.display.flip()
-    while True:
-        for event in pygame.event.get():
-            # listening for the the X button at the top
-            if event.type == pygame.QUIT:
-                return
-    pygame.quit()
+    pygameWait()
+
+
+def drawTrianglesPygame(game_map, filename):
+    tri_data = game_map.triangulate()
+    vertices = [[int(x[0]) + 20, int(x[1]) + 20] for x in tri_data['vertices']]
+
+    pygame.init()
+    size = game_map.map_size
+    image_size = (size[0] + 40, size[1] + 40)
+    screen = pygame.display.set_mode(image_size)
+    # now draw to the screen
+    screen.fill((64, 64, 64))
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(20, 20, size[0], size[1]))
+
+    for i in tri_data['triangles']:
+        triangle = ([int(i[0]), int(i[1]), int(i[2])])
+        polygon = [vertices[triangle[0]], vertices[triangle[1]], vertices[triangle[2]]]
+        color = (random.randrange(64, 255), random.randrange(64, 255), random.randrange(64, 255))
+        pygame.draw.polygon(screen, color, polygon)
+    pygame.display.flip()
+    # save the image
+    new_filename = '{0}.png'.format(getRawFilename(filename).split('.')[0])
+    print('Saving as ' + new_filename)
+    pygame.image.save(screen, new_filename)
+    pygameWait()
+
+
+def drawTriangles(map_data):
+    tri_data = map_data.triangulate()
+    plt.figure(figsize=(14, 14))
+    ax = plt.subplot(111, aspect='equal')
+    tplot.plot(ax, **tri_data)
+    plt.show()
+
+
+def getRawFilename(filename):
+    # given PATH/FILE.EXT, return FILE
+    return os.path.basename(filename)
 
 
 if __name__ == '__main__':
@@ -130,4 +199,5 @@ if __name__ == '__main__':
     paths = getPaths(data)
     poly = convertPolyline(paths)
     map_data = GameMap(data, sys.argv[1], poly)
-    drawPaths(map_data)
+    # drawPaths(map_data)
+    drawTrianglesPygame(map_data, sys.argv[1])
