@@ -1,8 +1,8 @@
 TODO:Tiled + Gimp
 
 Build and render a level in Tiled + Gimp
-Save this level, pull out the co-ords with Python
-Build the level co-ords in Python
+* Save this level, pull out the co-ords with Python
+* Build the level co-ords in Python
 Add the level as image + co-ords in Phaser
 Add collision detection for the level
 Add documentation for all of this

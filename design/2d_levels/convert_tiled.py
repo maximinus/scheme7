@@ -12,6 +12,10 @@ from triangle import triangulate, plot as tplot
 #       Export as correct objects for Phaser
 
 
+# this will enlarge the image and thr triangle data
+SCALE_FACTOR = 2
+
+
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -156,15 +160,15 @@ def drawPaths(game_map):
 
 def drawTrianglesPygame(game_map, filename):
     tri_data = game_map.triangulate()
-    vertices = [[int(x[0]) + 20, int(x[1]) + 20] for x in tri_data['vertices']]
+    vertices = [[(int(x[0]) * SCALE_FACTOR) + 20, (int(x[1]) * SCALE_FACTOR) + 20] for x in tri_data['vertices']]
 
     pygame.init()
     size = game_map.map_size
-    image_size = (size[0] + 40, size[1] + 40)
+    image_size = ((size[0] * SCALE_FACTOR) + 40, (size[1] * SCALE_FACTOR) + 40)
     screen = pygame.display.set_mode(image_size)
     # now draw to the screen
     screen.fill((64, 64, 64))
-    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(20, 20, size[0], size[1]))
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(20, 20, size[0] * SCALE_FACTOR, size[1] * SCALE_FACTOR))
 
     for i in tri_data['triangles']:
         triangle = ([int(i[0]), int(i[1]), int(i[2])])
@@ -187,6 +191,16 @@ def drawTriangles(map_data):
     plt.show()
 
 
+def exportAsJson(map_data, filename):
+    new_filename = '{0}.json'.format(getRawFilename(filename).split('.')[0])
+    tri_data = map_data.triangulate()
+    triangles = [[int(x[0]), int(x[1]), int(x[2])] for x in tri_data['triangles']]
+    points = [[int(x[0]) * SCALE_FACTOR, int(x[1]) * SCALE_FACTOR] for x in tri_data['vertices']]
+    data = {'points': points, 'triangles': triangles}
+    with open(new_filename, 'w') as outfile:
+        json.dump(data, outfile)
+
+
 def getRawFilename(filename):
     # given PATH/FILE.EXT, return FILE
     return os.path.basename(filename)
@@ -201,3 +215,4 @@ if __name__ == '__main__':
     map_data = GameMap(data, sys.argv[1], poly)
     # drawPaths(map_data)
     drawTrianglesPygame(map_data, sys.argv[1])
+    exportAsJson(map_data, sys.argv[1])
