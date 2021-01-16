@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-up" width="100" height="75" tilewidth="8" tileheight="8" nextobjectid="11">
- <objectgroup name="Polygons">
-  <object id="8" x="0" y="120">
-   <polyline points="0,0 48,-16 104,-24 120,-8 168,-16 232,16 296,8 328,40 352,96 344,144 312,208 248,240 232,296 272,368 344,424 536,424 592,400 640,344 640,312 592,288 568,256 584,216 624,192 600,144 488,120 440,72 440,16 544,-16 616,8 648,-16 712,24 768,-8 784,-24 800,-32"/>
-  </object>
- </objectgroup>
-</map>

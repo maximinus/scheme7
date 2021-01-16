@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/qubodup-BangShort.ogg-b2efbf8735026d2ab775cd1a3005defa.oggstr"
+
+[deps]
+
+source_file="res://sfx/player/qubodup-BangShort.ogg"
+dest_files=[ "res://.import/qubodup-BangShort.ogg-b2efbf8735026d2ab775cd1a3005defa.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0
