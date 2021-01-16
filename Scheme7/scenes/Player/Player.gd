@@ -38,6 +38,7 @@ func _physics_process(delta):
 		velocity += getForceVector()
 	updateCameraZoom()
 	move_and_slide(velocity)
+	Globals.last_force = velocity
 	if get_slide_count() > 0:
 		var result = get_slide_collision(0)
 		if result != null:
