@@ -7,9 +7,11 @@ const BOUNCE = 0.5
 
 signal player_collision
 
-# starting velocity
+# sum of forces acting on the ship
 var velocity = Vector2(0, 0)
 var firing_rocket = false
+# turned by hitting something
+var turning = 0
 
 func _ready():
 	pass
@@ -31,7 +33,7 @@ func _process(delta):
 	else:
 		flameOff()
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	# apply gravity and move
 	velocity += GRAVITY_VECTOR
 	if firing_rocket == true:
@@ -42,6 +44,8 @@ func _physics_process(delta):
 	if get_slide_count() > 0:
 		var result = get_slide_collision(0)
 		if result != null:
+			# do turning before calculating forces
+			addTurning(result.normal)
 			var collision_speed = 0
 			if abs(result.normal.x) > 0:
 				collision_speed += abs(velocity.x)
@@ -51,6 +55,14 @@ func _physics_process(delta):
 				velocity.y *= -BOUNCE
 			var speed = min(collision_speed, 100)
 			collidePlayer(result.position, speed)
+
+func addTurning(normal):
+	var angle_rad = atan2(normal.y, normal.x)
+	if angle_rad < 0:
+		angle_rad = (2 * PI) + angle_rad
+	angle_rad = ((360 / (2 * PI)) * angle_rad) - 90
+	if angle_rad < 0.0:
+		angle_rad += 360.0
 
 func updateCameraZoom():
 	# zoom the camera based on the ship velocity

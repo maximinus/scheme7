@@ -15,7 +15,7 @@ func getBarSize(speed):
 	return size
 	
 
-func _process(delta):
+func _process(_delta):
 	# get the angle from the vector
 	if Globals.last_force.y == 0.0:
 		$DialCentre.rotation = 0.0 - (PI / 2)
