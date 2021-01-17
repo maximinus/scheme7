@@ -2,59 +2,152 @@ extends KinematicBody2D
 
 const ROTATION_SPEED = 120.0
 const GRAVITY_VECTOR = Vector2(0, 0.3)
+const TAKEOFF_INJECTION = Vector2(0, -1.0)
 const ROCKET_FORCE = 1.2
 const BOUNCE = 0.5
+const SPIN_BRAKING = 0.1
+const LANDING_MAX_ROTATION = 10.0
+const LANDING_TURN_SPEED = 20.0
+const LANDING_X_SLOWDOWN = 1.5
 
 signal player_collision
+signal player_landed
 
 # sum of forces acting on the ship
 var velocity = Vector2(0, 0)
 var firing_rocket = false
 # turned by hitting something
 var turning = 0
+var landing = false
+var landed = false
+var takeoff = false
 
 func _ready():
 	pass
 
 func _process(delta):
 	# keys pressed?
+	if Input.is_action_pressed('Thrust'):
+		landing = false
+		if landed == true:
+			landed = false
+			takeoff = true
+		flameOn()
+	else:
+		flameOff()
+	
+	if landing == true or landed == true:
+		return;
+	
 	if Input.is_action_pressed('LeftTurn'):
 		rotation_degrees -= ROTATION_SPEED * delta
 	if Input.is_action_pressed('RightTurn'):
 		rotation_degrees += ROTATION_SPEED * delta
-		
+	
+	if turning != 0:
+		rotation_degrees += turning
+		if turning < 0:
+			turning += SPIN_BRAKING
+		else:
+			turning -= SPIN_BRAKING
+		if abs(turning) < SPIN_BRAKING:
+			turning = 0
+	
 	if rotation_degrees < 0.0:
 		rotation_degrees += 360.0
 	if rotation_degrees > 360.0:
 		rotation_degrees -= 360.0
-		
-	if Input.is_action_pressed('Thrust'):
-		flameOn()
-	else:
-		flameOff()
 
-func _physics_process(_delta):
-	# apply gravity and move
+func processLanding(delta):
+	# we are trying to land
+	# the rocket is off, and we are ignoring left right presses.
+	# In short, we want to land very quickly
+	# centre the rotation as much as possible
+	if rotation_degrees != 0.0:
+		if rotation_degrees > 0:
+			rotation_degrees -= LANDING_TURN_SPEED * delta
+		else:
+			rotation_degrees += LANDING_TURN_SPEED * delta
+		if abs(rotation_degrees) < 0.1:
+			rotation_degrees = 0.0	
+	
+	# take the current velocity and reduce the x portion
+	var xspeed = velocity.x
+	if xspeed != 0:
+		xspeed /= LANDING_X_SLOWDOWN
+		if abs(xspeed) < 0.1:
+			xspeed = 0.0
+	velocity.x = xspeed
 	velocity += GRAVITY_VECTOR
+	var collision = move_and_collide(velocity * delta)
+	# did we collide?
+	if collision == null:
+		return
+	# we did, are we actually landed?
+	if velocity.x == 0.0 and rotation_degrees == 0.0:
+		landed = true
+		turning = 0.0
+		print('Landed')
+		emit_signal('player_landed', position)
+
+func _physics_process(delta):
+	if landed == true:
+		return
+	
+	if landing == true:
+		processLanding(delta)
+		return
+	
+	# apply gravity and move
+	# don't apply on takeoff
+	if takeoff == false:
+		velocity += GRAVITY_VECTOR
 	if firing_rocket == true:
 		velocity += getForceVector()
+	if takeoff == true:
+		velocity += TAKEOFF_INJECTION
 	updateCameraZoom()
 	move_and_slide(velocity)
 	Globals.last_force = velocity
 	if get_slide_count() > 0:
 		var result = get_slide_collision(0)
-		if result != null:
-			# do turning before calculating forces
-			addTurning(result.normal)
-			var collision_speed = 0
-			if abs(result.normal.x) > 0:
-				collision_speed += abs(velocity.x)
-				velocity.x *= -BOUNCE
-			if abs(result.normal.y) > 0:
-				collision_speed += abs(velocity.y)
-				velocity.y *= -BOUNCE
-			var speed = min(collision_speed, 100)
-			collidePlayer(result.position, speed)
+		# handle landing seperately
+		if checkLanding(result.normal) == true:
+			return
+		# do turning before calculating forces
+		addTurning(result.normal)
+		var collision_speed = 0
+		if abs(result.normal.x) > 0:
+			collision_speed += abs(velocity.x)
+			velocity.x *= -BOUNCE
+		if abs(result.normal.y) > 0:
+			collision_speed += abs(velocity.y)
+			velocity.y *= -BOUNCE
+		var speed = min(collision_speed, 100)
+		collidePlayer(result.position, speed)
+	takeoff = false
+
+func checkLanding(normal):
+	# if contact is slow, and going down, then we may be landing
+	var speed = sqrt(pow(abs(Globals.last_force.y), 2) + pow(abs(Globals.last_force.x), 2))
+	if speed > 30:
+		# not landing
+		return
+	# the current movement needs to be increasing y
+	if velocity.y <= 0:
+		# another direction
+		return
+	# and x cannot be larger
+	if abs(velocity.x) > abs(velocity.y):
+		return
+	# we need to be more or less upright, so get the current rotation and compare
+	var current_rotation = rotation_degrees
+	if current_rotation < -LANDING_MAX_ROTATION or current_rotation > LANDING_MAX_ROTATION:
+		# not landing, too much angle
+		return
+	# finally, we are landing
+	landing = true
+	return true
 
 func addTurning(normal):
 	var angle_rad = atan2(normal.y, normal.x)
@@ -63,6 +156,24 @@ func addTurning(normal):
 	angle_rad = ((360 / (2 * PI)) * angle_rad) - 90
 	if angle_rad < 0.0:
 		angle_rad += 360.0
+	var ship_angle = (atan2(Globals.last_force.y, Globals.last_force.x)) + (PI / 2)
+	ship_angle = (360 / (2 * PI)) * ship_angle
+	if ship_angle < 0:
+		ship_angle += 360.0
+	# calculate the difference
+	var difference = ship_angle - angle_rad
+	if difference > 0:
+		difference = max(difference, 10)
+	else:
+		difference = min(difference, -10)
+	# adjust by speed
+	var speed = sqrt(pow(abs(Globals.last_force.y), 2) + pow(abs(Globals.last_force.x), 2))
+	speed = min(speed, 200) / 5
+	turning = (difference / (44 - speed))
+	if turning > 0:
+		turning = min(turning, 10)
+	else:
+		turning = max(turning, -10)
 
 func updateCameraZoom():
 	# zoom the camera based on the ship velocity
@@ -76,6 +187,9 @@ func updateCameraZoom():
 func collidePlayer(position, speed):
 	# player has hit something
 	# speed ranges from 0 - 50
+	# don't collide on first frame after takeoff
+	if takeoff == true:
+		return
 	$CollisionSound.volume_db = (speed - 50) / 10.0
 	$CollisionSound.play()
 	emit_signal('player_collision', position)
