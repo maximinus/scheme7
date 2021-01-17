@@ -2,13 +2,14 @@ extends KinematicBody2D
 
 const ROTATION_SPEED = 120.0
 const GRAVITY_VECTOR = Vector2(0, 0.3)
-const TAKEOFF_INJECTION = Vector2(0, -1.0)
-const ROCKET_FORCE = 1.2
+const TAKEOFF_INJECTION = Vector2(0, -20.0)
+const ROCKET_FORCE = 1.6
 const BOUNCE = 0.5
 const SPIN_BRAKING = 0.1
 const LANDING_MAX_ROTATION = 10.0
 const LANDING_TURN_SPEED = 20.0
 const LANDING_X_SLOWDOWN = 1.5
+const SHIP_MASS = 5.0
 
 signal player_collision
 signal player_landed
@@ -107,7 +108,14 @@ func _physics_process(delta):
 	if takeoff == true:
 		velocity += TAKEOFF_INJECTION
 	updateCameraZoom()
-	move_and_slide(velocity)
+	move_and_slide(velocity, Vector2(0, 0), false, 4, 0.785398, false)
+	
+	# push all the bodies
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		if collision.collider.is_in_group('Bodies'):
+			collision.collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
+	
 	Globals.last_force = velocity
 	if get_slide_count() > 0:
 		var result = get_slide_collision(0)

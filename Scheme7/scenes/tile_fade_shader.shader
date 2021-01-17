@@ -9,5 +9,5 @@ void vertex() {
 void fragment() {
 	float intensity = 600.0 - world_pos.y;
 	intensity = (intensity / 2000.0);
-	COLOR = vec4(intensity / 5.0, intensity / 3.0, intensity / 1.0, 1.0);
+	COLOR = vec4(intensity / 1.0, intensity / 3.0, intensity / 5.0, 1.0);
 }
