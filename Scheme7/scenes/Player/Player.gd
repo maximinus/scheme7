@@ -33,9 +33,9 @@ func _process(delta):
 		if landed == true:
 			landed = false
 			takeoff = true
-		flameOn()
+		flameOn(delta)
 	else:
-		flameOff()
+		flameOff(delta)
 	
 	if landing == true or landed == true:
 		return;
@@ -207,15 +207,17 @@ func getForceVector():
 	var y_force = cos(rotation) * -ROCKET_FORCE
 	return Vector2(x_force, y_force)
 
-func flameOn():
+func flameOn(delta):
 	firing_rocket = true
+	Globals.rocket.update(1.0, delta)
 	$Flame/OuterParticle.emitting = true
 	$Flame/InnerParticle.emitting = true
 	if $RocketSound.playing == false:
 		$RocketSound.play()
 
-func flameOff():
+func flameOff(delta):
 	firing_rocket = false
+	Globals.rocket.update(0.0, delta)
 	$Flame/OuterParticle.emitting = false
 	$Flame/InnerParticle.emitting = false
 	$RocketSound.stop()

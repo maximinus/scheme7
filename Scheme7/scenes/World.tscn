@@ -3,8 +3,8 @@
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/World.gd" type="Script" id=3]
-[ext_resource path="res://scenes/PlayerUI/PlayerInterface.tscn" type="PackedScene" id=4]
 [ext_resource path="res://gfx/sprites/crate.png" type="Texture" id=5]
+[ext_resource path="res://scenes/PlayerUI/controls/heat_dial/HeatDial.tscn" type="PackedScene" id=6]
 [ext_resource path="res://gfx/tiles/clean_tiles.png" type="Texture" id=7]
 
 [sub_resource type="Shader" id=27]
@@ -577,16 +577,11 @@ polygon = PoolVector2Array( 384, -384, 640, -384, 640, 768, 768, 768, 768, 896, 
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="PlayerInterface" parent="CanvasLayer" instance=ExtResource( 4 )]
-anchor_left = -0.00328475
-anchor_top = 0.00280304
-anchor_right = 0.612715
-anchor_bottom = 0.00280304
-margin_right = 393.216
-margin_bottom = 600.0
-
 [node name="ForceDial" parent="CanvasLayer" instance=ExtResource( 1 )]
 position = Vector2( 50, 550 )
+
+[node name="HeatDial" parent="CanvasLayer" instance=ExtResource( 6 )]
+position = Vector2( 120, 550 )
 
 [node name="CleanTiles" type="TileMap" parent="."]
 tile_set = SubResource( 3 )
