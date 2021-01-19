@@ -11,6 +11,11 @@ const LANDING_TURN_SPEED = 20.0
 const LANDING_X_SLOWDOWN = 1.5
 const SHIP_MASS = 5.0
 
+const FULLBEAM_ENERGY = 2.0
+const LIGHT_ENERGY = 1.0
+
+enum LIGHT_STATUS { Normal, Circle, Off }
+
 signal player_collision
 signal player_landed
 
@@ -22,12 +27,16 @@ var turning = 0
 var landing = false
 var landed = false
 var takeoff = false
+var light_status = LIGHT_STATUS.Normal
+var fullbeam = false
 
 func _ready():
 	pass
 
 func _process(delta):
-	# keys pressed?
+	# check rocket functions before movement
+	checkLights()
+
 	if Input.is_action_pressed('Thrust'):
 		landing = false
 		if landed == true:
@@ -59,6 +68,34 @@ func _process(delta):
 	if rotation_degrees > 360.0:
 		rotation_degrees -= 360.0
 
+func checkLights():
+	if Input.is_action_just_pressed('Lights'):
+		if light_status == LIGHT_STATUS.Normal:
+			# to circle
+			$LHNormal.visible = false
+			$LCNormal.visible = true
+			light_status = LIGHT_STATUS.Circle
+		elif light_status == LIGHT_STATUS.Circle:
+			# all off
+			$LHNormal.visible = false
+			$LCNormal.visible = false
+			light_status = LIGHT_STATUS.Off
+		else:
+			# all off, to normal
+			$LHNormal.visible = true
+			$LCNormal.visible = false
+			light_status = LIGHT_STATUS.Normal
+	
+	if Input.is_action_just_pressed('FullBeam'):
+		if fullbeam == false:
+			$LCNormal.energy = FULLBEAM_ENERGY
+			$LHNormal.energy = FULLBEAM_ENERGY
+			fullbeam = true
+		else:
+			$LCNormal.energy = LIGHT_ENERGY
+			$LHNormal.energy = LIGHT_ENERGY
+			fullbeam = false
+
 func processLanding(delta):
 	# we are trying to land
 	# the rocket is off, and we are ignoring left right presses.
@@ -88,7 +125,6 @@ func processLanding(delta):
 	if velocity.x == 0.0 and rotation_degrees == 0.0:
 		landed = true
 		turning = 0.0
-		print('Landed')
 		emit_signal('player_landed', position)
 
 func _physics_process(delta):
@@ -209,6 +245,7 @@ func getForceVector():
 
 func flameOn(delta):
 	firing_rocket = true
+	$FlameLight.visible = true
 	Globals.rocket.update(1.0, delta)
 	$Flame/OuterParticle.emitting = true
 	$Flame/InnerParticle.emitting = true
@@ -217,6 +254,7 @@ func flameOn(delta):
 
 func flameOff(delta):
 	firing_rocket = false
+	$FlameLight.visible = false
 	Globals.rocket.update(0.0, delta)
 	$Flame/OuterParticle.emitting = false
 	$Flame/InnerParticle.emitting = false

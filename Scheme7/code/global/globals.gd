@@ -3,7 +3,7 @@ extends Node
 class RocketTemperature:
 	const HEATING = 8
 	const COOLING = 3
-	const MAX_TEMP = HEATING * 5.0
+	const MAX_TEMP = HEATING * 12.0
 	
 	var nozzle_temp = 0
 	var injection_temp = 0
