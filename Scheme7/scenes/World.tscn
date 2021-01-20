@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/PlayerUI/controls/heat_dial/HeatDial.tscn" type="PackedScene" id=6]
 [ext_resource path="res://gfx/tiles/clean_tiles.png" type="Texture" id=7]
+[ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.tscn" type="PackedScene" id=8]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -577,6 +578,9 @@ position = Vector2( 50, 550 )
 position = Vector2( 120, 550 )
 
 [node name="PauseScreen" parent="CanvasLayer" instance=ExtResource( 5 )]
+
+[node name="BatteryLevel" parent="CanvasLayer" instance=ExtResource( 8 )]
+position = Vector2( 20, 20 )
 
 [node name="CleanTiles" type="TileMap" parent="."]
 tile_set = SubResource( 25 )

@@ -1,0 +1,36 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://gfx/gui/battery_dial/battery_level.png" type="Texture" id=1]
+[ext_resource path="res://gfx/gui/battery_dial/battery_level_border.png" type="Texture" id=2]
+[ext_resource path="res://gfx/gui/battery_dial/drain_level_thick.png" type="Texture" id=3]
+[ext_resource path="res://gfx/gui/battery_dial/drain_level_thin.png" type="Texture" id=4]
+[ext_resource path="res://gfx/gui/battery_dial/drain_indicator.png" type="Texture" id=5]
+[ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.gd" type="Script" id=6]
+
+[node name="BatteryLevel" type="Node2D"]
+script = ExtResource( 6 )
+
+[node name="BatteryLevel" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 347, 26 )
+
+[node name="BatteryLevelBorder" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+centered = false
+
+[node name="DrainLevelThick" type="Sprite" parent="."]
+texture = ExtResource( 3 )
+centered = false
+offset = Vector2( 6, 31 )
+
+[node name="DrainLevel" type="Sprite" parent="."]
+texture = ExtResource( 4 )
+centered = false
+offset = Vector2( 6, 32 )
+
+[node name="Indicator" type="Sprite" parent="."]
+texture = ExtResource( 5 )
+centered = false
+offset = Vector2( 3, 28 )
