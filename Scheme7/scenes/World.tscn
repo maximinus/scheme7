@@ -1,9 +1,10 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/World.gd" type="Script" id=3]
 [ext_resource path="res://scenes/LevelObjects/Crate/Crate.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/PlayerUI/controls/heat_dial/HeatDial.tscn" type="PackedScene" id=6]
 [ext_resource path="res://gfx/tiles/clean_tiles.png" type="Texture" id=7]
 
@@ -575,6 +576,8 @@ position = Vector2( 50, 550 )
 [node name="HeatDial" parent="CanvasLayer" instance=ExtResource( 6 )]
 position = Vector2( 120, 550 )
 
+[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource( 5 )]
+
 [node name="CleanTiles" type="TileMap" parent="."]
 tile_set = SubResource( 25 )
 format = 1
@@ -599,4 +602,4 @@ position = Vector2( 272, 1360 )
 position = Vector2( 48, 1264 )
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color( 0.0941176, 0.12549, 0.156863, 1 )
+color = Color( 0.0941176, 0.156863, 0.235294, 1 )

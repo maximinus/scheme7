@@ -62,13 +62,11 @@ stream = ExtResource( 6 )
 [node name="LCNormal" type="Light2D" parent="."]
 visible = false
 texture = ExtResource( 7 )
-shadow_enabled = true
 shadow_color = Color( 0, 0, 0, 0.498039 )
 
 [node name="LHNormal" type="Light2D" parent="."]
 texture = ExtResource( 8 )
 offset = Vector2( 0, -180 )
-shadow_enabled = true
 shadow_color = Color( 0, 0, 0, 0.498039 )
 
 [node name="FlameLight" type="Light2D" parent="."]

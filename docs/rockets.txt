@@ -1,0 +1,101 @@
+
+Rocket Technology
+=================
+
+
+Every ship has rockets. There are 2 basic types:
+
+Chemical
+	Runs hot and loud
+	Needs fuel
+	Can explode
+
+Electrical
+	Runs quiet
+	Needs a battery
+	Can short out
+	Low power output
+
+
+In the game, a chemical rocket has 2 parts:
+
+Nozzle
+	Directs force
+	Increases engine efficiency
+
+	If damaged:
+		Can cause direction of engine force to be changed
+		Decreases efficiency giving less thrust
+
+Injectors
+	Push fuel into nozzle
+	Regulates engine power
+
+	If damaged:
+		Fuel flow can be changed
+		Engine power can be reduced
+		If it leaks, can exert a large force in a steady direction
+		Can explode
+
+
+Rockets have characteristics
+
+The 3 stage cycle
+	Stage 1: Ignition
+		When you turn on a rocket, there at first a small flame that is used to ignite the larger.
+		This means there is a pause between pressing the button and getting a force.
+		The pilot flame does have some force, maybe 1/5 of the main force.
+
+	Stage 2: Burn
+		The main flame is operation
+
+	Stage 3:
+		The fuels in the nozzle do not instantly burn out and there may still be some fuel in
+		the lines to burn for a while.
+		However this is low pressure and is more easily controlled.
+
+	Some engines can deliberatly be made to remain in the ignition phase. This results in:
+		Fine tuned thrusts for low-g
+		More fuel consumption
+
+
+An Electric rocket has 2 parts
+
+Batteries
+	Power in (from engine to recharge)
+	Power out (> in, battery drain, else batteries power)
+	Battery capacity (how much energy can be stored)
+
+	If damaged:
+		Be intermitent
+		Stop working
+		Worse: Short out and cause a fire
+
+Thruster
+	What pushes. Requires a small amount of propellant.
+
+	If damaged:
+		Thrust in wrong direction
+
+
+And 1 advanced type:
+
+
+G-Drive
+
+Uses anti-gravity waves to be controlled
+Automatic landing, collision avoidance etc can be added
+Operates on battery
+Short operation
+Very easy to stablise
+Limited mass
+Very small
+
+
+"The King"
+
+Ultimate craft can be obtained by some exploration.
+
+Uses a G-Drive and some super modern light material with crazy batteries.
+Can be used to cheese the last 1/3 of the game.
+Comes with a story downbeat.
