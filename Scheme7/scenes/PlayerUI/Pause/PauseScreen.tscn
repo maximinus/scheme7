@@ -15,7 +15,7 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
-shader_param/blur_amount = 2.0
+shader_param/blur_amount = 1.0
 
 [node name="PauseScreen" type="Node2D"]
 pause_mode = 2
@@ -31,6 +31,7 @@ __meta__ = {
 }
 
 [node name="Sprite" type="Sprite" parent="."]
+visible = false
 texture = ExtResource( 2 )
 centered = false
 offset = Vector2( 352, 246 )
