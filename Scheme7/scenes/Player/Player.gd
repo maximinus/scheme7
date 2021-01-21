@@ -28,10 +28,10 @@ var landing = false
 var landed = false
 var takeoff = false
 var light_status = LIGHT_STATUS.Normal
-var fullbeam = false
 
 func _ready():
-	pass
+	Globals.battery.lights = true
+	Globals.battery.fullbeam = false
 
 func _process(delta):
 	# check rocket functions before movement
@@ -69,32 +69,47 @@ func _process(delta):
 		rotation_degrees -= 360.0
 
 func checkLights():
+	# no charge? turn off the lights and ignore everything else
+	if Globals.battery.charge <= 0.0:
+		$LHNormal.visible = false
+		$LCNormal.visible = false
+		light_status == LIGHT_STATUS.Off
+		Globals.battery.lights = false
+		Globals.battery.fullbeam = false
+		return
+	
 	if Input.is_action_just_pressed('Lights'):
 		if light_status == LIGHT_STATUS.Normal:
 			# to circle
 			$LHNormal.visible = false
 			$LCNormal.visible = true
 			light_status = LIGHT_STATUS.Circle
+			Globals.battery.lights = true
 		elif light_status == LIGHT_STATUS.Circle:
 			# all off
 			$LHNormal.visible = false
 			$LCNormal.visible = false
+			Globals.battery.lights = false
 			light_status = LIGHT_STATUS.Off
 		else:
 			# all off, to normal
 			$LHNormal.visible = true
 			$LCNormal.visible = false
+			Globals.battery.lights = true
 			light_status = LIGHT_STATUS.Normal
 	
 	if Input.is_action_just_pressed('FullBeam'):
-		if fullbeam == false:
+		# if lights are off, ignore
+		if light_status == LIGHT_STATUS.Off:
+			return
+		if Globals.battery.fullbeam == false:
 			$LCNormal.energy = FULLBEAM_ENERGY
 			$LHNormal.energy = FULLBEAM_ENERGY
-			fullbeam = true
+			Globals.battery.fullbeam = true
 		else:
 			$LCNormal.energy = LIGHT_ENERGY
 			$LHNormal.energy = LIGHT_ENERGY
-			fullbeam = false
+			Globals.battery.fullbeam = false
 
 func processLanding(delta):
 	# we are trying to land

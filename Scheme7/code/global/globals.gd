@@ -24,8 +24,43 @@ class RocketTemperature:
 			nozzle_temp += (energy * NOZZLE_HEATING) * delta
 			injection_temp += (energy * INJECTION_HEATING) * delta
 
+
+class BatteryCharge:
+	const LIGHT_COST = 5.0
+	const FULLBEAM_COST = 6.0
+	const MAX_DRAIN = 30.0
+	const MAX_CHARGE = 1000.0
+	
+	var lights = false
+	var fullbeam = false
+	var charge = MAX_CHARGE
+	var drain = 0
+	
+	func _init():
+		pass
+	
+	func chargeLeft():
+		# returned as a float from 0 to 1
+		return (charge / MAX_CHARGE)
+	
+	func currentDrain():
+		# returned as a float from 0 to 1
+		return (drain / MAX_DRAIN)
+	
+	func update(delta):
+		drain = 0
+		if lights == true:
+			charge -= (LIGHT_COST * delta)
+			drain += LIGHT_COST
+		if fullbeam == true:
+			charge -= (FULLBEAM_COST * delta)
+			drain += FULLBEAM_COST
+		charge = max(0, charge)
+
+
 var last_force = Vector2(0, 0)
 var rocket = RocketTemperature.new(0, 0)
+var battery = BatteryCharge.new()
 
 func _ready():
 	pass

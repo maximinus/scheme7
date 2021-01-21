@@ -1,8 +1,9 @@
 TODO:
 
-Fix the bug in the chevrons for the heat dial
-Fix the bug where taking off after a long time has crazy force
-Change the graphics in the heat dial
+* Fix the bug in the chevrons for the heat dial
+? Fix the bug where taking off after a long time has crazy force
+* Change the graphics in the heat dial
+
 Wire up the battery
 Add a battery rocket thrust
 Add a light object that can be destroyed

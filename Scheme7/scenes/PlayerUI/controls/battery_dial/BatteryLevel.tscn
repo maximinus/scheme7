@@ -14,7 +14,7 @@ script = ExtResource( 6 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 0, 0, 347, 26 )
+region_rect = Rect2( 0, 0, 4, 26 )
 
 [node name="BatteryLevelBorder" type="Sprite" parent="."]
 texture = ExtResource( 2 )
@@ -24,6 +24,8 @@ centered = false
 texture = ExtResource( 3 )
 centered = false
 offset = Vector2( 6, 31 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 335, 3 )
 
 [node name="DrainLevel" type="Sprite" parent="."]
 texture = ExtResource( 4 )
