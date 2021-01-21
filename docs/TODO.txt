@@ -1,0 +1,44 @@
+TODO:
+
+Fix the bug in the chevrons for the heat dial
+Fix the bug where taking off after a long time has crazy force
+Change the graphics in the heat dial
+Wire up the battery
+Add a battery rocket thrust
+Add a light object that can be destroyed
+Add ambient light based on these lights
+Add gunfire from the ship
+Add an object to destroy
+Improve the SFX, and try music
+Handle the player entrance on the scene at the start (like a teleport animation)
+Handle the winning situation
+Add a menu to the pause
+Model the rocket and player as objects exposed globally and cleanup code
+Add a terminal text choice screen
+Add some dialog
+	The character is the human tester from a long time ago
+Add some tutorial levels.
+	This needs practice levels that have a heavy shader to look virtual
+Add "stuff" to the levels
+	Doors
+	Blowers and suckers
+	Enemy guns
+	Keys and downloading
+Enable types of rockets
+	Let the player test everything virtually
+Add screen to edit rocket
+	This means we start to establise a rhythm to the game
+		Bit of story.
+		Set up rocket.
+		Mission.
+		Mission Results.
+		Repeat.
+	We have a simple 1 and a better 3 here, so add 2
+Add results screen
+	This is 4
+Add structure to handle the above repeats in code
+	Add time
+Do a cutscene
+Add the scene to decide where to go next
+Plan out the first part of the story up to AI discovery
+Work out a plan to make grinding interesting

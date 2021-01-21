@@ -2,21 +2,18 @@ extends Node2D
 
 const CHEVRON_WIDTH = 8
 
-var max_temp
 var last_temp
 
 func _ready():
-	max_temp = Globals.RocketTemperature.MAX_TEMP
 	last_temp = Globals.rocket.nozzle_temp
 
 func _process(delta):
 	# the bar is for the nozzle temp
 	# get range and convert
-	var temp = Globals.rocket.nozzle_temp
-	var bar_length = (Globals.rocket.nozzle_temp / max_temp) * 0.9
+	var bar_length = (Globals.rocket.nozzle_temp / Globals.RocketTemperature.MAX_NOZZLE_TEMP) * 0.9
 	bar_length = min(bar_length, 1.0)
 	bar_length *= 48
-	$HeatBar.region_rect.end.x = int(bar_length)
+	$HeatBarNozzle.region_rect.end.x = int(bar_length)
 
 	if bar_length < 15.0:
 		$TempNozzle/Green.visible = true
@@ -31,24 +28,54 @@ func _process(delta):
 		$TempNozzle/Amber.visible = false
 		$TempNozzle/Red.visible = true
 
+	# repeat for injection
+	bar_length = (Globals.rocket.injection_temp / Globals.RocketTemperature.MAX_INJECTION_TEMP) * 0.9
+	bar_length = min(bar_length, 1.0)
+	bar_length *= 48	
+	$HeatBarInjection.region_rect.end.x = int(bar_length)
+
+	if bar_length < 15.0:
+		$TempInjection/Green.visible = true
+		$TempInjection/Amber.visible = false
+		$TempInjection/Red.visible = false
+	elif bar_length < 29.0:
+		$TempInjection/Green.visible = false
+		$TempInjection/Amber.visible = true
+		$TempInjection/Red.visible = false
+	elif bar_length < 43.0:
+		$TempInjection/Green.visible = false
+		$TempInjection/Amber.visible = false
+		$TempInjection/Red.visible = true
+
 	# finally, handle the chevrons
-	var temp_diff = (temp - last_temp) / delta
-	var chevrons = min(int(temp_diff / 3), 3)
+	var current_temp = Globals.rocket.nozzle_temp + Globals.rocket.injection_temp
+	var temp_diff = (current_temp - last_temp) / delta
+	# get the number first and worry about the sign later
+	var chevrons = 0
+	if abs(temp_diff) > 10:
+		chevrons = 3
+	elif abs(temp_diff) > 5.9:
+		chevrons = 2
+	elif abs(temp_diff) > 0:
+		chevrons = 1
 	
+	if temp_diff < 0:
+		chevrons = -chevrons
+		
 	if chevrons == 0:
-		$ChevronLeft.visible = false
-		$ChevronRight.visible = false
+		$ChevronRight.hide()
+		$ChevronLeft.hide()
 	elif chevrons > 0:
-		$ChevronRight.visible = true
-		$ChevronLeft.visible = false
+		$ChevronRight.show()
+		$ChevronLeft.hide()
 		$ChevronRight.region_rect.end.x = chevrons * CHEVRON_WIDTH
 	else:
-		# slighty harder
-		$ChevronRight.visible = false
-		$ChevronLeft.visible = true
+		# slighty harder, negative chevrons
+		$ChevronRight.hide()
+		$ChevronLeft.show()
 		var width = -chevrons * CHEVRON_WIDTH
 		$ChevronLeft.region_rect.end.x = width
 		$ChevronLeft.offset.x = width - 25
 
 	# remember for next time
-	last_temp = Globals.rocket.nozzle_temp
+	last_temp = current_temp
