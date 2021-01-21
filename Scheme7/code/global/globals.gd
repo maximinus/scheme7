@@ -52,9 +52,9 @@ class BatteryCharge:
 		if lights == true:
 			charge -= (LIGHT_COST * delta)
 			drain += LIGHT_COST
-		if fullbeam == true:
-			charge -= (FULLBEAM_COST * delta)
-			drain += FULLBEAM_COST
+			if fullbeam == true:
+				charge -= (FULLBEAM_COST * delta)
+				drain += FULLBEAM_COST
 		charge = max(0, charge)
 
 

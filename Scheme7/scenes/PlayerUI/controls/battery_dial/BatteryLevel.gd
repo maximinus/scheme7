@@ -17,7 +17,7 @@ func _process(delta):
 	
 	var pos = drain * DIAL_WIDTH
 	$Indicator.position.x = pos
-	$DrainLevel.region_rect.end.x = pos
+	$DrainLevelThick.region_rect.end.x = pos
 
 	# how many blocks to show?
 	var blocks = int(ceil(charge * BLOCKS))

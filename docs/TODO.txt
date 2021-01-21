@@ -1,13 +1,17 @@
 TODO:
 
+* Done
+? Is this right
+- Skip for later
+
 * Fix the bug in the chevrons for the heat dial
 ? Fix the bug where taking off after a long time has crazy force
 * Change the graphics in the heat dial
+* Wire up the battery
 
-Wire up the battery
-Add a battery rocket thrust
+- Add a battery rocket thrust
 Add a light object that can be destroyed
-Add ambient light based on these lights
+- Add ambient light based on these lights
 Add gunfire from the ship
 Add an object to destroy
 Improve the SFX, and try music
