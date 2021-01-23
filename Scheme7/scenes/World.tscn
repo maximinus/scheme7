@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://gfx/tiles/clean_tiles.png" type="Texture" id=7]
 [ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/LevelObjects/Lander/Lander.tscn" type="PackedScene" id=10]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -591,7 +592,58 @@ tile_data = PoolIntArray( -458747, 5, 0, -458746, 1, 0, -458744, 1, 0, -458742, 
 [node name="Lights" type="Node2D" parent="."]
 
 [node name="SimpleLight" parent="Lights" instance=ExtResource( 9 )]
-position = Vector2( 512, 1408 )
+position = Vector2( 896, 1152 )
+rotation = 4.71239
+strength = 2.0
+max_variation = 0.08
+direction = 2
+
+[node name="SimpleLight2" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 0, 896 )
+rotation = 3.14159
+strength = 2.0
+max_variation = 0.08
+direction = 1
+
+[node name="SimpleLight3" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( -512, 1536 )
+rotation = 1.5708
+cycle_length = 12.0
+strength = 2.0
+max_variation = 0.1
+direction = 3
+
+[node name="SimpleLight4" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( -512, 1920 )
+rotation = 1.5708
+cycle_length = 12.0
+strength = 2.0
+max_variation = 0.1
+direction = 3
+
+[node name="SimpleLight5" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 256, 1920 )
+rotation = 3.14159
+strength = 2.0
+direction = 1
+
+[node name="SimpleLight6" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 512, 1920 )
+rotation = 3.14159
+strength = 2.0
+direction = 1
+
+[node name="SimpleLight7" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 1408, 2304 )
+cycle_length = 15.0
+strength = 2.0
+max_variation = 0.1
+
+[node name="SimpleLight8" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 1152, 2304 )
+cycle_length = 15.0
+strength = 2.0
+max_variation = 0.1
 
 [node name="Crates" type="Node2D" parent="."]
 
@@ -609,4 +661,8 @@ current = true
 smoothing_enabled = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color( 0.423529, 0.509804, 0.619608, 1 )
+visible = false
+color = Color( 0.101961, 0.113725, 0.129412, 1 )
+
+[node name="Lander" parent="." instance=ExtResource( 10 )]
+position = Vector2( 1224, 2304 )

@@ -10,7 +10,9 @@ polygon = PoolVector2Array( -48, -48, 48, -48, 48, 48, -48, 48 )
 
 [node name="Crate" type="Node2D"]
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
+[node name="RigidBody2D" type="RigidBody2D" parent="." groups=[
+"Bodies",
+]]
 
 [node name="Sprite" type="Sprite" parent="RigidBody2D"]
 texture = ExtResource( 1 )

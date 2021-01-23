@@ -36,3 +36,6 @@ func setDirection(direct):
 	else:
 		rotation_degrees = 270.0
 	direction = direct
+
+func collide(velocity):
+	print('I was hit')

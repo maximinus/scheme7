@@ -27,7 +27,7 @@ var turning = 0
 var landing = false
 var landed = false
 var takeoff = false
-var light_status = LIGHT_STATUS.Normal
+var light_status = LIGHT_STATUS.Off
 
 func _ready():
 	Globals.battery.lights = false
@@ -166,6 +166,9 @@ func _physics_process(delta):
 		var collision = get_slide_collision(index)
 		if collision.collider.is_in_group('Bodies'):
 			collision.collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
+		if collision.collider.is_in_group('breakable'):
+			# break and remove
+			collision.collider.collide(velocity.length())
 	
 	Globals.last_force = velocity
 	if get_slide_count() > 0:
