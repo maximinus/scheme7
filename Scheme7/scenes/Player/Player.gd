@@ -30,7 +30,7 @@ var takeoff = false
 var light_status = LIGHT_STATUS.Normal
 
 func _ready():
-	Globals.battery.lights = true
+	Globals.battery.lights = false
 	Globals.battery.fullbeam = false
 
 func _process(delta):

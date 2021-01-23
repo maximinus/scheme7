@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://scenes/PlayerUI/controls/heat_dial/HeatDial.tscn" type="PackedScene" id=6]
 [ext_resource path="res://gfx/tiles/clean_tiles.png" type="Texture" id=7]
 [ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=9]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -587,12 +588,10 @@ tile_set = SubResource( 25 )
 format = 1
 tile_data = PoolIntArray( -458747, 5, 0, -458746, 1, 0, -458744, 1, 0, -458742, 6, 0, -393211, 2, 0, -393206, 3, 0, -262139, 2, 0, -262134, 3, 0, -131067, 2, 0, -131062, 3, 0, 5, 2, 0, 10, 3, 0, 131077, 2, 0, 131082, 3, 0, 262149, 2, 0, 262154, 3, 0, 393221, 2, 0, 393226, 3, 0, 524293, 2, 0, 524298, 3, 0, 655364, 12, 0, 655370, 13, 0, 720899, 5, 0, 720908, 6, 0, 786434, 16, 0, 786444, 13, 0, 917501, 5, 0, 917502, 1, 0, 851968, 1, 0, 851982, 6, 0, 983037, 2, 0, 917518, 3, 0, 1114108, 12, 0, 1048590, 3, 0, 1179639, 5, 0, 1179640, 1, 0, 1179642, 1, 0, 1245175, 2, 0, 1179662, 3, 0, 1376247, 2, 0, 1310732, 18, 0, 1310734, 19, 0, 1507319, 2, 0, 1441792, 14, 0, 1441794, 20, 0, 1441796, 20, 0, 1441798, 20, 0, 1441800, 20, 0, 1441802, 20, 0, 1441804, 7, 0, 1638391, 2, 0, 1572864, 3, 0, 1769463, 2, 0, 1703936, 3, 0, 1769483, 5, 0, 1769484, 1, 0, 1769486, 1, 0, 1769488, 1, 0, 1769490, 1, 0, 1769492, 1, 0, 1769494, 1, 0, 1769496, 1, 0, 1769498, 6, 0, 1900535, 2, 0, 1835008, 13, 0, 1835018, 12, 0, 1835034, 3, 0, 1900546, 1, 0, 1900548, 1, 0, 1900550, 1, 0, 1900552, 1, 0, 2031607, 2, 0, 1966106, 3, 0, 2162679, 2, 0, 2097178, 3, 0, 2293751, 2, 0, 2228250, 3, 0, 2424823, 4, 0, 2424824, 20, 0, 2424826, 20, 0, 2424828, 20, 0, 2424830, 20, 0, 2359296, 20, 0, 2359298, 20, 0, 2359300, 20, 0, 2359302, 20, 0, 2359304, 20, 0, 2359306, 20, 0, 2359308, 20, 0, 2359310, 20, 0, 2359312, 20, 0, 2359314, 20, 0, 2359316, 20, 0, 2359318, 20, 0, 2359320, 20, 0, 2359322, 19, 0 )
 
-[node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 498.414, 497.313 )
+[node name="Lights" type="Node2D" parent="."]
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
-current = true
-smoothing_enabled = true
+[node name="SimpleLight" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 512, 1408 )
 
 [node name="Crates" type="Node2D" parent="."]
 
@@ -602,8 +601,12 @@ position = Vector2( 64, 1360 )
 [node name="Crate2" parent="Crates" instance=ExtResource( 4 )]
 position = Vector2( 272, 1360 )
 
-[node name="Crate3" parent="Crates" instance=ExtResource( 4 )]
-position = Vector2( 48, 1264 )
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 592, 1200 )
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+current = true
+smoothing_enabled = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color( 0.0941176, 0.156863, 0.235294, 1 )
+color = Color( 0.423529, 0.509804, 0.619608, 1 )
