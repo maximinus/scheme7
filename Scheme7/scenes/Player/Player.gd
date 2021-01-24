@@ -18,6 +18,7 @@ enum LIGHT_STATUS { Normal, Circle, Off }
 
 signal player_collision
 signal player_landed
+signal laser_fire
 
 # sum of forces acting on the ship
 var velocity = Vector2(0, 0)
@@ -36,6 +37,7 @@ func _ready():
 func _process(delta):
 	# check rocket functions before movement
 	checkLights()
+	checkLaser()
 
 	if Input.is_action_pressed('Thrust'):
 		landing = false
@@ -67,6 +69,10 @@ func _process(delta):
 		rotation_degrees += 360.0
 	if rotation_degrees > 360.0:
 		rotation_degrees -= 360.0
+
+func checkLaser():
+	if Input.is_action_just_pressed('FireLaser'):
+		emit_signal('laser_fire')
 
 func checkLights():
 	# no charge? turn off the lights and ignore everything else
