@@ -24,7 +24,7 @@ func _process(delta):
 	offset *= max_variation
 	offset += 1.0 - max_variation
 	$Light2D.energy = offset * strength
-	$Light2D.texture_scale = offset + max_variation
+	$Light2D.texture_scale = offset + (max_variation / 3.0)
 
 func setDirection(direct):
 	if direct == ORIENTATION.Up:

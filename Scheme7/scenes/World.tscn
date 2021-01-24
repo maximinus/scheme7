@@ -594,56 +594,62 @@ tile_data = PoolIntArray( -458747, 5, 0, -458746, 1, 0, -458744, 1, 0, -458742, 
 [node name="SimpleLight" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 896, 1152 )
 rotation = 4.71239
+cycle_length = 3.0
 strength = 2.0
-max_variation = 0.08
+max_variation = 0.03
 direction = 2
 
 [node name="SimpleLight2" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 0, 896 )
 rotation = 3.14159
-strength = 2.0
-max_variation = 0.08
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 direction = 1
 
 [node name="SimpleLight3" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( -512, 1536 )
 rotation = 1.5708
-cycle_length = 12.0
-strength = 2.0
-max_variation = 0.1
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 direction = 3
 
 [node name="SimpleLight4" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( -512, 1920 )
 rotation = 1.5708
-cycle_length = 12.0
-strength = 2.0
-max_variation = 0.1
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 direction = 3
 
 [node name="SimpleLight5" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 256, 1920 )
 rotation = 3.14159
-strength = 2.0
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 direction = 1
 
 [node name="SimpleLight6" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 512, 1920 )
 rotation = 3.14159
-strength = 2.0
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 direction = 1
 
 [node name="SimpleLight7" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 1408, 2304 )
-cycle_length = 15.0
-strength = 2.0
-max_variation = 0.1
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 
 [node name="SimpleLight8" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 1152, 2304 )
-cycle_length = 15.0
-strength = 2.0
-max_variation = 0.1
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
 
 [node name="Crates" type="Node2D" parent="."]
 
