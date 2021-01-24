@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/landing.png-de462af2678abc1e3a40827ff6fbac26.stex"
+path="res://.import/remains.png-88ee2b1f0d42a84494b4f91fafc8478e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/objects/landing.png"
-dest_files=[ "res://.import/landing.png-de462af2678abc1e3a40827ff6fbac26.stex" ]
+source_file="res://gfx/objects/simple_light/remains.png"
+dest_files=[ "res://.import/remains.png-88ee2b1f0d42a84494b4f91fafc8478e.stex" ]
 
 [params]
 

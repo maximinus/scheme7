@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://gfx/objects/landing.png" type="Texture" id=1]
+[ext_resource path="res://gfx/objects/landing_pad/landing.png" type="Texture" id=1]
 [ext_resource path="res://gfx/lights/landing_light.png" type="Texture" id=2]
 [ext_resource path="res://scenes/LevelObjects/Lander/Lander.gd" type="Script" id=3]
 

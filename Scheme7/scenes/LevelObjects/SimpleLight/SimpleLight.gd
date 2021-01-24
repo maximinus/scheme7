@@ -9,6 +9,7 @@ export var max_variation : float = 0.2
 export(ORIENTATION) var direction = ORIENTATION.Up setget setDirection
 
 var now : float = 0.0
+var broken : bool = false
 
 
 func _ready():
@@ -38,4 +39,25 @@ func setDirection(direct):
 	direction = direct
 
 func collide(velocity):
-	print('I was hit')
+	if broken == true:
+		# already done
+		return
+	# hide everything
+	$Sprite.hide()
+	$Light2D.hide()
+	$Remains.show()
+	$CollisionShape2D.set_deferred('disabled', true)
+	$CollisionShape2D2.set_deferred('disabled', true)
+	# start the particles
+	$Explosion/Debris2.emitting = true
+	$Explosion/Debris3.emitting = true
+	$Explosion/Debris4.emitting = true
+	# start timer
+	$DestroySFX.play()
+	$Explosion/Timer.start()
+
+func _on_Timer_timeout():
+	$Explosion/Debris2.emitting = false
+	$Explosion/Debris3.emitting = false
+	$Explosion/Debris4.emitting = false
+	$DestroySFX.stop()

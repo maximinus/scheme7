@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/light.png-08d62a55af5246e2f1e371593b7dd871.stex"
+path="res://.import/debris2.png-31f8e07b3ce6147659310360158ace7a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/objects/light.png"
-dest_files=[ "res://.import/light.png-08d62a55af5246e2f1e371593b7dd871.stex" ]
+source_file="res://gfx/objects/simple_light/debris2.png"
+dest_files=[ "res://.import/debris2.png-31f8e07b3ce6147659310360158ace7a.stex" ]
 
 [params]
 
@@ -20,8 +20,8 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
-flags/mipmaps=true
+flags/filter=false
+flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2
 process/fix_alpha_border=true
