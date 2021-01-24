@@ -15,69 +15,69 @@ TODO:
 24th Jan:
 	* Add gunfire from the ship
 	Improve the SFX, and try music
-	Handle the player entrance on the scene at the start (like a teleport animation)
+	* Handle the player entrance on the scene at the start (like a teleport animation)
 
 	Add data transfer animation
-	Add mission objectives as text overlay (setup from global data object)
+	* Add mission objectives as text overlay (setup from global data object)
 
 	Add a menu to the pause
 
 - 29th Jan?
 
-Handle the winning situation
-Model the rocket and player as objects exposed globally and cleanup code
+	Handle the winning situation
+	Model the rocket and player as objects exposed globally and cleanup code
 
-Add a terminal text choice screen
+	Add a terminal text choice screen
 
 - 5th Feb?
 
-Add some dialog
-	The character is the human tester from a long time ago
-Add some tutorial levels.
-	This needs practice levels that have a heavy shader to look virtual
+	Add some dialog
+		The character is the human tester from a long time ago
+	Add some tutorial levels.
+		This needs practice levels that have a heavy shader to look virtual
 
 - 12 Feb?
 
-Add "stuff" to the levels
-	Doors
-	Blowers and suckers
-	Enemy guns
-	Keys and downloading
+	Add "stuff" to the levels
+		Doors
+		Blowers and suckers
+		Enemy guns
+		Keys and downloading
 
 - 19th Feb?
 
-Enable types of rockets
-	Let the player test everything virtually
+	Enable types of rockets
+		Let the player test everything virtually
 
 - 26th Feb?
 
-Add screen to edit rocket
-	This means we start to establise a rhythm to the game
-		Bit of story.
-		Set up rocket.
-		Mission.
-		Mission Results.
-		Repeat.
-	We have a simple 1 and a better 3 here, so add 2
+	Add screen to edit rocket
+		This means we start to establise a rhythm to the game
+			Bit of story.
+			Setup rocket.
+			Mission.
+			Mission Results.
+			Repeat.
+		We have a simple 1 and a better 3 here, so add 2
 
 - 12th March?
 
-Add results screen
-	This is 4
-Add structure to handle the above repeats in code
-	Add time
+	Add results screen
+		This is 4
+	Add structure to handle the above repeats in code
+		Add time
 
 - 19th March?
 
-Do a cutscene
-Add the scene to decide where to go next
+	Do a cutscene
+	Add the scene to decide where to go next
 
 - 26th March?
 
-Plan out the first part of the story up to AI discovery
+	Plan out the first part of the story up to AI discovery
 
 - 2nd April?
 
-Work out a plan to make grinding interesting
+	Work out a plan to make grinding interesting
 
 - 9th April?
