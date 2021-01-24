@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://scenes/Levels/MapTiles.tres" type="TileSet" id=4]
 [ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/PlayerUI/controls/heat_dial/HeatDial.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/Animations/Teleport/TeleportScene.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/LevelObjects/Lander/Lander.tscn" type="PackedScene" id=10]
@@ -160,15 +161,23 @@ strength = 1.5
 max_variation = 0.03
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 592, 1200 )
+position = Vector2( 512, 1024 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true
 smoothing_enabled = true
 
+[node name="Lander" parent="." instance=ExtResource( 10 )]
+position = Vector2( 1224, 2304 )
+
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
 color = Color( 0.101961, 0.113725, 0.129412, 1 )
 
-[node name="Lander" parent="." instance=ExtResource( 10 )]
-position = Vector2( 1224, 2304 )
+[node name="TeleportScene" parent="." instance=ExtResource( 7 )]
+
+[node name="TeleportTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+autostart = true
+[connection signal="timeout" from="TeleportTimer" to="." method="_on_TeleportTimer_timeout"]

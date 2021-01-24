@@ -2,7 +2,8 @@ Programming / Design / Art unless otherwise specified:
     Chris Handy (maximinus@gmail.com)
 
 Graphics:
-    Chris Handy
+    Teleport animation by Hansjörg Malthaner, http://opengameart.org/users/varkalandar
+    
 
 Music:
     Dream 2: Public Domain, by TokyoGeisha
@@ -16,3 +17,4 @@ Music:
 
 Sounds:
 	3 Explosion Bangs Copyright 2012 Iwan 'qubodup' Gabovitch <http://qubodup.net>
+    SFX from Zapsplat

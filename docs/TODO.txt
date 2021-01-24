@@ -13,7 +13,7 @@ TODO:
 - Add ambient light based on these lights
 
 24th Jan:
-	Add gunfire from the ship
+	* Add gunfire from the ship
 	Improve the SFX, and try music
 	Handle the player entrance on the scene at the start (like a teleport animation)
 

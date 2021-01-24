@@ -28,6 +28,7 @@ var turning = 0
 var landing = false
 var landed = false
 var takeoff = false
+var processing = false
 var light_status = LIGHT_STATUS.Off
 
 func _ready():
@@ -35,6 +36,8 @@ func _ready():
 	Globals.battery.fullbeam = false
 
 func _process(delta):
+	if processing == false:
+		return
 	# check rocket functions before movement
 	checkLights()
 	checkLaser()
@@ -49,7 +52,7 @@ func _process(delta):
 		flameOff(delta)
 	
 	if landing == true or landed == true:
-		return;
+		return
 	
 	if Input.is_action_pressed('LeftTurn'):
 		rotation_degrees -= ROTATION_SPEED * delta
@@ -149,7 +152,7 @@ func processLanding(delta):
 		emit_signal('player_landed', position)
 
 func _physics_process(delta):
-	if landed == true:
+	if landed == true or processing == false:
 		return
 	
 	if landing == true:
