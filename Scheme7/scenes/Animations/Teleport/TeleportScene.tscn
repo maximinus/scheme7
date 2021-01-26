@@ -109,6 +109,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Animation/Image:rotation_degrees")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = false
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.7, 2, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0, -720.0, -360.0 ]
+}
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -125,6 +137,7 @@ script = ExtResource( 67 )
 anims/Fade = SubResource( 1 )
 
 [node name="TeleportSFX" type="AudioStreamPlayer2D" parent="Animation"]
+stream = ExtResource( 64 )
 volume_db = 10.0
 attenuation = 0.183011
 

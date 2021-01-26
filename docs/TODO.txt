@@ -19,8 +19,8 @@ TODO:
 
 	Add data transfer animation
 	* Add mission objectives as text overlay (setup from global data object)
-	Add door
-	Update level
+	* Add door
+	* Update level
 
 	- Add a menu to the pause
 
