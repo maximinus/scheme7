@@ -16,4 +16,6 @@ func addMotion():
 func _on_Laser_body_entered(body):
 	if body.is_in_group('breakable'):
 		body.collide(Vector2(0, 0))
+	if body.is_in_group('door'):
+		body.doorHit()
 	queue_free()

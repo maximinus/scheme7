@@ -198,7 +198,9 @@ func _physics_process(delta):
 		if collision.collider.is_in_group('breakable'):
 			# break and remove
 			collision.collider.collide(velocity.length())
-	
+		if collision.collider.is_in_group('door'):
+			collision.collider.doorHit()
+
 	Globals.last_force = velocity
 	if get_slide_count() > 0:
 		var result = get_slide_collision(0)

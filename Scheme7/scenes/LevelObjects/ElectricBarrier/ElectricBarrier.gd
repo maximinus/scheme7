@@ -3,20 +3,53 @@ extends StaticBody2D
 signal electric_contact_start
 signal electric_contact_end
 
+var on = true
+# use this to save status of player when door is off
+var player_inside = false
+
 func _ready():
 	pass
 
 func _on_Area2D_area_entered(area):
 	emit_signal('electric_contact')
 
-
 func _on_Area2D_body_entered(body):
+	if on == false:
+		if body.is_in_group('player'):
+			player_inside = true
+			return
 	if body.is_in_group('breakable'):
 		body.collide(Vector2(0, 0))
 	if body.is_in_group('player'):
 		emit_signal('electric_contact_start')
-
+		player_inside = true
 
 func _on_Area2D_body_exited(body):
+	if on == false:
+		if body.is_in_group('player'):
+			player_inside = false
+			return
 	if body.is_in_group('player'):
 		emit_signal('electric_contact_end')
+		player_inside = false
+
+func doorHit():
+	if on == false:
+		return
+	on = false
+	# turn off electric door and sound
+	$Electric.hide()
+	$SparksTop.hide()
+	$SparksBottom.hide()
+	$ElectricHum.stop()
+	$Timer.start()
+
+func _on_Timer_timeout():
+	$Electric.show()
+	$SparksTop.show()
+	$SparksBottom.show()
+	$ElectricHum.play()
+	on = true
+	# is the player inside?
+	if player_inside == true:
+		emit_signal('electric_contact_start')

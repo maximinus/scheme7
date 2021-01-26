@@ -1,9 +1,8 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.shader" type="Shader" id=1]
 [ext_resource path="res://gfx/objects/electric_barrier/particle.png" type="Texture" id=2]
 [ext_resource path="res://gfx/objects/electric_barrier/overlay.png" type="Texture" id=3]
-[ext_resource path="res://gfx/objects/electric_barrier/light.png" type="Texture" id=4]
 [ext_resource path="res://sfx/level_objects/electric_barrier/electric_hum.wav" type="AudioStream" id=5]
 [ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.gd" type="Script" id=25]
 
@@ -46,7 +45,9 @@ extents = Vector2( 13, 2 )
 [sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 3.9453, 64 )
 
-[node name="ElectricBarrier" type="StaticBody2D"]
+[node name="ElectricBarrier" type="StaticBody2D" groups=[
+"door",
+]]
 position = Vector2( 64, 64 )
 script = ExtResource( 25 )
 
@@ -73,10 +74,6 @@ texture = ExtResource( 2 )
 [node name="Overlay" type="Sprite" parent="."]
 texture = ExtResource( 3 )
 
-[node name="Light2D" type="Light2D" parent="."]
-visible = false
-texture = ExtResource( 4 )
-
 [node name="Button1" type="CollisionShape2D" parent="."]
 position = Vector2( -27, -62 )
 shape = SubResource( 7 )
@@ -94,9 +91,14 @@ shape = SubResource( 8 )
 
 [node name="ElectricHum" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 5 )
-volume_db = -5.0
+volume_db = -3.0
 autoplay = true
 max_distance = 500.0
 attenuation = 1.10957
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
