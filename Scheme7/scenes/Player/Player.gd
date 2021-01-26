@@ -14,6 +14,9 @@ const SHIP_MASS = 5.0
 const FULLBEAM_ENERGY = 2.0
 const LIGHT_ENERGY = 1.0
 
+const ELECTRIC_MOVE_FORCE = 100.0
+const ELECTRIC_TURN_FORCE = 20.0
+
 enum LIGHT_STATUS { Normal, Circle, Off }
 
 signal player_collision
@@ -30,8 +33,11 @@ var landed = false
 var takeoff = false
 var processing = false
 var light_status = LIGHT_STATUS.Off
+var electrified = false
+var electric_meet_force = Vector2(0.0, 0.0)
 
 func _ready():
+	randomize()
 	Globals.battery.lights = false
 	Globals.battery.fullbeam = false
 
@@ -58,6 +64,9 @@ func _process(delta):
 		rotation_degrees -= ROTATION_SPEED * delta
 	if Input.is_action_pressed('RightTurn'):
 		rotation_degrees += ROTATION_SPEED * delta
+	
+	if electrified == true:
+		rotation += rand_range(-ELECTRIC_TURN_FORCE, ELECTRIC_TURN_FORCE) * delta
 	
 	if turning != 0:
 		rotation_degrees += turning
@@ -167,6 +176,17 @@ func _physics_process(delta):
 		velocity += getForceVector()
 	if takeoff == true:
 		velocity += TAKEOFF_INJECTION
+	
+	if electrified == true:
+		if electric_meet_force.x > 0:
+			velocity.x -= rand_range(0, ELECTRIC_MOVE_FORCE)
+		else:
+			velocity.x += rand_range(0, ELECTRIC_MOVE_FORCE)
+		if electric_meet_force.y > 0:
+			velocity.y -= rand_range(0, ELECTRIC_MOVE_FORCE)
+		else:
+			velocity.y += rand_range(0, ELECTRIC_MOVE_FORCE)
+
 	updateCameraZoom()
 	move_and_slide(velocity, Vector2(0, 0), false, 4, 0.785398, false)
 	
@@ -286,3 +306,14 @@ func flameOff(delta):
 	$Flame/OuterParticle.emitting = false
 	$Flame/InnerParticle.emitting = false
 	$RocketSound.stop()
+
+func _on_ElectricBarrier_electric_contact_end():
+	electrified = false
+	if $ElectricCollision.playing == true:
+		$ElectricCollision.stop()
+
+func _on_ElectricBarrier_electric_contact_start():
+	electrified = true
+	electric_meet_force = velocity
+	if $ElectricCollision.playing == false:
+		$ElectricCollision.play()

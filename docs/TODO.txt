@@ -12,31 +12,39 @@ TODO:
 - Add a battery rocket thrust
 - Add ambient light based on these lights
 
-24th Jan:
+29th Jan:
 	* Add gunfire from the ship
-	Improve the SFX, and try music
+	- Improve the SFX, and try music
 	* Handle the player entrance on the scene at the start (like a teleport animation)
 
 	Add data transfer animation
 	* Add mission objectives as text overlay (setup from global data object)
+	Add door
+	Update level
 
-	Add a menu to the pause
+	- Add a menu to the pause
 
-- 29th Jan?
+- 5th Feb?
 
 	Handle the winning situation
 	Model the rocket and player as objects exposed globally and cleanup code
+		AKA "Decide what the boundary is"
 
 	Add a terminal text choice screen
+		Make it the start scene
 
-- 5th Feb?
+	Make second level
+		Now have Terminal > Level > Terminal > Level
+		If you die, go back to start of level
+
+- 12th Feb?
 
 	Add some dialog
 		The character is the human tester from a long time ago
 	Add some tutorial levels.
 		This needs practice levels that have a heavy shader to look virtual
 
-- 12 Feb?
+- 19th Feb?
 
 	Add "stuff" to the levels
 		Doors
@@ -44,12 +52,12 @@ TODO:
 		Enemy guns
 		Keys and downloading
 
-- 19th Feb?
+- 26th Feb?
 
 	Enable types of rockets
 		Let the player test everything virtually
 
-- 26th Feb?
+- 5th Feb?
 
 	Add screen to edit rocket
 		This means we start to establise a rhythm to the game

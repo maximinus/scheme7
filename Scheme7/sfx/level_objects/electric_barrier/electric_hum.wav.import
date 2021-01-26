@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/electric_hum.wav-8ac77b108fbf7287a5a38a5e10710b81.sample"
+
+[deps]
+
+source_file="res://sfx/level_objects/electric_barrier/electric_hum.wav"
+dest_files=[ "res://.import/electric_hum.wav-8ac77b108fbf7287a5a38a5e10710b81.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=true
+edit/loop=true
+compress/mode=0

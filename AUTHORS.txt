@@ -2,7 +2,8 @@ Programming / Design / Art unless otherwise specified:
     Chris Handy (maximinus@gmail.com)
 
 Graphics:
-    Teleport animation by Hansjörg Malthaner, http://opengameart.org/users/varkalandar
+    Teleport animation by Hansjörg Malthaner
+        http://opengameart.org/users/varkalandar
     
 
 Music:
@@ -18,3 +19,5 @@ Music:
 Sounds:
 	3 Explosion Bangs Copyright 2012 Iwan 'qubodup' Gabovitch <http://qubodup.net>
     SFX from Zapsplat
+    Electrib Hum by Hansjörg Malthaner
+        http://opengameart.org/users/varkalandar 
