@@ -14,7 +14,7 @@ const SHIP_MASS = 5.0
 const FULLBEAM_ENERGY = 2.0
 const LIGHT_ENERGY = 1.0
 
-const ELECTRIC_MOVE_FORCE = 100.0
+const ELECTRIC_MOVE_FORCE = 50.0
 const ELECTRIC_TURN_FORCE = 20.0
 
 enum LIGHT_STATUS { Normal, Circle, Off }
@@ -296,6 +296,7 @@ func flameOn(delta):
 	firing_rocket = true
 	$FlameLight.visible = true
 	Globals.rocket.update(1.0, delta)
+	Globals.fuel.update(delta, true)
 	$Flame/OuterParticle.emitting = true
 	$Flame/InnerParticle.emitting = true
 	if $RocketSound.playing == false:
@@ -305,6 +306,7 @@ func flameOff(delta):
 	firing_rocket = false
 	$FlameLight.visible = false
 	Globals.rocket.update(0.0, delta)
+	Globals.fuel.update(delta, false)
 	$Flame/OuterParticle.emitting = false
 	$Flame/InnerParticle.emitting = false
 	$RocketSound.stop()

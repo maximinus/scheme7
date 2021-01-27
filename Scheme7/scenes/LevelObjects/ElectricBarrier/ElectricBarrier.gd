@@ -10,14 +10,11 @@ var player_inside = false
 func _ready():
 	pass
 
-func _on_Area2D_area_entered(area):
-	emit_signal('electric_contact')
-
 func _on_Area2D_body_entered(body):
 	if on == false:
 		if body.is_in_group('player'):
 			player_inside = true
-			return
+		return
 	if body.is_in_group('breakable'):
 		body.collide(Vector2(0, 0))
 	if body.is_in_group('player'):
@@ -25,15 +22,18 @@ func _on_Area2D_body_entered(body):
 		player_inside = true
 
 func _on_Area2D_body_exited(body):
-	if on == false:
-		if body.is_in_group('player'):
-			player_inside = false
-			return
 	if body.is_in_group('player'):
-		emit_signal('electric_contact_end')
-		player_inside = false
+		if on == false:
+			player_inside = false
+		else:
+			emit_signal('electric_contact_end')
+			player_inside = false
 
 func doorHit():
+	# if the button is hit when a player is inside, do nothing
+	if player_inside == true:
+		return
+	# already off? do nothing
 	if on == false:
 		return
 	on = false

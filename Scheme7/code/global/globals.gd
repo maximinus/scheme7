@@ -57,10 +57,37 @@ class BatteryCharge:
 				drain += FULLBEAM_COST
 		charge = max(0, charge)
 
+class FuelTank:
+	const STARTING_FUEL = 1000.0
+	const ROCKET_CONSUMPTION = 50.0
+	
+	var fuel = STARTING_FUEL
+	var burning = false
+	
+	func _init():
+		pass
+	
+	func fuelLeft():
+		return fuel / STARTING_FUEL
+	
+	func currentDrain():
+		# always max if rocket is on
+		if burning == true:
+			return 1.0
+		else:
+			return 0.0
+	
+	func update(delta, rocket_on):
+		if rocket_on == true:
+			fuel = max(0, fuel - (ROCKET_CONSUMPTION * delta))
+			burning = true
+		else:
+			burning = false
 
 var last_force = Vector2(0, 0)
 var rocket = RocketTemperature.new(0, 0)
 var battery = BatteryCharge.new()
+var fuel = FuelTank.new()
 
 func _ready():
 	pass
