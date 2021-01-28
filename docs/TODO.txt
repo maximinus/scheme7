@@ -21,6 +21,8 @@ TODO:
 	* Add mission objectives as text overlay (setup from global data object)
 	* Add door
 	* Update level
+	  Add fuel gauge
+	  Add shields
 
 	- Add a menu to the pause
 

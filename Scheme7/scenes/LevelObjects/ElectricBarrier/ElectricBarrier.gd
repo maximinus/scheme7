@@ -39,16 +39,12 @@ func doorHit():
 	on = false
 	# turn off electric door and sound
 	$Electric.hide()
-	$SparksTop.hide()
-	$SparksBottom.hide()
-	$ElectricHum.stop()
+	$ElectricHum.pitch_scale = 1.2
 	$Timer.start()
 
 func _on_Timer_timeout():
 	$Electric.show()
-	$SparksTop.show()
-	$SparksBottom.show()
-	$ElectricHum.play()
+	$ElectricHum.pitch_scale = 1.0
 	on = true
 	# is the player inside?
 	if player_inside == true:
