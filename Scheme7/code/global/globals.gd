@@ -58,7 +58,7 @@ class BatteryCharge:
 		charge = max(0, charge)
 
 class FuelTank:
-	const STARTING_FUEL = 1000.0
+	const STARTING_FUEL = 5000.0
 	const ROCKET_CONSUMPTION = 50.0
 	
 	var fuel = STARTING_FUEL
@@ -70,7 +70,7 @@ class FuelTank:
 	func fuelLeft():
 		return fuel / STARTING_FUEL
 	
-	func currentDrain():
+	func fuelDrain():
 		# always max if rocket is on
 		if burning == true:
 			return 1.0
@@ -83,6 +83,11 @@ class FuelTank:
 			burning = true
 		else:
 			burning = false
+
+	func haveFuel():
+		if fuelLeft() <= 0.0:
+			return false
+		return true
 
 var last_force = Vector2(0, 0)
 var rocket = RocketTemperature.new(0, 0)

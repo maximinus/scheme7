@@ -48,7 +48,7 @@ func _process(delta):
 	checkLights()
 	checkLaser()
 
-	if Input.is_action_pressed('Thrust'):
+	if Input.is_action_pressed('Thrust') and Globals.fuel.haveFuel():
 		landing = false
 		if landed == true:
 			landed = false

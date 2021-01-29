@@ -28,8 +28,11 @@ func displayBattery(delta):
 
 func displayFuel(delta):
 	var fuel_left = Globals.fuel.fuelLeft()
-	var drain = Globals.fuel.currentDrain()
+	var drain = Globals.fuel.fuelDrain()
 	
 	var pos = drain * DIAL_WIDTH
+	$Fuel/FuelIndicator.position.x = pos
+	$Fuel/FuelLevelThick.region_rect.end.x = pos
+	
 	var blocks = int(ceil(fuel_left * BLOCKS))
 	$Fuel/FuelLevel.region_rect.end.x = max(0, (blocks * BLOCK_WIDTH) - 3)
