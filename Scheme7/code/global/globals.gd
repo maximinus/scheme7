@@ -90,18 +90,27 @@ class FuelTank:
 		return true
 
 class Shield:
-	const STARTING_SHIELD = 1000.0
-	const STARTING_STRUCT = 700.0
-	const STARTING_INTERNALS = 1000.0
+	const MAX_SHIELD = 1000.0
+	const MAX_STRUCT = 700.0
+	const MAX_INTERNALS = 1000.0
 	
-	var shield = STARTING_SHIELD
-	var struct = STARTING_STRUCT
-	var internals = STARTING_INTERNALS
+	var shield = 0
+	var struct = MAX_STRUCT
+	var internals = MAX_INTERNALS
 	
 	func update(player, collider):
 		# called when a collision happens
 		# we need the speed of the object and the player
 		var speed = abs(player.x) + abs(player.y)
+	
+	func getShield():
+		return shield / MAX_SHIELD
+	
+	func getStruct():
+		return struct / MAX_STRUCT
+	
+	func getInternals():
+		return internals / MAX_INTERNALS
 	
 	func _init():
 		pass
