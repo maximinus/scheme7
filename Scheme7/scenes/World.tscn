@@ -13,7 +13,7 @@
 [ext_resource path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.tscn" type="PackedScene" id=12]
 [ext_resource path="res://scenes/LevelObjects/ExitDoor/ExitDoor.tscn" type="PackedScene" id=13]
-[ext_resource path="res://scenes/PlayerUI/controls/fuel_dial/FuelDial.tscn" type="PackedScene" id=14]
+[ext_resource path="res://scenes/PlayerUI/controls/fuel_dial/ShieldDial.tscn" type="PackedScene" id=14]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -97,7 +97,7 @@ position = Vector2( 120, 550 )
 [node name="BatteryLevel" parent="UILayer" instance=ExtResource( 8 )]
 position = Vector2( 20, 20 )
 
-[node name="FuelDial" parent="UILayer" instance=ExtResource( 14 )]
+[node name="ShieldDial" parent="UILayer" instance=ExtResource( 14 )]
 position = Vector2( 657, 20 )
 
 [node name="MissionObjectives" parent="UILayer" instance=ExtResource( 11 )]

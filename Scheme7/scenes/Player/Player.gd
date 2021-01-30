@@ -47,6 +47,9 @@ func _process(delta):
 	# check rocket functions before movement
 	checkLights()
 	checkLaser()
+	
+	# update sprite damage
+	$Image.frame = Globals.shield.getDamageFrame()
 
 	if Input.is_action_pressed('Thrust') and Globals.fuel.haveFuel():
 		landing = false
