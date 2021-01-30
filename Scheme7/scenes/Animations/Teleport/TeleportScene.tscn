@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=2]
+[gd_scene load_steps=76 format=2]
 
 [ext_resource path="res://gfx/sprites/teleport/portal29.png" type="Texture" id=1]
 [ext_resource path="res://gfx/sprites/teleport/portal28.png" type="Texture" id=2]
@@ -67,6 +67,7 @@
 [ext_resource path="res://gfx/sprites/teleport/portal05.png" type="Texture" id=65]
 [ext_resource path="res://gfx/sprites/player.png" type="Texture" id=66]
 [ext_resource path="res://scenes/Animations/Teleport/TeleportScene.gd" type="Script" id=67]
+[ext_resource path="res://scenes/Animations/Teleport/teleport.shader" type="Shader" id=68]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Fade"
@@ -130,6 +131,35 @@ animations = [ {
 "speed": 32.0
 } ]
 
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 68 )
+shader_param/speed = 5.0
+shader_param/fade_size = 2.2
+shader_param/line_color = Color( 0.741176, 0.368627, 0.203922, 1 )
+
+[sub_resource type="OpenSimplexNoise" id=3]
+seed = 3
+octaves = 1
+period = 9.0
+persistence = 0.0
+
+[sub_resource type="NoiseTexture" id=4]
+width = 200
+height = 200
+seamless = true
+noise = SubResource( 3 )
+
+[sub_resource type="Shader" id=6]
+code = "shader_type canvas_item;
+
+void fragment() {
+    COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0);
+}
+"
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = SubResource( 6 )
+
 [node name="TeleportScene" type="Node2D"]
 script = ExtResource( 67 )
 
@@ -150,4 +180,21 @@ playing = true
 [node name="PlayerImage" type="Sprite" parent="Animation"]
 self_modulate = Color( 1, 1, 1, 0 )
 texture = ExtResource( 66 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 66 )
+
+[node name="LineAnimation" type="Sprite" parent="."]
+material = SubResource( 5 )
+texture = SubResource( 4 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource( 7 )
+margin_left = -128.0
+margin_top = -128.0
+margin_right = 128.0
+margin_bottom = 128.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="animation_finished" from="Animation" to="." method="_on_Animation_animation_finished"]
