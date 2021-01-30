@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 const ROTATION_SPEED = 120.0
-const GRAVITY_VECTOR = Vector2(0, 0.3)
+const GRAVITY_VECTOR = Vector2(0, 5.0)
 const TAKEOFF_INJECTION = Vector2(0, -20.0)
 const ROCKET_FORCE = 1.6
 const BOUNCE = 0.5
@@ -151,8 +151,8 @@ func processLanding(delta):
 		xspeed /= LANDING_X_SLOWDOWN
 		if abs(xspeed) < 0.1:
 			xspeed = 0.0
-	velocity.x = xspeed
-	velocity += GRAVITY_VECTOR
+	velocity.x = xspeed	
+	velocity += GRAVITY_VECTOR * delta
 	var collision = move_and_collide(velocity * delta)
 	# did we collide?
 	if collision == null:
@@ -174,7 +174,7 @@ func _physics_process(delta):
 	# apply gravity and move
 	# don't apply on takeoff
 	if takeoff == false:
-		velocity += GRAVITY_VECTOR
+		velocity += GRAVITY_VECTOR * delta
 	if firing_rocket == true:
 		velocity += getForceVector()
 	if takeoff == true:
