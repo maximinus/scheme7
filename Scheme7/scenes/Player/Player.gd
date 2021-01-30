@@ -178,6 +178,7 @@ func _physics_process(delta):
 		velocity += TAKEOFF_INJECTION
 	
 	if electrified == true:
+		# force is opposite to current movement
 		if electric_meet_force.x > 0:
 			velocity.x -= rand_range(0, ELECTRIC_MOVE_FORCE)
 		else:
@@ -193,6 +194,7 @@ func _physics_process(delta):
 	# push all the bodies
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
+		Globals.shield.update(velocity, collision.collider_velocity)
 		if collision.collider.is_in_group('Bodies'):
 			collision.collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
 		if collision.collider.is_in_group('breakable'):

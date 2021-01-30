@@ -89,10 +89,28 @@ class FuelTank:
 			return false
 		return true
 
+class Shield:
+	const STARTING_SHIELD = 1000.0
+	const STARTING_STRUCT = 700.0
+	const STARTING_INTERNALS = 1000.0
+	
+	var shield = STARTING_SHIELD
+	var struct = STARTING_STRUCT
+	var internals = STARTING_INTERNALS
+	
+	func update(player, collider):
+		# called when a collision happens
+		# we need the speed of the object and the player
+		var speed = abs(player.x) + abs(player.y)
+	
+	func _init():
+		pass
+
 var last_force = Vector2(0, 0)
 var rocket = RocketTemperature.new(0, 0)
 var battery = BatteryCharge.new()
 var fuel = FuelTank.new()
+var shield = Shield.new()
 
 func _ready():
 	pass
