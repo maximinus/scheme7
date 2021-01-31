@@ -8,6 +8,9 @@ func _ready():
 	last_temp = Globals.rocket.nozzle_temp
 
 func _process(delta):
+	if delta <= 0:
+		return
+	
 	# the bar is for the nozzle temp
 	# get range and convert
 	var bar_length = (Globals.rocket.nozzle_temp / Globals.RocketTemperature.MAX_NOZZLE_TEMP) * 0.9

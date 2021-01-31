@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/player_death_alarm.wav-8c539495c50f883fe60188405adc09a8.sample"
+
+[deps]
+
+source_file="res://sfx/player/player_death_alarm.wav"
+dest_files=[ "res://.import/player_death_alarm.wav-8c539495c50f883fe60188405adc09a8.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=true
+edit/loop=true
+compress/mode=0

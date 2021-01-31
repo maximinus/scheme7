@@ -42,6 +42,20 @@ func _ready():
 	Globals.battery.lights = false
 	Globals.battery.fullbeam = false
 
+func reset():
+	velocity = Vector2(0.0, 0.0)
+	rotation = 0.0
+	firing_rocket = false
+	turning = 0
+	landing = false
+	landed = false
+	takeoff = false
+	light_status = LIGHT_STATUS.Off
+	electrified = false
+	electric_meet_force = Vector2(0.0, 0.0)
+	$Image.frame = 0
+	Globals.reset()
+
 func _process(delta):
 	if processing == false:
 		return
@@ -210,6 +224,10 @@ func _physics_process(delta):
 
 	if dead == true:
 		# we are dead, raise the signal and finish
+		# kill all sounds and animations
+		flameOff(0.1)
+		$RocketSound.stop()
+		$ElectricCollision.stop()
 		emit_signal('player_dead')
 		return
 

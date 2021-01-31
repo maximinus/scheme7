@@ -23,6 +23,10 @@ class RocketTemperature:
 		else:
 			nozzle_temp += (energy * NOZZLE_HEATING) * delta
 			injection_temp += (energy * INJECTION_HEATING) * delta
+	
+	func reset():
+		nozzle_temp = 0
+		injection_temp = 0
 
 
 class BatteryCharge:
@@ -57,6 +61,12 @@ class BatteryCharge:
 				drain += FULLBEAM_COST
 		charge = max(0, charge)
 
+	func reset():
+		lights = false
+		fullbeam = false
+		charge = MAX_CHARGE
+		drain = 0
+
 class FuelTank:
 	const STARTING_FUEL = 5000.0
 	const ROCKET_CONSUMPTION = 50.0
@@ -88,6 +98,10 @@ class FuelTank:
 		if fuelLeft() <= 0.0:
 			return false
 		return true
+
+	func reset():
+		fuel = STARTING_FUEL
+		burning = false
 
 class Shield:
 	# shield - an electrical shield to protect
@@ -123,17 +137,14 @@ class Shield:
 		var speed = abs(player.x) + abs(player.y)
 		if speed == last_speed:
 			# ignore this extra collision
-			return
+			return internals <= 0
 		if speed <= SPEED_CUTOFF:
 			# not fast enough to cause damage
-			return
+			return internals <= 0
 		# damage is half the speed
 		updateDamage(speed * SPEED_DAMAGE_RATIO)
 		last_speed = speed
-		if internals <= 0:
-			# we are dead
-			return true
-		return false
+		return internals <= 0
 	
 	func updateDamage(damage_amount):
 		if struct <= 0:
@@ -178,12 +189,21 @@ class Shield:
 		# worst damage
 		return 6
 
+	func reset():
+		shield = 0
+		struct = MAX_STRUCT
+		internals = MAX_INTERNALS
+		last_speed = 0
+
 class EnergyShield:
 	func _init():
 		pass
 	
 	func canUse():
 		return false
+	
+	func reset():
+		pass
 
 class Gun:
 	func _init():
@@ -191,6 +211,9 @@ class Gun:
 	
 	func canFire():
 		return true
+		
+	func reset():
+		pass
 
 class Player:
 	var rocket = RocketTemperature.new(0, 0)
@@ -204,33 +227,14 @@ class Player:
 		pass
 		
 	func calculateSystemFailure(speed, position):
-		# Energy Shield (Resilient, so low chance)
-		#	How do you damage an energy shield?
-		#		Only by non-shield knocks
-		#		Things are pushed out of alignment
-		#	- Stops working
-		#	- Always on
-		# Battery (worse with side damage)
-		#	- Stops working
-		#	- Drain increased
-		#	- Storage decreased
-		#	- Lights don't work
-		# Computer (only on high impact)
-		#	Caused by shorts and interface damage
-		#	So the dial is not actually broken, but it cannot read any data
-		#	Easiest to just grey out the display, likely
-		#	- Dials stop working
-		#	- Lights stuck on
-		#	- Flickering lights
-		# Rocket (only on damage to rear of ship)
-		#	- Nozzle angle changes
-		#	- Lower power
-		#	- Stuck on full power
-		#	- Intermittent operation
-		# Gun (only on damage to front of ship)
-		#	- Can't Fire
-		#	- Constant Fire
 		pass
+
+func reset():
+	last_force = Vector2(0, 0)
+	rocket.reset()
+	battery.reset()
+	fuel.reset()
+	shield.reset()
 
 var last_force = Vector2(0, 0)
 var rocket = RocketTemperature.new(0, 0)

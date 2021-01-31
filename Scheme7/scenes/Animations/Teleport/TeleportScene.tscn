@@ -5,7 +5,7 @@
 [ext_resource path="res://scenes/Animations/Teleport/TeleportScene.gd" type="Script" id=67]
 [ext_resource path="res://scenes/Animations/Teleport/teleport.shader" type="Shader" id=68]
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=1]
 resource_name = "Teleport"
 length = 2.0
 tracks/0/type = "bezier"
@@ -79,26 +79,26 @@ tracks/6/keys = {
 "times": PoolRealArray( 0, 2 )
 }
 
-[sub_resource type="ShaderMaterial" id=3]
+[sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 68 )
 shader_param/speed = 1.0
 shader_param/fade_size = 1.0
 shader_param/gap = 0.0
 shader_param/line_color = Color( 0.737255, 0.403922, 0.133333, 1 )
 
-[sub_resource type="OpenSimplexNoise" id=4]
+[sub_resource type="OpenSimplexNoise" id=3]
 seed = 3
 octaves = 1
 period = 9.0
 persistence = 0.0
 
-[sub_resource type="NoiseTexture" id=5]
+[sub_resource type="NoiseTexture" id=4]
 width = 200
 height = 200
 seamless = true
-noise = SubResource( 4 )
+noise = SubResource( 3 )
 
-[sub_resource type="Shader" id=6]
+[sub_resource type="Shader" id=5]
 code = "shader_type canvas_item;
 render_mode unshaded;
 
@@ -109,25 +109,25 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=7]
-shader = SubResource( 6 )
+[sub_resource type="ShaderMaterial" id=6]
+shader = SubResource( 5 )
 shader_param/blur = 5.0
 
 [node name="TeleportScene" type="Node2D"]
 script = ExtResource( 67 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Teleport = SubResource( 8 )
+anims/Teleport = SubResource( 1 )
 
 [node name="LineAnimation" type="Sprite" parent="Animation"]
-material = SubResource( 3 )
-texture = SubResource( 5 )
+material = SubResource( 2 )
+texture = SubResource( 4 )
 
 [node name="Sprite" type="Sprite" parent="Animation"]
 texture = ExtResource( 66 )
 
 [node name="ColorRect" type="ColorRect" parent="Animation"]
-material = SubResource( 7 )
+material = SubResource( 6 )
 margin_left = -128.0
 margin_top = -128.0
 margin_right = 128.0

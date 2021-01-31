@@ -1,0 +1,82 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://gfx/gui/death_notice/title.png" type="Texture" id=1]
+[ext_resource path="res://gfx/gui/death_notice/title_border.png" type="Texture" id=2]
+[ext_resource path="res://scenes/PlayerUI/DeathNotice/DeathNotice.gd" type="Script" id=3]
+[ext_resource path="res://sfx/player/player_death_alarm.wav" type="AudioStream" id=4]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float blur_amount : hint_range(0, 5);
+
+void fragment() {
+	COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur_amount);
+}
+"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/blur_amount = 1.0
+
+[sub_resource type="Animation" id=3]
+resource_name = "fade"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeAnimation/CanvasModulate:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0, 0, 0, 1 ) ]
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("FadeAnimation/AudioStreamPlayer:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, -20, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2 )
+}
+
+[node name="DeathNotice" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource( 2 )
+margin_right = 1024.0
+margin_bottom = 600.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Border" type="Sprite" parent="."]
+position = Vector2( 512, 300 )
+texture = ExtResource( 2 )
+
+[node name="Title" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+offset = Vector2( 512, 300 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="StartPause" type="Timer" parent="."]
+one_shot = true
+
+[node name="FadeAnimation" type="AnimationPlayer" parent="."]
+anims/fade = SubResource( 3 )
+
+[node name="CanvasModulate" type="CanvasModulate" parent="FadeAnimation"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="FadeAnimation"]
+stream = ExtResource( 4 )
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="timeout" from="StartPause" to="." method="_on_StartPause_timeout"]
+[connection signal="animation_finished" from="FadeAnimation" to="." method="_on_AnimationPlayer_animation_finished"]
