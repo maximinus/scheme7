@@ -16,21 +16,54 @@ TODO:
 	* Add gunfire from the ship
 	- Improve the SFX, and try music
 	* Handle the player entrance on the scene at the start (like a teleport animation)
-
-	Add data transfer animation
 	* Add mission objectives as text overlay (setup from global data object)
 	* Add door
 	* Update level
 	* Add fuel gauge
 	* Add shield gauge
 
-	- Add a menu to the pause
-
 - 5th Feb?
 
+	Aka "Make the rocket better"
+
+	Add particles that move away from your force
+	Tidy up colour of flame
+	Allow to change flame size easily
+	Add system failures
+		What can fail:
+			Energy Shield (Resilient, so low chance)
+				How do you damage an energy shield?
+					Only by non-shield knocks
+					Things are pushed out of alignment
+				- Stops working
+				- Always on
+			Battery (worse with side damage)
+				- Stops working
+				- Lights don't work
+			Computer (only on high impact)
+				Caused by shorts and interface damage
+				So the dial is not actually broken, but it cannot read any data
+				Easiest to just grey out the display, likely
+				- Dials stop working
+				- Lights stuck on
+			Rocket (only on damage to rear of ship)
+				- Nozzle angle changes
+				- Lower power
+				- Stuck on full power
+				- Intermittent operation
+			Gun (only on damage to front of ship)
+				- Can't Fire
+				- Constant Fire
+
+	Add a menu to the pause
+	Add energy shield
+	Add data transfer animation
 	Handle the winning situation
+
 	Model the rocket and player as objects exposed globally and cleanup code
 		AKA "Decide what the boundary is"
+
+- 12th Feb?
 
 	Add a terminal text choice screen
 		Make it the start scene
@@ -38,8 +71,6 @@ TODO:
 	Make second level
 		Now have Terminal > Level > Terminal > Level
 		If you die, go back to start of level
-
-- 12th Feb?
 
 	Add some dialog
 		The character is the human tester from a long time ago

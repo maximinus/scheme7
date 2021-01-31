@@ -112,7 +112,10 @@ class Shield:
 	var struct = MAX_STRUCT
 	var internals = MAX_INTERNALS
 	var last_speed = 0
-	
+
+	func _init():
+		pass
+
 	func update(player, collider):
 		# called when a collision happens
 		# we need the speed of the object and the player
@@ -170,8 +173,59 @@ class Shield:
 			return 5
 		# worst damage
 		return 6
+
+class EnergyShield:
+	func _init():
+		pass
+	
+	func canUse():
+		return false
+
+class Gun:
+	func _init():
+		pass
+	
+	func canFire():
+		return true
+
+class Player:
+	var rocket = RocketTemperature.new(0, 0)
+	var battery = BatteryCharge.new()
+	var fuel = FuelTank.new()
+	var shield = Shield.new()
+	var energy = EnergyShield.new()
+	var gun = Gun.new()
 	
 	func _init():
+		pass
+		
+	func calculateSystemFailure(speed, position):
+		# Energy Shield (Resilient, so low chance)
+		#	How do you damage an energy shield?
+		#		Only by non-shield knocks
+		#		Things are pushed out of alignment
+		#	- Stops working
+		#	- Always on
+		# Battery (worse with side damage)
+		#	- Stops working
+		#	- Drain increased
+		#	- Storage decreased
+		#	- Lights don't work
+		# Computer (only on high impact)
+		#	Caused by shorts and interface damage
+		#	So the dial is not actually broken, but it cannot read any data
+		#	Easiest to just grey out the display, likely
+		#	- Dials stop working
+		#	- Lights stuck on
+		#	- Flickering lights
+		# Rocket (only on damage to rear of ship)
+		#	- Nozzle angle changes
+		#	- Lower power
+		#	- Stuck on full power
+		#	- Intermittent operation
+		# Gun (only on damage to front of ship)
+		#	- Can't Fire
+		#	- Constant Fire
 		pass
 
 var last_force = Vector2(0, 0)

@@ -1,194 +1,132 @@
-[gd_scene load_steps=76 format=2]
+[gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://gfx/sprites/teleport/portal29.png" type="Texture" id=1]
-[ext_resource path="res://gfx/sprites/teleport/portal28.png" type="Texture" id=2]
-[ext_resource path="res://gfx/sprites/teleport/portal03.png" type="Texture" id=3]
-[ext_resource path="res://gfx/sprites/teleport/portal27.png" type="Texture" id=4]
-[ext_resource path="res://gfx/sprites/teleport/portal31.png" type="Texture" id=5]
-[ext_resource path="res://gfx/sprites/teleport/portal32.png" type="Texture" id=6]
-[ext_resource path="res://gfx/sprites/teleport/portal33.png" type="Texture" id=7]
-[ext_resource path="res://gfx/sprites/teleport/portal35.png" type="Texture" id=8]
-[ext_resource path="res://gfx/sprites/teleport/portal36.png" type="Texture" id=9]
-[ext_resource path="res://gfx/sprites/teleport/portal34.png" type="Texture" id=10]
-[ext_resource path="res://gfx/sprites/teleport/portal37.png" type="Texture" id=11]
-[ext_resource path="res://gfx/sprites/teleport/portal38.png" type="Texture" id=12]
-[ext_resource path="res://gfx/sprites/teleport/portal39.png" type="Texture" id=13]
-[ext_resource path="res://gfx/sprites/teleport/portal40.png" type="Texture" id=14]
-[ext_resource path="res://gfx/sprites/teleport/portal41.png" type="Texture" id=15]
-[ext_resource path="res://gfx/sprites/teleport/portal42.png" type="Texture" id=16]
-[ext_resource path="res://gfx/sprites/teleport/portal43.png" type="Texture" id=17]
-[ext_resource path="res://gfx/sprites/teleport/portal45.png" type="Texture" id=18]
-[ext_resource path="res://gfx/sprites/teleport/portal44.png" type="Texture" id=19]
-[ext_resource path="res://gfx/sprites/teleport/portal46.png" type="Texture" id=20]
-[ext_resource path="res://gfx/sprites/teleport/portal47.png" type="Texture" id=21]
-[ext_resource path="res://gfx/sprites/teleport/portal51.png" type="Texture" id=22]
-[ext_resource path="res://gfx/sprites/teleport/portal52.png" type="Texture" id=23]
-[ext_resource path="res://gfx/sprites/teleport/portal53.png" type="Texture" id=24]
-[ext_resource path="res://gfx/sprites/teleport/portal48.png" type="Texture" id=25]
-[ext_resource path="res://gfx/sprites/teleport/portal49.png" type="Texture" id=26]
-[ext_resource path="res://gfx/sprites/teleport/portal50.png" type="Texture" id=27]
-[ext_resource path="res://gfx/sprites/teleport/portal54.png" type="Texture" id=28]
-[ext_resource path="res://gfx/sprites/teleport/portal56.png" type="Texture" id=29]
-[ext_resource path="res://gfx/sprites/teleport/portal55.png" type="Texture" id=30]
-[ext_resource path="res://gfx/sprites/teleport/portal57.png" type="Texture" id=31]
-[ext_resource path="res://gfx/sprites/teleport/portal58.png" type="Texture" id=32]
-[ext_resource path="res://gfx/sprites/teleport/portal59.png" type="Texture" id=33]
-[ext_resource path="res://gfx/sprites/teleport/portal61.png" type="Texture" id=34]
-[ext_resource path="res://gfx/sprites/teleport/portal60.png" type="Texture" id=35]
-[ext_resource path="res://gfx/sprites/teleport/portal63.png" type="Texture" id=36]
-[ext_resource path="res://gfx/sprites/teleport/portal64.png" type="Texture" id=37]
-[ext_resource path="res://gfx/sprites/teleport/portal62.png" type="Texture" id=38]
-[ext_resource path="res://gfx/sprites/teleport/portal09.png" type="Texture" id=39]
-[ext_resource path="res://gfx/sprites/teleport/portal10.png" type="Texture" id=40]
-[ext_resource path="res://gfx/sprites/teleport/portal06.png" type="Texture" id=41]
-[ext_resource path="res://gfx/sprites/teleport/portal08.png" type="Texture" id=42]
-[ext_resource path="res://gfx/sprites/teleport/portal12.png" type="Texture" id=43]
-[ext_resource path="res://gfx/sprites/teleport/portal13.png" type="Texture" id=44]
-[ext_resource path="res://gfx/sprites/teleport/portal14.png" type="Texture" id=45]
-[ext_resource path="res://gfx/sprites/teleport/portal17.png" type="Texture" id=46]
-[ext_resource path="res://gfx/sprites/teleport/portal16.png" type="Texture" id=47]
-[ext_resource path="res://gfx/sprites/teleport/portal15.png" type="Texture" id=48]
-[ext_resource path="res://gfx/sprites/teleport/portal18.png" type="Texture" id=49]
-[ext_resource path="res://gfx/sprites/teleport/portal19.png" type="Texture" id=50]
-[ext_resource path="res://gfx/sprites/teleport/portal20.png" type="Texture" id=51]
-[ext_resource path="res://gfx/sprites/teleport/portal21.png" type="Texture" id=52]
-[ext_resource path="res://gfx/sprites/teleport/portal22.png" type="Texture" id=53]
-[ext_resource path="res://gfx/sprites/teleport/portal23.png" type="Texture" id=54]
-[ext_resource path="res://gfx/sprites/teleport/portal26.png" type="Texture" id=55]
-[ext_resource path="res://gfx/sprites/teleport/portal25.png" type="Texture" id=56]
-[ext_resource path="res://gfx/sprites/teleport/portal24.png" type="Texture" id=57]
-[ext_resource path="res://gfx/sprites/teleport/portal30.png" type="Texture" id=58]
-[ext_resource path="res://gfx/sprites/teleport/portal07.png" type="Texture" id=59]
-[ext_resource path="res://gfx/sprites/teleport/portal11.png" type="Texture" id=60]
-[ext_resource path="res://gfx/sprites/teleport/portal01.png" type="Texture" id=61]
-[ext_resource path="res://gfx/sprites/teleport/portal02.png" type="Texture" id=62]
-[ext_resource path="res://gfx/sprites/teleport/portal04.png" type="Texture" id=63]
 [ext_resource path="res://sfx/player/teleport.wav" type="AudioStream" id=64]
-[ext_resource path="res://gfx/sprites/teleport/portal05.png" type="Texture" id=65]
 [ext_resource path="res://gfx/sprites/player.png" type="Texture" id=66]
 [ext_resource path="res://scenes/Animations/Teleport/TeleportScene.gd" type="Script" id=67]
 [ext_resource path="res://scenes/Animations/Teleport/teleport.shader" type="Shader" id=68]
 
-[sub_resource type="Animation" id=1]
-resource_name = "Fade"
-length = 3.0
-tracks/0/type = "value"
-tracks/0/path = NodePath("Animation/Image:self_modulate")
+[sub_resource type="Animation" id=8]
+resource_name = "Teleport"
+length = 2.0
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("Animation/ColorRect:material:shader_param/blur")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.7, 2, 3 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+"points": PoolRealArray( 5, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1.5 )
 }
-tracks/1/type = "audio"
-tracks/1/path = NodePath("Animation/TeleportSFX")
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("Animation/LineAnimation:material:shader_param/speed")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"clips": [ {
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource( 64 )
-} ],
-"times": PoolRealArray( 0.7 )
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 6, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1.5 )
 }
-tracks/2/type = "value"
-tracks/2/path = NodePath("Animation/PlayerImage:self_modulate")
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("Animation/LineAnimation:material:shader_param/fade_size")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 1, 1.3, 1.6, 2, 2.4, 3 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 4, -0.25, 0, 0.25, 0, 50, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1.5, 2 )
 }
-tracks/3/type = "value"
-tracks/3/path = NodePath("Animation/Image:rotation_degrees")
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:r")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
-tracks/3/enabled = false
+tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.7, 2, 3 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 0,
-"values": [ 0.0, 360.0, -720.0, -360.0 ]
+"points": PoolRealArray( 0.737255, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2 )
+}
+tracks/4/type = "bezier"
+tracks/4/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:g")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"points": PoolRealArray( 0.403922, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2 )
+}
+tracks/5/type = "bezier"
+tracks/5/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:b")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"points": PoolRealArray( 0.133333, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2 )
+}
+tracks/6/type = "bezier"
+tracks/6/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2 )
 }
 
-[sub_resource type="SpriteFrames" id=2]
-animations = [ {
-"frames": [ ExtResource( 61 ), ExtResource( 62 ), ExtResource( 3 ), ExtResource( 63 ), ExtResource( 65 ), ExtResource( 41 ), ExtResource( 59 ), ExtResource( 42 ), ExtResource( 39 ), ExtResource( 40 ), ExtResource( 60 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 45 ), ExtResource( 48 ), ExtResource( 47 ), ExtResource( 46 ), ExtResource( 49 ), ExtResource( 50 ), ExtResource( 51 ), ExtResource( 52 ), ExtResource( 53 ), ExtResource( 54 ), ExtResource( 57 ), ExtResource( 56 ), ExtResource( 55 ), ExtResource( 4 ), ExtResource( 2 ), ExtResource( 1 ), ExtResource( 58 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 10 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 25 ), ExtResource( 26 ), ExtResource( 27 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 28 ), ExtResource( 30 ), ExtResource( 29 ), ExtResource( 31 ), ExtResource( 32 ), ExtResource( 33 ), ExtResource( 35 ), ExtResource( 34 ), ExtResource( 38 ), ExtResource( 36 ), ExtResource( 37 ) ],
-"loop": false,
-"name": "default",
-"speed": 32.0
-} ]
-
-[sub_resource type="ShaderMaterial" id=5]
+[sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 68 )
-shader_param/speed = 5.0
-shader_param/fade_size = 2.2
-shader_param/line_color = Color( 0.741176, 0.368627, 0.203922, 1 )
+shader_param/speed = 1.0
+shader_param/fade_size = 1.0
+shader_param/gap = 0.0
+shader_param/line_color = Color( 0.737255, 0.403922, 0.133333, 1 )
 
-[sub_resource type="OpenSimplexNoise" id=3]
+[sub_resource type="OpenSimplexNoise" id=4]
 seed = 3
 octaves = 1
 period = 9.0
 persistence = 0.0
 
-[sub_resource type="NoiseTexture" id=4]
+[sub_resource type="NoiseTexture" id=5]
 width = 200
 height = 200
 seamless = true
-noise = SubResource( 3 )
+noise = SubResource( 4 )
 
 [sub_resource type="Shader" id=6]
 code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform float blur;
 
 void fragment() {
-    COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0);
+    COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur);
 }
 "
 
 [sub_resource type="ShaderMaterial" id=7]
 shader = SubResource( 6 )
+shader_param/blur = 5.0
 
 [node name="TeleportScene" type="Node2D"]
 script = ExtResource( 67 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Fade = SubResource( 1 )
+anims/Teleport = SubResource( 8 )
 
-[node name="TeleportSFX" type="AudioStreamPlayer2D" parent="Animation"]
-stream = ExtResource( 64 )
-volume_db = 10.0
-attenuation = 0.183011
+[node name="LineAnimation" type="Sprite" parent="Animation"]
+material = SubResource( 3 )
+texture = SubResource( 5 )
 
-[node name="Image" type="AnimatedSprite" parent="Animation"]
-self_modulate = Color( 1, 1, 1, 0 )
-frames = SubResource( 2 )
-frame = 63
-playing = true
-
-[node name="PlayerImage" type="Sprite" parent="Animation"]
-self_modulate = Color( 1, 1, 1, 0 )
+[node name="Sprite" type="Sprite" parent="Animation"]
 texture = ExtResource( 66 )
 
-[node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 66 )
-
-[node name="LineAnimation" type="Sprite" parent="."]
-material = SubResource( 5 )
-texture = SubResource( 4 )
-
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="Animation"]
 material = SubResource( 7 )
 margin_left = -128.0
 margin_top = -128.0
@@ -197,4 +135,10 @@ margin_bottom = 128.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="SFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 64 )
+volume_db = 2.0
+autoplay = true
 [connection signal="animation_finished" from="Animation" to="." method="_on_Animation_animation_finished"]
+[connection signal="finished" from="SFX" to="." method="_on_SFX_finished"]

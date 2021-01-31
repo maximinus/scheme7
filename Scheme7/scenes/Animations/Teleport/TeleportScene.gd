@@ -1,12 +1,18 @@
 extends Node2D
 
 func _ready():
-	pass # Replace with function body.
+	pass
 
 func setPosition(new_pos):
-	$Animation/Image.offset = new_pos
-	$Animation/PlayerImage.offset = new_pos
-	$Animation/TeleportSFX.position = new_pos
+	position = new_pos
+	$Animation/Sprite.position = new_pos
+	$Animation/LineAnimation.position = new_pos
+	$Animation/ColorRect.rect_position += new_pos
+	$Animation.play('Teleport')
+	$SFX.play()
+
+func _on_SFX_finished():
+	queue_free()
 
 func _on_Animation_animation_finished(anim_name):
-	queue_free()
+	$Animation/Sprite.hide()

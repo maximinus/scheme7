@@ -6,7 +6,7 @@
 [ext_resource path="res://sfx/level_objects/electric_barrier/electric_hum.wav" type="AudioStream" id=5]
 [ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.gd" type="Script" id=25]
 
-[sub_resource type="ShaderMaterial" id=10]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
 shader_param/line_width = 0.004
 shader_param/color = Color( 0.356863, 0.592157, 0.894118, 1 )
@@ -39,13 +39,13 @@ orbit_velocity_random = 1.0
 tangential_accel = 1.0
 scale_curve = SubResource( 5 )
 
-[sub_resource type="CanvasItemMaterial" id=9]
+[sub_resource type="CanvasItemMaterial" id=7]
 light_mode = 1
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 13, 2 )
 
-[sub_resource type="RectangleShape2D" id=8]
+[sub_resource type="RectangleShape2D" id=9]
 extents = Vector2( 3.9453, 64 )
 
 [node name="ElectricBarrier" type="StaticBody2D" groups=[
@@ -55,7 +55,7 @@ position = Vector2( 64, 64 )
 script = ExtResource( 25 )
 
 [node name="Electric" type="Sprite" parent="."]
-material = SubResource( 10 )
+material = SubResource( 1 )
 texture = SubResource( 3 )
 
 [node name="SparksTop" type="Particles2D" parent="."]
@@ -75,23 +75,23 @@ process_material = SubResource( 6 )
 texture = ExtResource( 2 )
 
 [node name="Overlay" type="Sprite" parent="."]
-material = SubResource( 9 )
+material = SubResource( 7 )
 texture = ExtResource( 3 )
 
 [node name="Button1" type="CollisionShape2D" parent="."]
 position = Vector2( -27, -62 )
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 
 [node name="Button2" type="CollisionShape2D" parent="."]
 position = Vector2( 25, -62 )
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="Wall" type="CollisionShape2D" parent="Area2D" groups=[
 "electric",
 ]]
-shape = SubResource( 8 )
+shape = SubResource( 9 )
 
 [node name="ElectricHum" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 5 )
