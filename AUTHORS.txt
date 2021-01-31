@@ -2,9 +2,8 @@ Programming / Design / Art unless otherwise specified:
     Chris Handy (maximinus@gmail.com)
 
 Graphics:
-    Teleport animation by Hansjörg Malthaner
-        http://opengameart.org/users/varkalandar
-    
+    Explosion animation by Sinestesia
+        https://opengameart.org/content/2d-explosion-animations-frame-by-frame
 
 Music:
     Dream 2: Public Domain, by TokyoGeisha

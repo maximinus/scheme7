@@ -130,6 +130,10 @@ class Shield:
 		# damage is half the speed
 		updateDamage(speed * SPEED_DAMAGE_RATIO)
 		last_speed = speed
+		if internals <= 0:
+			# we are dead
+			return true
+		return false
 	
 	func updateDamage(damage_amount):
 		if struct <= 0:

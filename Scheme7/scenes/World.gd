@@ -7,6 +7,7 @@ func _ready():
 	$Player.hide()
 	$Player.connect('player_collision', self, 'playerCollision')
 	$Player.connect('laser_fire', self, 'playerLaser')
+	$Player.connect('player_dead', self, 'playerDead')
 	$CanvasModulate.show()
 	spawnIn()
 
@@ -23,6 +24,9 @@ func playerLaser():
 	new_laser.addMotion()
 	new_laser.add_collision_exception_with($Player)
 	add_child_below_node($Lights, new_laser)
+
+func playerDead():
+	pass
 
 func spawnIn():
 	$TeleportScene.setPosition($Player.position)

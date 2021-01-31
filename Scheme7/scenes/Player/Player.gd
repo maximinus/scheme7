@@ -22,6 +22,7 @@ enum LIGHT_STATUS { Normal, Circle, Off }
 signal player_collision
 signal player_landed
 signal laser_fire
+signal player_dead
 
 # sum of forces acting on the ship
 var velocity = Vector2(0, 0)
@@ -195,9 +196,10 @@ func _physics_process(delta):
 	move_and_slide(velocity, Vector2(0, 0), false, 4, 0.785398, false)
 	
 	# push all the bodies
+	var dead = false
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
-		Globals.shield.update(velocity, collision.collider_velocity)
+		dead = Globals.shield.update(velocity, collision.collider_velocity)
 		if collision.collider.is_in_group('Bodies'):
 			collision.collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
 		if collision.collider.is_in_group('breakable'):
@@ -205,6 +207,11 @@ func _physics_process(delta):
 			collision.collider.collide(velocity.length())
 		if collision.collider.is_in_group('door'):
 			collision.collider.doorHit()
+
+	if dead == true:
+		# we are dead, raise the signal and finish
+		emit_signal('player_dead')
+		return
 
 	Globals.last_force = velocity
 	if get_slide_count() > 0:
