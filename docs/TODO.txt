@@ -20,11 +20,19 @@ TODO:
 	* Add door
 	* Update level
 	* Add fuel gauge
-	* Add shield gauge
+	* Add damage gauge
 
 - 5th Feb?
 
-	Aka "Make the rocket better"
+	Instance pause, death and player scenes
+	Fix pause screen pausing on death
+	Detect when on lander
+	Add data transfer animation
+	Store objectives in global object with level
+	Detect objectives complete and remove them
+	Add a menu to the pause
+	Add energy shield
+	Handle the winning situation
 
 	Add particles that move away from your force
 	Tidy up colour of flame
@@ -55,11 +63,6 @@ TODO:
 				- Can't Fire
 				- Constant Fire
 
-	Add a menu to the pause
-	Add energy shield
-	Add data transfer animation
-	Handle the winning situation
-
 	Model the rocket and player as objects exposed globally and cleanup code
 		AKA "Decide what the boundary is"
 
@@ -70,10 +73,10 @@ TODO:
 
 	Make second level
 		Now have Terminal > Level > Terminal > Level
-		If you die, go back to start of level
+		* If you die, go back to start of level
 
 	Add some dialog
-		The character is the human tester from a long time ago
+		The character is a simple AI that comes with you
 	Add some tutorial levels.
 		This needs practice levels that have a heavy shader to look virtual
 

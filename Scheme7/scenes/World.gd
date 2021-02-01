@@ -16,7 +16,6 @@ func _ready():
 	$Player.connect('laser_fire', self, 'playerLaser')
 	$Player.connect('player_dead', self, 'playerDead')
 	$UILayer/DeathNotice.connect('next_life', self, 'nextLife')
-	$UILayer/DeathNotice.connect('reset_scene', self, 'resetScene')
 	$CanvasModulate.show()
 	spawnIn()
 
@@ -46,7 +45,7 @@ func playerDead():
 	dead_player.position = player_pos
 	dead_player.rotation = player_rot
 	dead_player.linear_velocity = player_speed
-	dead_player.setCamera()
+	dead_player.start()
 	add_child_below_node($Lights, dead_player)
 	$UILayer/DeathNotice.start()
 
@@ -65,11 +64,6 @@ func spawnIn():
 	$TeleportScene.setPosition($Player.position)
 	$TeleportScene/Animation.play('Fade')
 	$TeleportTimer.start()
-
-func resetScene():
-	# player wants a new life
-	# fading of screen will start: kill the explosion sound
-	dead_player.animate = false
 
 func _on_TeleportTimer_timeout():
 	$TeleportScene.hide()

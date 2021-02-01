@@ -93,8 +93,6 @@ position = Vector2( 50, 550 )
 [node name="HeatDial" parent="UILayer" instance=ExtResource( 6 )]
 position = Vector2( 120, 550 )
 
-[node name="PauseScreen" parent="UILayer" instance=ExtResource( 5 )]
-
 [node name="BatteryLevel" parent="UILayer" instance=ExtResource( 8 )]
 position = Vector2( 20, 20 )
 
@@ -102,6 +100,8 @@ position = Vector2( 20, 20 )
 position = Vector2( 657, 20 )
 
 [node name="MissionObjectives" parent="UILayer" instance=ExtResource( 11 )]
+
+[node name="PauseScreen" parent="UILayer" instance=ExtResource( 5 )]
 
 [node name="DeathNotice" parent="UILayer" instance=ExtResource( 15 )]
 visible = false

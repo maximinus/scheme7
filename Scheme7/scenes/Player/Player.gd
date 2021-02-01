@@ -109,7 +109,7 @@ func checkLights():
 	if Globals.battery.charge <= 0.0:
 		$LHNormal.visible = false
 		$LCNormal.visible = false
-		light_status == LIGHT_STATUS.Off
+		light_status = LIGHT_STATUS.Off
 		Globals.battery.lights = false
 		Globals.battery.fullbeam = false
 		return

@@ -1,9 +1,7 @@
 extends Node2D
 
-
 func _ready():
 	pass
-
 
 func getBarSize(speed):
 	speed = abs(speed)

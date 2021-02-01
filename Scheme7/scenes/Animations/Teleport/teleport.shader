@@ -7,7 +7,7 @@ uniform float gap;
 uniform vec4 line_color : hint_color;
 
 void fragment() {
-	if((UV.x < gap) || (UV.x > (1.0 - gap))) {
+	if((UV.x <= gap) || (UV.x > (1.0 - gap))) {
 		if((UV.y < gap) || (UV.y > (1.0 - gap))) {
 			COLOR = vec4(0,0,0,0);
 			return;	
@@ -24,7 +24,7 @@ void fragment() {
 	vec2 pos = UV;
 	pos.y = new_alpha;
 	float variance = texture(TEXTURE, pos).r;
-	if(variance > 0.5) {
+	if(variance >= 0.5) {
 		variance = 1.0 - variance;
 	}
 	
@@ -50,8 +50,8 @@ void fragment() {
 	vec4 final_color = noise * line_color;
 	if(noise.r > 0.5) {
 		final_color.a = new_alpha;
-		final_color.b = 0.6 - new_alpha;
-		final_color.g = new_alpha / 4.0;
+		final_color.b = 0.2 - new_alpha;
+		final_color.g = new_alpha / 8.0;
 		COLOR = final_color;
 	}
 	else {
