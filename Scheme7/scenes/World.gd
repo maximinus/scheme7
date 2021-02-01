@@ -34,6 +34,8 @@ func playerLaser():
 	add_child_below_node($Lights, new_laser)
 
 func playerDead():
+	# we can't pause
+	$UILayer/PauseScreen.can_pause = false
 	var player_pos = $Player.position
 	var player_rot = $Player.rotation
 	var player_speed = $Player.velocity
@@ -54,6 +56,8 @@ func nextLife():
 	dead_player.queue_free()
 	$Player.position = player_start
 	spawnIn()
+	# we can pause again
+	$UILayer/PauseScreen.can_pause = true
 
 func spawnIn():
 	# reset velocity

@@ -1,12 +1,15 @@
 extends Node2D
 
 var paused = false
+var can_pause = false
 
 func _ready():
 	$BlurFilter.hide()
 	$Sprite.hide()
 
 func _process(delta):
+	if can_pause == false:
+		return
 	if Input.is_action_just_pressed('Pause'):
 		if paused == false:
 			paused = true

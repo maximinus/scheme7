@@ -24,8 +24,7 @@ TODO:
 
 - 5th Feb?
 
-	Instance pause, death and player scenes
-	Fix pause screen pausing on death
+	* Fix pause screen pausing on death
 	Detect when on lander
 	Add data transfer animation
 	Store objectives in global object with level

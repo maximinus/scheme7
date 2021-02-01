@@ -104,7 +104,6 @@ position = Vector2( 657, 20 )
 [node name="PauseScreen" parent="UILayer" instance=ExtResource( 5 )]
 
 [node name="DeathNotice" parent="UILayer" instance=ExtResource( 15 )]
-visible = false
 
 [node name="MapTiles" type="TileMap" parent="."]
 tile_set = ExtResource( 4 )
@@ -195,10 +194,11 @@ wait_time = 2.0
 one_shot = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 512, -160 )
+position = Vector2( 1264, 2112 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true
+zoom = Vector2( 1.1, 1.1 )
 smoothing_enabled = true
 
 [node name="Doors" type="Node2D" parent="."]

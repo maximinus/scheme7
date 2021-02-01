@@ -176,7 +176,9 @@ func processLanding(delta):
 	if velocity.x == 0.0 and rotation_degrees == 0.0:
 		landed = true
 		turning = 0.0
-		emit_signal('player_landed', position)
+		# what did we land on?
+		if collision.collider.is_in_group('lander'):
+			emit_signal('player_landed')
 
 func _physics_process(delta):
 	if landed == true or processing == false:
