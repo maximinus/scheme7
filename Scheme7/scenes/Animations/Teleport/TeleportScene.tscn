@@ -84,7 +84,7 @@ shader = ExtResource( 68 )
 shader_param/speed = 6.0
 shader_param/fade_size = 4.0
 shader_param/gap = 0.0
-shader_param/line_color = Color( 0.161246, 0.0883424, 0.0291615, 1 )
+shader_param/line_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="OpenSimplexNoise" id=3]
 seed = 3

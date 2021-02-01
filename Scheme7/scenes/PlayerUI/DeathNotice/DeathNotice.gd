@@ -10,6 +10,7 @@ func _ready():
 
 func start():
 	# reset some params
+	show()
 	$StartPause.start()
 
 func _on_Timer_timeout():

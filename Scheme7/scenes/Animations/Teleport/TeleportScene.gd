@@ -18,3 +18,4 @@ func _on_SFX_finished():
 
 func _on_Animation_animation_finished(anim_name):
 	$Animation/Sprite.hide()
+	$Animation/LineAnimation.hide()

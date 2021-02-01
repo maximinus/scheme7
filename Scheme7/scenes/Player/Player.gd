@@ -37,6 +37,9 @@ var light_status = LIGHT_STATUS.Off
 var electrified = false
 var electric_meet_force = Vector2(0.0, 0.0)
 
+var zoom_target = 1.1
+var zoom_speed = 0.2
+
 func _ready():
 	randomize()
 	Globals.battery.lights = false
@@ -62,6 +65,7 @@ func _process(delta):
 	# check rocket functions before movement
 	checkLights()
 	checkLaser()
+	zoomCamera(delta)
 	
 	# update sprite damage
 	$Image.frame = Globals.shield.getDamageFrame()
@@ -71,6 +75,8 @@ func _process(delta):
 		if landed == true:
 			landed = false
 			takeoff = true
+			zoom_target = 1.1
+			zoom_speed = 0.3
 		flameOn(delta)
 	else:
 		flameOff(delta)
@@ -99,6 +105,23 @@ func _process(delta):
 		rotation_degrees += 360.0
 	if rotation_degrees > 360.0:
 		rotation_degrees -= 360.0
+
+func zoomCamera(delta):
+	if zoom_speed == 0.0:
+		return
+	var zoom_amount = zoom_speed * delta
+	$Camera2D.zoom += Vector2(zoom_amount, zoom_amount)
+	if zoom_speed > 0.0:
+		# we are adding to the zoom, so if the zoom is over the target
+		# then we are done
+		if $Camera2D.zoom.x > zoom_target:
+			$Camera2D.zoom = Vector2(zoom_target, zoom_target)
+			zoom_speed = 0.0
+		return
+	# zoom_speed is negative, camera is zooming towards
+	if $Camera2D.zoom.x < zoom_target:
+		$Camera2D.zoom = Vector2(zoom_target, zoom_target)
+		zoom_speed = 0.0
 
 func checkLaser():
 	if Input.is_action_just_pressed('FireLaser'):
@@ -179,6 +202,8 @@ func processLanding(delta):
 		# what did we land on?
 		if collision.collider.is_in_group('lander'):
 			emit_signal('player_landed')
+			zoom_target = 0.5
+			zoom_speed = -0.1
 
 func _physics_process(delta):
 	if landed == true or processing == false:
