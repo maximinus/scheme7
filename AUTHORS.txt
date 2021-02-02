@@ -17,11 +17,10 @@ Music:
 
 Sounds:
 	3 Explosion Bangs Copyright 2012 Iwan 'qubodup' Gabovitch <http://qubodup.net>
-    SFX from Zapsplat
     Electric Hum by Hansjörg Malthaner
         http://opengameart.org/users/varkalandar
     Teleport SFX from https://freesound.org/people/noirenex/sounds/245731/
     Explosion effect by Michel
         http://cubeengine.com/forum.php4?action=display_thread&thread_id=2164
-    Death Alarm
+    Death Alarm, Data Transmission
         Zapsplat: https://www.zapsplat.com/

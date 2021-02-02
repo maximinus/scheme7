@@ -2,7 +2,6 @@ extends Node2D
 
 const EXPLOSION = preload('res://scenes/ExplosionDebris/ExplosionDebris.tscn')
 const LASER = preload('res://scenes/LevelObjects/Laser/Laser.tscn')
-const PLAYER = preload('res://scenes/Player/Player.tscn')
 const DEAD_PLAYER = preload('res://scenes/Player/PlayerDeath/PlayerDeath.tscn')
 
 var player_start
@@ -20,6 +19,13 @@ func _ready():
 	$CanvasModulate.show()
 	spawnIn()
 
+func _process(delta):
+	# if we are thrusting, better hide and reset the download animation
+	if $UILayer/LanderDataTransfer.visible == true:
+		if $Player.landed == false:
+			# we took off, so reset animation
+			$UILayer/LanderDataTransfer.reset()
+
 func playerCollision(position):
 	var new_node = EXPLOSION.instance()
 	new_node.position = position
@@ -35,7 +41,8 @@ func playerLaser():
 	add_child_below_node($Lights, new_laser)
 
 func playerLanded():
-	print('Landed on the lander')
+	$UILayer/LanderDataTransfer.show()
+	$UILayer/LanderDataTransfer.processing = true
 
 func playerDead():
 	# we can't pause

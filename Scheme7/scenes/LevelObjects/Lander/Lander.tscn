@@ -43,4 +43,8 @@ autostart = true
 visible = false
 points = PoolVector2Array( 84, -26, 50, -26 )
 width = 3.0
+
+[node name="DataStartSFX" type="AudioStreamPlayer" parent="."]
+
+[node name="DataTransferSFX" type="AudioStreamPlayer" parent="."]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://scenes/LevelObjects/ExitDoor/ExitDoor.tscn" type="PackedScene" id=13]
 [ext_resource path="res://scenes/PlayerUI/controls/fuel_dial/ShieldDial.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scenes/PlayerUI/DeathNotice/DeathNotice.tscn" type="PackedScene" id=15]
+[ext_resource path="res://scenes/LevelObjects/Lander/DataTransfer/LanderDataTransfer.tscn" type="PackedScene" id=16]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -105,6 +106,9 @@ position = Vector2( 657, 20 )
 
 [node name="DeathNotice" parent="UILayer" instance=ExtResource( 15 )]
 
+[node name="LanderDataTransfer" parent="UILayer" instance=ExtResource( 16 )]
+visible = false
+
 [node name="MapTiles" type="TileMap" parent="."]
 tile_set = ExtResource( 4 )
 format = 1
@@ -194,7 +198,7 @@ wait_time = 2.0
 one_shot = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 1264, 2112 )
+position = Vector2( 1264, 2256 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true

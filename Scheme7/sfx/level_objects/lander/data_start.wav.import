@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/data_start.wav-191e90fe0a7bc1af103797ae965377d7.sample"
+
+[deps]
+
+source_file="res://sfx/level_objects/lander/data_start.wav"
+dest_files=[ "res://.import/data_start.wav-191e90fe0a7bc1af103797ae965377d7.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=true
+edit/loop=false
+compress/mode=0

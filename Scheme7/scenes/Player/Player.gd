@@ -202,8 +202,8 @@ func processLanding(delta):
 		# what did we land on?
 		if collision.collider.is_in_group('lander'):
 			emit_signal('player_landed')
-			zoom_target = 0.5
-			zoom_speed = -0.1
+			zoom_target = 0.6
+			zoom_speed = -0.4
 
 func _physics_process(delta):
 	if landed == true or processing == false:
