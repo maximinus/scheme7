@@ -25,8 +25,8 @@ TODO:
 - 5th Feb?
 
 	* Fix pause screen pausing on death
-	Detect when on lander
-	Add data transfer animation
+	* Detect when on lander
+	* Add data transfer animation
 	Store objectives in global object with level
 	Detect objectives complete and remove them
 	Add a menu to the pause

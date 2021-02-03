@@ -36,6 +36,10 @@ func reset():
 		# already doing this
 		return
 	# stop everything
+	stage = 0
+	time_taken = 0.0
+	downloading = false
+	processing = false
 	$Bar.region_rect.end.x = 0
 	resetting = true
 	$DownloadSFX.stop()
@@ -78,6 +82,6 @@ func _on_DownloadSFX_finished():
 	completed = true
 
 func _on_Timer_timeout():
-	$Margin/VBox/InfoLbl.text = 'Ready To Download: Initiate Sequence'
 	hide()
+	$Margin/VBox/InfoLbl.text = 'Ready To Download: Initiate Sequence'
 	resetting = false
