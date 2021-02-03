@@ -236,6 +236,17 @@ func reset():
 	fuel.reset()
 	shield.reset()
 
+class Level:
+	func _init():
+		# probably need to load from json here
+		pass
+	
+	func getObjectives():
+		return ['Find landing point',
+				'Download data',
+				'Leave Cavern']
+		
+
 var last_force = Vector2(0, 0)
 var rocket = RocketTemperature.new(0, 0)
 var battery = BatteryCharge.new()

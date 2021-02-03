@@ -1,142 +1,109 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://sfx/player/teleport.wav" type="AudioStream" id=64]
 [ext_resource path="res://gfx/sprites/player.png" type="Texture" id=66]
 [ext_resource path="res://scenes/Animations/Teleport/TeleportScene.gd" type="Script" id=67]
 [ext_resource path="res://scenes/Animations/Teleport/teleport.shader" type="Shader" id=68]
 
-[sub_resource type="Animation" id=1]
-resource_name = "Teleport"
+[sub_resource type="Animation" id=4]
 length = 2.0
-tracks/0/type = "bezier"
-tracks/0/path = NodePath("Animation/ColorRect:material:shader_param/blur")
-tracks/0/interp = 1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Animation/FakePlayer:self_modulate")
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"points": PoolRealArray( 5, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1.5 )
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 tracks/1/type = "bezier"
-tracks/1/path = NodePath("Animation/LineAnimation:material:shader_param/speed")
+tracks/1/path = NodePath("Animation/Teleport:material:shader_param/radius")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 6, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1.5 )
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 1.4, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1, 2 )
 }
 tracks/2/type = "bezier"
-tracks/2/path = NodePath("Animation/LineAnimation:material:shader_param/fade_size")
+tracks/2/path = NodePath("Animation/Teleport:material:shader_param/color:r")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 4, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1.5 )
+"points": PoolRealArray( 0.129412, -0.25, 0, 0.25, 0, 0.317647, -0.25, 0, 0.25, 0, 0.00392157, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1, 2 )
 }
 tracks/3/type = "bezier"
-tracks/3/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:r")
+tracks/3/path = NodePath("Animation/Teleport:material:shader_param/color:g")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"points": PoolRealArray( 0.737255, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 2 )
+"points": PoolRealArray( 0.133333, -0.25, 0, 0.25, 0, 0.556863, -0.25, 0, 0.25, 0, 0.0784314, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1, 2 )
 }
 tracks/4/type = "bezier"
-tracks/4/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:g")
+tracks/4/path = NodePath("Animation/Teleport:material:shader_param/color:b")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"points": PoolRealArray( 0.403922, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 2 )
+"points": PoolRealArray( 0.231373, -0.25, 0, 0.25, 0, 0.698039, -0.25, 0, 0.25, 0, 0.0705882, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1, 2 )
 }
 tracks/5/type = "bezier"
-tracks/5/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:b")
+tracks/5/path = NodePath("Animation/Teleport:material:shader_param/color:a")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"points": PoolRealArray( 0.133333, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 2 )
-}
-tracks/6/type = "bezier"
-tracks/6/path = NodePath("Animation/LineAnimation:material:shader_param/line_color:a")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 2 )
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1, 2 )
 }
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 68 )
-shader_param/speed = 6.0
-shader_param/fade_size = 4.0
-shader_param/gap = 0.0
-shader_param/line_color = Color( 0, 0, 0, 1 )
+shader_param/color = Color( 0.317647, 0.556863, 0.698039, 1 )
+shader_param/radius = 1.4
+shader_param/width = 0.3
 
-[sub_resource type="OpenSimplexNoise" id=3]
+[sub_resource type="OpenSimplexNoise" id=2]
 seed = 3
 octaves = 1
 period = 9.0
 persistence = 0.0
 
-[sub_resource type="NoiseTexture" id=4]
+[sub_resource type="NoiseTexture" id=3]
 width = 200
 height = 200
 seamless = true
-noise = SubResource( 3 )
-
-[sub_resource type="Shader" id=5]
-code = "shader_type canvas_item;
-render_mode unshaded;
-
-uniform float blur;
-
-void fragment() {
-    COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur);
-}
-"
-
-[sub_resource type="ShaderMaterial" id=6]
-shader = SubResource( 5 )
-shader_param/blur = 0.0
+noise = SubResource( 2 )
 
 [node name="TeleportScene" type="Node2D"]
 script = ExtResource( 67 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Teleport = SubResource( 1 )
+anims/Teleport = SubResource( 4 )
 
-[node name="LineAnimation" type="Sprite" parent="Animation"]
-material = SubResource( 2 )
-texture = SubResource( 4 )
+[node name="Teleport" type="Sprite" parent="Animation"]
+material = SubResource( 1 )
+texture = SubResource( 3 )
 
-[node name="Sprite" type="Sprite" parent="Animation"]
+[node name="FakePlayer" type="Sprite" parent="Animation"]
+self_modulate = Color( 0.5, 0.5, 0.5, 1 )
 texture = ExtResource( 66 )
 
-[node name="ColorRect" type="ColorRect" parent="Animation"]
-material = SubResource( 6 )
-margin_left = -128.0
-margin_top = -128.0
-margin_right = 128.0
-margin_bottom = 128.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="SFX" type="AudioStreamPlayer2D" parent="."]
+visible = false
 stream = ExtResource( 64 )
 volume_db = 2.0
 autoplay = true

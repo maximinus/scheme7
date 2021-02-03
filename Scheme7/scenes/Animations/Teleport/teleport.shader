@@ -1,60 +1,31 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-uniform float speed;
-uniform float fade_size;
-uniform float gap;
-uniform vec4 line_color : hint_color;
+uniform vec4 color : hint_color;
+uniform float radius;
+uniform float width;
+const float PI = 3.1415926535897;
 
 void fragment() {
-	if((UV.x <= gap) || (UV.x > (1.0 - gap))) {
-		if((UV.y < gap) || (UV.y > (1.0 - gap))) {
-			COLOR = vec4(0,0,0,0);
-			return;	
-		}
-	}
+    float xscale = 1.0;
+    float yscale = 1.0;
+    vec2 centre = vec2(0.5, 0.5);
+    float angle = atan((UV.y - centre.y) / (UV.x - centre.x));
+    float l = distance(centre, UV);
+    
+	float r = radius * 0.26 + cos(angle * 20.0 + TIME * 3.0 + l * 100.0) * 0.01;
+	float w = clamp(radius, 0.0, 1.0) * width + cos(angle * 14.0 + TIME * 10.0 + l * 100.0) * 0.03;
 	
-	// calculate distance from centre
-	float xpos = abs(UV.x - 0.5);
-	float ypos = abs(UV.y - 0.5);
-	float dist = sqrt((xpos * xpos) + (ypos * ypos));
-	float new_alpha = 1.0 - min(dist * fade_size, 1.0);
+	w = max(0.0, w);
+	r = r + cos(TIME * 3.0) * 0.02;
+	r = max(0.0, r);
 	
-	//float variance = texture(TEXTURE, UV).r / 2.0;
-	vec2 pos = UV;
-	pos.y = new_alpha;
-	float variance = texture(TEXTURE, pos).r;
-	if(variance >= 0.5) {
-		variance = 1.0 - variance;
-	}
-	
-	pos = UV;
-	if(pos.x > 0.5) {
-		pos.x -= variance;
-		pos.x -= (TIME / speed);
-	} else {
-		pos.x += variance;
-		pos.x += (TIME / speed);
-	}
-	if(pos.y > 0.5) {
-		pos.y -= variance;
-		pos.y -= (TIME / speed);
-	} else {
-		pos.y += variance;
-		pos.y += (TIME / speed);
-	}
-	
-	// just examine the horizontal
-	pos.y = 0.0;
-	vec4 noise = texture(TEXTURE, pos);
-	vec4 final_color = noise * line_color;
-	if(noise.r > 0.5) {
-		final_color.a = new_alpha;
-		final_color.b = 0.2 - new_alpha;
-		final_color.g = new_alpha / 8.0;
-		COLOR = final_color;
-	}
-	else {
-		COLOR = vec4(0, 0, 0, 0);
-	}
-}
+	float w2 = w / 2.0;
+	float v = cos(clamp(l - r, -w2, w2) / w2 * PI / 2.0);
+	float light = clamp(v, 0.01, 1.0);
+
+	vec4 final_color = color * light;
+	final_color += textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0);
+	final_color.a = 1.0;
+	COLOR = final_color;
+}	
