@@ -1,10 +1,12 @@
 extends Control
 
+const OBJECTIVE_LABEL = preload('res://scenes/PlayerUI/MissionObjectives/Objective/ObjectiveLabel.tscn')
+
+var objectives = []
 
 func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	objectives = Globals.level.getObjectives()
+	for i in objectives:
+		var obj_label = OBJECTIVE_LABEL.instance()
+		obj_label.text = i
+		$Margin/VBox.add_child(obj_label)

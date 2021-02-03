@@ -253,5 +253,7 @@ var battery = BatteryCharge.new()
 var fuel = FuelTank.new()
 var shield = Shield.new()
 
+var level = Level.new()
+
 func _ready():
 	pass

@@ -49,6 +49,7 @@ func reset():
 	velocity = Vector2(0.0, 0.0)
 	rotation = 0.0
 	firing_rocket = false
+	flameOff(0.0)
 	turning = 0
 	landing = false
 	landed = false
