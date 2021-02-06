@@ -76,10 +76,10 @@ func nextLife():
 	$UILayer/PauseScreen.can_pause = true
 
 func spawnIn():
-	# reset velocity
 	$Player.hide()
 	$Player.reset()
 	$Player.processing = false
+	$UILayer/MissionObjectives.reset()
 	$TeleportScene.show()
 	$TeleportScene.setPosition($Player.position)
 	$TeleportScene/Animation.play('Fade')

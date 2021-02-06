@@ -1,7 +1,7 @@
 extends Node2D
 
 var paused = false
-var can_pause = false
+var can_pause = true
 
 func _ready():
 	$BlurFilter.hide()
