@@ -16,6 +16,7 @@ func _ready():
 	$Player.connect('laser_fire', self, 'playerLaser')
 	$Player.connect('player_dead', self, 'playerDead')
 	$Player.connect('player_landed', self, 'playerLanded')
+	$UILayer/LanderDataTransfer.connect('download_finished', self, 'downloaded')
 	$UILayer/DeathNotice.connect('next_life', self, 'nextLife')
 	$CanvasModulate.show()
 	spawnIn()
@@ -26,6 +27,9 @@ func _process(delta):
 		if $Player.landed == false:
 			# we took off, so reset animation
 			$UILayer/LanderDataTransfer.reset()
+
+func downloaded():
+	$UILayer/MissionObjectives.downloaded()
 
 func playerCollision(position):
 	var new_node = EXPLOSION.instance()

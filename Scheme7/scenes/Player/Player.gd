@@ -63,6 +63,8 @@ func reset():
 	player.reset()
 
 func _process(delta):
+	# update general access area
+	player.position = position
 	if processing == false:
 		return
 	# check rocket functions before movement

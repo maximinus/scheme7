@@ -7,7 +7,7 @@ const SCREEN_HEIGHT = 600
 const MARGIN = 32
 
 var lander_pos = Vector2(1224.0, 2304.0)
-
+var lander_found = false
 var objectives = []
 
 func _ready():
@@ -21,7 +21,6 @@ func _ready():
 		setPosition(obj_label)
 		objectives.append(obj_label)
 		add_child(obj_label)
-	moveTopLabel()
 
 func setPosition(label_node):
 	var size = label_node.get_minimum_size()
@@ -34,30 +33,25 @@ func setPosition(label_node):
 
 func moveTopLabel():
 	# the top label is the last one in the list
-	var tween = Tween.new()
 	var node = objectives[-1]
-	add_child_below_node(node, tween)
 	var from = node.rect_position
 	var distance = node.rect_size.x + MARGIN
 	var to = Vector2(from.x + distance, from.y)
-	tween.interpolate_property(node, 'rect_position', from, to,
-		1.2, Tween.TRANS_QUAD, Tween.EASE_IN)
-	tween.connect('tween_completed', self, 'tweenComplete')
-	tween.start()
+	$Tween.interpolate_property(node, 'rect_position', from, to,
+		1.5, Tween.TRANS_QUAD, Tween.EASE_IN)
+	$Tween.start()
+	objectives.pop_back()
 
-func tweenComplete():
-	# top animation is done
-	var node = objectives.pop_back()
-	node.queue_free()
+func downloaded():
+	moveTopLabel()
 
 func _process(delta):
-	#if lander_found == true:
-	#	return
-	#var delta_distance = $Player.position - $Lander.position
-	#var distance = pow(delta_distance.x, 2.0) + pow(delta_distance.y, 2.0)
-	#distance = sqrt(distance)
-	#if distance < 360:
-	#	lander_found = true
-	#	$Lander.startAnimation()
-	#	$UILayer/MissionObjectives.slideOff()
-	pass
+	if lander_found == true:
+		return
+	var player_pos = Globals.player.position
+	var delta_distance = player_pos - lander_pos
+	var distance = pow(delta_distance.x, 2.0) + pow(delta_distance.y, 2.0)
+	distance = sqrt(distance)
+	if distance < 360:
+		lander_found = true
+		moveTopLabel()

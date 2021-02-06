@@ -80,6 +80,7 @@ func _on_DownloadSFX_finished():
 	processing = false
 	downloading = false
 	completed = true
+	emit_signal('download_finished')
 
 func _on_Timer_timeout():
 	hide()
