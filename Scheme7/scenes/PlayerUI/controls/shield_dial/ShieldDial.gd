@@ -3,13 +3,15 @@ extends Node2D
 const BAR_WIDTH = 347.0
 const BAR_HEIGHT = 3
 
+var shield
+
 func _ready():
-	pass
+	shield = Globals.player.shield
 
 func _process(delta):
-	var electric_pos = convertPos(Globals.shield.getShield())
-	var structure_pos = convertPos(Globals.shield.getStruct())
-	var internals_pos = convertPos(Globals.shield.getInternals())
+	var electric_pos = convertPos(shield.getShield())
+	var structure_pos = convertPos(shield.getStruct())
+	var internals_pos = convertPos(shield.getInternals())
 	
 	# now we have the pixel sizes
 	$ElectricShield/Indicator.offset.x = BAR_WIDTH - electric_pos

@@ -53,7 +53,7 @@ func _process(delta):
 		$TempInjection/Red.visible = true
 
 	# finally, handle the chevrons
-	var current_temp = rocket.nozzle_temp + Globals.rocket.injection_temp
+	var current_temp = rocket.nozzle_temp + rocket.injection_temp
 	var temp_diff = (current_temp - last_temp) / delta
 	# get the number first and worry about the sign later
 	var chevrons = 0

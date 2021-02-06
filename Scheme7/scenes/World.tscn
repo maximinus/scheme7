@@ -13,7 +13,7 @@
 [ext_resource path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.tscn" type="PackedScene" id=12]
 [ext_resource path="res://scenes/LevelObjects/ExitDoor/ExitDoor.tscn" type="PackedScene" id=13]
-[ext_resource path="res://scenes/PlayerUI/controls/fuel_dial/ShieldDial.tscn" type="PackedScene" id=14]
+[ext_resource path="res://scenes/PlayerUI/controls/shield_dial/ShieldDial.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scenes/PlayerUI/DeathNotice/DeathNotice.tscn" type="PackedScene" id=15]
 [ext_resource path="res://scenes/LevelObjects/Lander/DataTransfer/LanderDataTransfer.tscn" type="PackedScene" id=16]
 
@@ -98,7 +98,7 @@ position = Vector2( 120, 550 )
 position = Vector2( 20, 20 )
 
 [node name="ShieldDial" parent="UILayer" instance=ExtResource( 14 )]
-position = Vector2( 657, 20 )
+position = Vector2( 652, 20 )
 
 [node name="MissionObjectives" parent="UILayer" instance=ExtResource( 11 )]
 

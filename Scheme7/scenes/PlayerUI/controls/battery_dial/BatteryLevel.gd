@@ -6,17 +6,21 @@ const DIAL_WIDTH = 335.0
 const BLOCKS = 26
 const BLOCK_WIDTH = 13
 
+var battery
+var fuel
+
 func _ready():
-	pass
+	battery = Globals.player.battery
+	fuel = Globals.player.fuel
 
 func _process(delta):
 	displayBattery(delta)
 	displayFuel(delta)
 
 func displayBattery(delta):
-	Globals.battery.update(delta)
-	var charge = Globals.battery.chargeLeft()
-	var drain = Globals.battery.currentDrain()
+	battery.update(delta)
+	var charge = battery.chargeLeft()
+	var drain = battery.currentDrain()
 	
 	var pos = drain * DIAL_WIDTH
 	$Battery/BatteryIndicator.position.x = pos
@@ -27,8 +31,8 @@ func displayBattery(delta):
 	$Battery/BatteryLevel.region_rect.end.x = max(0, (blocks * BLOCK_WIDTH) - 3)
 
 func displayFuel(delta):
-	var fuel_left = Globals.fuel.fuelLeft()
-	var drain = Globals.fuel.fuelDrain()
+	var fuel_left = fuel.fuelLeft()
+	var drain = fuel.fuelDrain()
 	
 	var pos = drain * DIAL_WIDTH
 	$Fuel/FuelIndicator.position.x = pos
