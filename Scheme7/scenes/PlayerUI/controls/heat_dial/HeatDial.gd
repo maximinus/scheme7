@@ -3,9 +3,11 @@ extends Node2D
 const CHEVRON_WIDTH = 8
 
 var last_temp
+var rocket
 
 func _ready():
-	last_temp = Globals.rocket.nozzle_temp
+	rocket = Globals.player.rocket
+	last_temp = rocket.nozzle_temp
 
 func _process(delta):
 	if delta <= 0:
@@ -13,7 +15,7 @@ func _process(delta):
 	
 	# the bar is for the nozzle temp
 	# get range and convert
-	var bar_length = (Globals.rocket.nozzle_temp / Globals.RocketTemperature.MAX_NOZZLE_TEMP) * 0.9
+	var bar_length = (rocket.nozzle_temp / Globals.RocketTemperature.MAX_NOZZLE_TEMP) * 0.9
 	bar_length = min(bar_length, 1.0)
 	bar_length *= 48
 	$HeatBarNozzle.region_rect.end.x = int(bar_length)
@@ -32,7 +34,7 @@ func _process(delta):
 		$TempNozzle/Red.visible = true
 
 	# repeat for injection
-	bar_length = (Globals.rocket.injection_temp / Globals.RocketTemperature.MAX_INJECTION_TEMP) * 0.9
+	bar_length = (rocket.injection_temp / Globals.RocketTemperature.MAX_INJECTION_TEMP) * 0.9
 	bar_length = min(bar_length, 1.0)
 	bar_length *= 48	
 	$HeatBarInjection.region_rect.end.x = int(bar_length)
@@ -51,7 +53,7 @@ func _process(delta):
 		$TempInjection/Red.visible = true
 
 	# finally, handle the chevrons
-	var current_temp = Globals.rocket.nozzle_temp + Globals.rocket.injection_temp
+	var current_temp = rocket.nozzle_temp + Globals.rocket.injection_temp
 	var temp_diff = (current_temp - last_temp) / delta
 	# get the number first and worry about the sign later
 	var chevrons = 0

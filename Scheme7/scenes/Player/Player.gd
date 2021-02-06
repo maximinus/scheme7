@@ -39,11 +39,13 @@ var electric_meet_force = Vector2(0.0, 0.0)
 
 var zoom_target = 1.1
 var zoom_speed = 0.2
+var player
 
 func _ready():
 	randomize()
-	Globals.battery.lights = false
-	Globals.battery.fullbeam = false
+	player = Globals.player
+	player.battery.lights = false
+	player.battery.fullbeam = false
 
 func reset():
 	velocity = Vector2(0.0, 0.0)
@@ -58,7 +60,7 @@ func reset():
 	electrified = false
 	electric_meet_force = Vector2(0.0, 0.0)
 	$Image.frame = 0
-	Globals.reset()
+	player.reset()
 
 func _process(delta):
 	if processing == false:
@@ -69,9 +71,9 @@ func _process(delta):
 	zoomCamera(delta)
 	
 	# update sprite damage
-	$Image.frame = Globals.shield.getDamageFrame()
+	$Image.frame = player.shield.getDamageFrame()
 
-	if Input.is_action_pressed('Thrust') and Globals.fuel.haveFuel():
+	if Input.is_action_pressed('Thrust') and player.fuel.haveFuel():
 		landing = false
 		if landed == true:
 			landed = false
@@ -130,12 +132,12 @@ func checkLaser():
 
 func checkLights():
 	# no charge? turn off the lights and ignore everything else
-	if Globals.battery.charge <= 0.0:
+	if player.battery.charge <= 0.0:
 		$LHNormal.visible = false
 		$LCNormal.visible = false
 		light_status = LIGHT_STATUS.Off
-		Globals.battery.lights = false
-		Globals.battery.fullbeam = false
+		player.battery.lights = false
+		player.battery.fullbeam = false
 		return
 	
 	if Input.is_action_just_pressed('Lights'):
@@ -144,32 +146,32 @@ func checkLights():
 			$LHNormal.visible = false
 			$LCNormal.visible = true
 			light_status = LIGHT_STATUS.Circle
-			Globals.battery.lights = true
+			player.battery.lights = true
 		elif light_status == LIGHT_STATUS.Circle:
 			# all off
 			$LHNormal.visible = false
 			$LCNormal.visible = false
-			Globals.battery.lights = false
+			player.battery.lights = false
 			light_status = LIGHT_STATUS.Off
 		else:
 			# all off, to normal
 			$LHNormal.visible = true
 			$LCNormal.visible = false
-			Globals.battery.lights = true
+			player.battery.lights = true
 			light_status = LIGHT_STATUS.Normal
 	
 	if Input.is_action_just_pressed('FullBeam'):
 		# if lights are off, ignore
 		if light_status == LIGHT_STATUS.Off:
 			return
-		if Globals.battery.fullbeam == false:
+		if player.battery.fullbeam == false:
 			$LCNormal.energy = FULLBEAM_ENERGY
 			$LHNormal.energy = FULLBEAM_ENERGY
-			Globals.battery.fullbeam = true
+			player.battery.fullbeam = true
 		else:
 			$LCNormal.energy = LIGHT_ENERGY
 			$LHNormal.energy = LIGHT_ENERGY
-			Globals.battery.fullbeam = false
+			player.battery.fullbeam = false
 
 func processLanding(delta):
 	# we are trying to land
@@ -241,7 +243,7 @@ func _physics_process(delta):
 	var dead = false
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
-		dead = Globals.shield.update(velocity, collision.collider_velocity)
+		dead = player.shield.update(velocity, collision.collider_velocity)
 		if collision.collider.is_in_group('Bodies'):
 			collision.collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
 		if collision.collider.is_in_group('breakable'):
@@ -259,7 +261,7 @@ func _physics_process(delta):
 		emit_signal('player_dead')
 		return
 
-	Globals.last_force = velocity
+	player.last_force = velocity
 	if get_slide_count() > 0:
 		var result = get_slide_collision(0)
 		# handle landing seperately
@@ -280,7 +282,7 @@ func _physics_process(delta):
 
 func checkLanding(normal):
 	# if contact is slow, and going down, then we may be landing
-	var speed = sqrt(pow(abs(Globals.last_force.y), 2) + pow(abs(Globals.last_force.x), 2))
+	var speed = sqrt(pow(abs(player.last_force.y), 2) + pow(abs(player.last_force.x), 2))
 	if speed > 30:
 		# not landing
 		return
@@ -307,7 +309,7 @@ func addTurning(normal):
 	angle_rad = ((360 / (2 * PI)) * angle_rad) - 90
 	if angle_rad < 0.0:
 		angle_rad += 360.0
-	var ship_angle = (atan2(Globals.last_force.y, Globals.last_force.x)) + (PI / 2)
+	var ship_angle = (atan2(player.last_force.y, player.last_force.x)) + (PI / 2)
 	ship_angle = (360 / (2 * PI)) * ship_angle
 	if ship_angle < 0:
 		ship_angle += 360.0
@@ -318,7 +320,7 @@ func addTurning(normal):
 	else:
 		difference = min(difference, -10)
 	# adjust by speed
-	var speed = sqrt(pow(abs(Globals.last_force.y), 2) + pow(abs(Globals.last_force.x), 2))
+	var speed = sqrt(pow(abs(player.last_force.y), 2) + pow(abs(player.last_force.x), 2))
 	speed = min(speed, 200) / 5
 	turning = (difference / (44 - speed))
 	if turning > 0:
@@ -331,9 +333,6 @@ func updateCameraZoom():
 	var final_speed = sqrt(pow(abs(velocity.x), 2) + pow(abs(velocity.y), 2))
 	if final_speed < 50:
 		return
-	# going fast, so set the zoom
-	#var zoom_level = (final_speed - 50) + 50 / 50.0
-	#$Camera2D.zoom = Vector2(zoom_level, zoom_level)
 	
 func collidePlayer(position, speed):
 	# player has hit something
@@ -353,8 +352,8 @@ func getForceVector():
 func flameOn(delta):
 	firing_rocket = true
 	$FlameLight.visible = true
-	Globals.rocket.update(1.0, delta)
-	Globals.fuel.update(delta, true)
+	player.rocket.update(1.0, delta)
+	player.fuel.update(delta, true)
 	$Flame/OuterParticle.emitting = true
 	$Flame/InnerParticle.emitting = true
 	if $RocketSound.playing == false:
@@ -363,8 +362,8 @@ func flameOn(delta):
 func flameOff(delta):
 	firing_rocket = false
 	$FlameLight.visible = false
-	Globals.rocket.update(0.0, delta)
-	Globals.fuel.update(delta, false)
+	player.rocket.update(0.0, delta)
+	player.fuel.update(delta, false)
 	$Flame/OuterParticle.emitting = false
 	$Flame/InnerParticle.emitting = false
 	$RocketSound.stop()

@@ -195,6 +195,7 @@ class Shield:
 		internals = MAX_INTERNALS
 		last_speed = 0
 
+
 class EnergyShield:
 	func _init():
 		pass
@@ -204,6 +205,7 @@ class EnergyShield:
 	
 	func reset():
 		pass
+
 
 class Gun:
 	func _init():
@@ -215,6 +217,7 @@ class Gun:
 	func reset():
 		pass
 
+
 class Player:
 	var rocket = RocketTemperature.new(0, 0)
 	var battery = BatteryCharge.new()
@@ -223,18 +226,22 @@ class Player:
 	var energy = EnergyShield.new()
 	var gun = Gun.new()
 	
+	var last_force = Vector2(0.0, 0.0)
+	var position = Vector2(0, 0)
+	
 	func _init():
 		pass
 		
 	func calculateSystemFailure(speed, position):
 		pass
 
-func reset():
-	last_force = Vector2(0, 0)
-	rocket.reset()
-	battery.reset()
-	fuel.reset()
-	shield.reset()
+	func reset():
+		last_force = Vector2(0, 0)
+		rocket.reset()
+		battery.reset()
+		fuel.reset()
+		shield.reset()
+		position = Vector2()
 
 class Level:
 	func _init():
@@ -242,17 +249,11 @@ class Level:
 		pass
 	
 	func getObjectives():
-		return ['Find landing point',
+		return ['Leave Cavern',
 				'Download data',
-				'Leave Cavern']
-		
+				'Find landing point']
 
-var last_force = Vector2(0, 0)
-var rocket = RocketTemperature.new(0, 0)
-var battery = BatteryCharge.new()
-var fuel = FuelTank.new()
-var shield = Shield.new()
-
+var player = Player.new()
 var level = Level.new()
 
 func _ready():
