@@ -1,11 +1,11 @@
 extends Control
 
-# show yourself
-# wait for keypress M
-# play first sound
-# wait for keypress
-# play second sound and fill bar
-# this can be interrupted
+# show yourself, # wait for keypress M, play first sound
+# wait for keypress, play second sound and fill bar
+
+# also we check for end conditions on this screen
+signal lander_spotted
+signal download_finished
 
 const DOWNLOAD_TIME = 10.0
 const BAR_LENGTH = 396.0

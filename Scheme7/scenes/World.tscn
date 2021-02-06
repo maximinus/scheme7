@@ -198,7 +198,7 @@ wait_time = 2.0
 one_shot = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 768, 2096 )
+position = Vector2( -400, 1760 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true

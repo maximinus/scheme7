@@ -6,6 +6,7 @@ const DEAD_PLAYER = preload('res://scenes/Player/PlayerDeath/PlayerDeath.tscn')
 
 var player_start
 var dead_player
+var lander_found = false
 
 func _ready():
 	# remember for the next life

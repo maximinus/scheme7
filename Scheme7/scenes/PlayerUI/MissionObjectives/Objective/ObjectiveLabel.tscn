@@ -1,11 +1,14 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://gfx/fonts/SpaceRegular.tres" type="DynamicFont" id=1]
+[ext_resource path="res://scenes/PlayerUI/MissionObjectives/Objective/ObjectiveLabel.gd" type="Script" id=2]
 
-[node name="ObjectiveLabel" type="Label"]
+[node name="Objective" type="Label"]
+margin_bottom = 14.0
 custom_fonts/font = ExtResource( 1 )
-custom_colors/font_color = Color( 0.388235, 0.117647, 0.117647, 1 )
+custom_colors/font_color = Color( 0.470588, 0.262745, 0.262745, 1 )
 align = 2
+script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

@@ -4,15 +4,16 @@ TODO:
 ? Is this right
 - Skip for later
 
-* Fix the bug in the chevrons for the heat dial
-? Fix the bug where taking off after a long time has crazy force
-* Change the graphics in the heat dial
-* Wire up the battery
-* Add a light object that can be destroyed
-- Add a battery rocket thrust
-- Add ambient light based on these lights
+- 22nd Jan:
+	* Fix the bug in the chevrons for the heat dial
+	? Fix the bug where taking off after a long time has crazy force
+	* Change the graphics in the heat dial
+	* Wire up the battery
+	* Add a light object that can be destroyed
+	- Add a battery rocket thrust
+	- Add ambient light based on these lights
 
-29th Jan:
+- 29th Jan:
 	* Add gunfire from the ship
 	- Improve the SFX, and try music
 	* Handle the player entrance on the scene at the start (like a teleport animation)
@@ -22,16 +23,47 @@ TODO:
 	* Add fuel gauge
 	* Add damage gauge
 
-- 5th Feb?
+- 5th Feb
 
 	* Fix pause screen pausing on death
 	* Detect when on lander
 	* Add data transfer animation
-	Store objectives in global object with level
+	* Store objectives in global object with level
 	Detect objectives complete and remove them
 	Add a menu to the pause
-	Add energy shield
+	- Add energy shield
 	Handle the winning situation
+	Transition scene back to yourself
+
+
+- 12th Feb?
+
+	Add a terminal text choice screen
+		Make it the start scene
+
+	Make second level
+		Now have Terminal > Level > Terminal > Level
+		* If you die, go back to start of level
+
+- 19th Feb?
+
+	Add some dialog
+		The character is a simple AI that comes with you
+	Add some tutorial levels.
+		This needs practice levels that have a heavy shader to look virtual
+
+- 26th Feb?
+
+	Add "stuff" to the levels
+		Doors
+		Blowers and suckers
+		Enemy guns
+		Keys and downloading
+
+- 5th Mar?
+
+	Model the rocket and player as objects exposed globally and cleanup code
+		AKA "Decide what the boundary is"
 
 	Add particles that move away from your force
 	Tidy up colour of flame
@@ -62,37 +94,10 @@ TODO:
 				- Can't Fire
 				- Constant Fire
 
-	Model the rocket and player as objects exposed globally and cleanup code
-		AKA "Decide what the boundary is"
-
-- 12th Feb?
-
-	Add a terminal text choice screen
-		Make it the start scene
-
-	Make second level
-		Now have Terminal > Level > Terminal > Level
-		* If you die, go back to start of level
-
-	Add some dialog
-		The character is a simple AI that comes with you
-	Add some tutorial levels.
-		This needs practice levels that have a heavy shader to look virtual
-
-- 19th Feb?
-
-	Add "stuff" to the levels
-		Doors
-		Blowers and suckers
-		Enemy guns
-		Keys and downloading
-
-- 26th Feb?
-
 	Enable types of rockets
 		Let the player test everything virtually
 
-- 5th Feb?
+- 12th Mar?
 
 	Add screen to edit rocket
 		This means we start to establise a rhythm to the game
@@ -103,24 +108,14 @@ TODO:
 			Repeat.
 		We have a simple 1 and a better 3 here, so add 2
 
-- 12th March?
+- 19th March?
 
 	Add results screen
 		This is 4
 	Add structure to handle the above repeats in code
 		Add time
 
-- 19th March?
+- 26th March?
 
 	Do a cutscene
 	Add the scene to decide where to go next
-
-- 26th March?
-
-	Plan out the first part of the story up to AI discovery
-
-- 2nd April?
-
-	Work out a plan to make grinding interesting
-
-- 9th April?

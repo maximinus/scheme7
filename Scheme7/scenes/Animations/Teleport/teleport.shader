@@ -24,8 +24,9 @@ void fragment() {
 	float v = cos(clamp(l - r, -w2, w2) / w2 * PI / 2.0);
 	float light = clamp(v, 0.01, 1.0);
 
+	float alpha = color.a;
 	vec4 final_color = color * light;
 	final_color += textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0);
-	final_color.a = 1.0;
+	final_color.a = alpha;
 	COLOR = final_color;
 }	
