@@ -49,7 +49,7 @@ TODO:
 	Improve objectives and script a training level "Turn the lights on"
 	Then "fire a rocket", "land somewhere", "shoot something"
 
-	Add a dialog screen
+	* Add a dialog screen
 		Make it the start scene
 
 	Make second level
