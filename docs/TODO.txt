@@ -29,20 +29,31 @@ TODO:
 	* Detect when on lander
 	* Add data transfer animation
 	* Store objectives in global object with level
-	Detect objectives complete and remove them
-	Add a menu to the pause
+	* Detect objectives complete and remove them
+	- Add a menu to the pause
 	- Add energy shield
 	Handle the winning situation
 	Transition scene back to yourself
+	Needs to reset level, so scene reload should handle that
+	Make a new level, please. Shouldn't take that long
 
 
 - 12th Feb?
 
-	Add a terminal text choice screen
+	Put all decision code into player class in globals
+		That's the decision to do or not. The actual code for
+		moving the ship can still be in the player
+	Find some way to inject data into the starting player on a level
+		Maybe needs a Ship() class different from a Player()
+	Build a level with restricted use because of this
+	Improve objectives and script a training level "Turn the lights on"
+	Then "fire a rocket", "land somewhere", "shoot something"
+
+	Add a dialog screen
 		Make it the start scene
 
 	Make second level
-		Now have Terminal > Level > Terminal > Level
+		Now have Dialog > Level > Dialog > Level
 		* If you die, go back to start of level
 
 - 19th Feb?
