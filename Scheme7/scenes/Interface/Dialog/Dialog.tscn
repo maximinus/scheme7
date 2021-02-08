@@ -56,8 +56,8 @@ void fragment() {
     vec2 uvR = SCREEN_UV;
     vec2 uvB = SCREEN_UV;
 
-    uvR.x = fUV.x * 1.0 - rand(TIME) * glitch * 0.8;
-    uvB.y = fUV.y * 1.0 + rand(TIME) * glitch * 0.8;
+    uvR.x = fUV.x - (rand(TIME) * glitch);
+    uvB.y = fUV.y + (rand(TIME) * glitch);
     
     // 
     if(fUV.y < rand(TIME) && fUV.y > rand(TIME) - 0.1 && sin(TIME) < 0.0)
@@ -89,8 +89,8 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id=3]
 shader = SubResource( 2 )
-shader_param/glitch = 0.02
-shader_param/active = false
+shader_param/glitch = 0.008
+shader_param/active = true
 
 [node name="Dialog" type="Control"]
 anchor_right = 1.0
