@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/static_tv.wav-693591866dc28da5ad88f593642d4c0a.sample"
+
+[deps]
+
+source_file="res://sfx/interface/static_tv.wav"
+dest_files=[ "res://.import/static_tv.wav-693591866dc28da5ad88f593642d4c0a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=true
+edit/loop=true
+compress/mode=0

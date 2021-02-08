@@ -3,8 +3,7 @@ extends Node
 var text = ['Good morning.\nToday we will be conducting the standard startup test.',
 			'This test will determine if your system has been installed correctly so you can begin active service.',
 			'We begin with testing the simpler controls.\nThe L key will cycle through the lights.',
-			'Prepare to be transferred to the test site. \nRemember to test the lights with the L key.',
-			'Remember, you can only test the lights at this stage.']
+			'Prepare to be transferred to the test site. \nRemember to test the lights with the L key.']
 
 class Dialog:
 	var speaker

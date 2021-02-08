@@ -214,8 +214,7 @@ position = Vector2( 448, 2112 )
 position = Vector2( 1224, 2304 )
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-visible = false
-color = Color( 0.101961, 0.113725, 0.129412, 1 )
+color = Color( 0.545098, 0.423529, 0.32549, 1 )
 [connection signal="timeout" from="TeleportTimer" to="." method="_on_TeleportTimer_timeout"]
 [connection signal="electric_contact_end" from="Doors/ElectricBarrier" to="Player" method="_on_ElectricBarrier_electric_contact_end"]
 [connection signal="electric_contact_start" from="Doors/ElectricBarrier" to="Player" method="_on_ElectricBarrier_electric_contact_start"]

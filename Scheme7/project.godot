@@ -23,6 +23,7 @@ config/icon="res://icon.png"
 
 Globals="*res://code/global/globals.gd"
 Dialog="*res://code/global/dialog.gd"
+Scenes="*res://code/global/scenes.gd"
 
 [display]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://gfx/interface/9-patch/window.png" type="Texture" id=1]
 [ext_resource path="res://gfx/fonts/SpaceRegular.tres" type="DynamicFont" id=2]
@@ -8,6 +8,7 @@
 
 [sub_resource type="Animation" id=1]
 resource_name = "PressEnter"
+length = 2.0
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("..:rect_position")
@@ -16,10 +17,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5, 1 ),
+"times": PoolRealArray( 0, 1, 2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 736, 416 ), Vector2( 728, 413 ), Vector2( 736, 416 ) ]
+"values": [ Vector2( 736, 416 ), Vector2( 732, 414 ), Vector2( 736, 416 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("..:rect_size")
@@ -28,11 +29,68 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5, 1 ),
+"times": PoolRealArray( 0, 1, 2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 160, 56 ), Vector2( 176, 62 ), Vector2( 160, 56 ) ]
+"values": [ Vector2( 160, 56 ), Vector2( 168, 60 ), Vector2( 160, 56 ) ]
 }
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+
+uniform float glitch;
+uniform bool active;
+
+float rand(float t) {
+    return fract(sin(t) * 1000.0);
+}
+
+void fragment() {
+	if(active == false) {
+		COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
+		return;
+	}
+	
+	vec4 pixel = vec4(0.0, 0.0, 0.0, 1.0);
+	vec2 fUV = SCREEN_UV;
+    vec2 uvR = SCREEN_UV;
+    vec2 uvB = SCREEN_UV;
+
+    uvR.x = fUV.x * 1.0 - rand(TIME) * glitch * 0.8;
+    uvB.y = fUV.y * 1.0 + rand(TIME) * glitch * 0.8;
+    
+    // 
+    if(fUV.y < rand(TIME) && fUV.y > rand(TIME) - 0.1 && sin(TIME) < 0.0)
+    {
+    	fUV.x = (fUV + glitch * rand(TIME)).x;
+    }
+    
+    //
+    pixel.r = texture(SCREEN_TEXTURE, uvR).r;
+    pixel.g = texture(SCREEN_TEXTURE, fUV).g;
+    pixel.b = texture(SCREEN_TEXTURE, uvB).b;
+	pixel.a = 1.0;
+	
+    //
+    float scanline = sin( fUV.y * 600.0 * rand(TIME)) / 30.0; 
+	pixel *= 1.0 - scanline;
+    
+    //vignette
+    float vegDist = length(vec2(0.5, 0.5) - fUV);
+    pixel *= 1.0 - vegDist * 0.6;
+	
+	if(active == false) {
+		pixel.rbg = texture(SCREEN_TEXTURE, UV).rbg;
+		pixel.a = 1.0;
+	}
+    COLOR = pixel;
+}
+"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/glitch = 0.02
+shader_param/active = false
 
 [node name="Dialog" type="Control"]
 anchor_right = 1.0
@@ -130,10 +188,10 @@ valign = 1
 visible = false
 
 [node name="Next" type="NinePatchRect" parent="Next"]
-margin_left = 736.0
-margin_top = 416.0
-margin_right = 896.0
-margin_bottom = 472.0
+margin_left = 732.0
+margin_top = 414.0
+margin_right = 900.0
+margin_bottom = 474.0
 texture = ExtResource( 1 )
 patch_margin_left = 6
 patch_margin_top = 6
@@ -177,4 +235,17 @@ __meta__ = {
 
 [node name="TextNoise" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
+
+[node name="Glitch" type="ColorRect" parent="."]
+material = SubResource( 3 )
+margin_right = 1024.0
+margin_bottom = 600.0
+color = Color( 0.0313726, 0.0196078, 0.0196078, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
 [connection signal="tween_completed" from="Main/Margin/Text/Tween" to="." method="_on_Tween_tween_completed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
