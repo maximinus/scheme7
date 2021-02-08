@@ -11,12 +11,14 @@ const LANDING_TURN_SPEED = 20.0
 const LANDING_X_SLOWDOWN = 1.5
 const SHIP_MASS = 5.0
 
+# TODO: Move out
 const FULLBEAM_ENERGY = 2.0
 const LIGHT_ENERGY = 1.0
 
 const ELECTRIC_MOVE_FORCE = 50.0
 const ELECTRIC_TURN_FORCE = 20.0
 
+# TODO: move out
 enum LIGHT_STATUS { Normal, Circle, Off }
 
 signal player_collision
@@ -26,6 +28,8 @@ signal player_dead
 
 # sum of forces acting on the ship
 var velocity = Vector2(0, 0)
+
+# TODO: move out
 var firing_rocket = false
 # turned by hitting something
 var turning = 0
@@ -33,6 +37,7 @@ var landing = false
 var landed = false
 var takeoff = false
 var processing = false
+# TODO: move out
 var light_status = LIGHT_STATUS.Off
 var electrified = false
 var electric_meet_force = Vector2(0.0, 0.0)
@@ -43,6 +48,7 @@ var player
 
 func _ready():
 	randomize()
+	# TODO: move out
 	player = Globals.player
 	player.battery.lights = false
 	player.battery.fullbeam = false
@@ -50,12 +56,14 @@ func _ready():
 func reset():
 	velocity = Vector2(0.0, 0.0)
 	rotation = 0.0
+	# TODO: move out
 	firing_rocket = false
 	flameOff(0.0)
 	turning = 0
 	landing = false
 	landed = false
 	takeoff = false
+	# TODO: move out
 	light_status = LIGHT_STATUS.Off
 	electrified = false
 	electric_meet_force = Vector2(0.0, 0.0)
@@ -75,6 +83,7 @@ func _process(delta):
 	# update sprite damage
 	$Image.frame = player.shield.getDamageFrame()
 
+	# TODO: confirm with API
 	if Input.is_action_pressed('Thrust') and player.fuel.haveFuel():
 		landing = false
 		if landed == true:
@@ -89,6 +98,7 @@ func _process(delta):
 	if landing == true or landed == true:
 		return
 	
+	# TODO: confirm with API
 	if Input.is_action_pressed('LeftTurn'):
 		rotation_degrees -= ROTATION_SPEED * delta
 	if Input.is_action_pressed('RightTurn'):
@@ -130,6 +140,7 @@ func zoomCamera(delta):
 
 func checkLaser():
 	if Input.is_action_just_pressed('FireLaser'):
+		# TODO: check with API
 		emit_signal('laser_fire')
 
 func checkLights():
@@ -137,6 +148,7 @@ func checkLights():
 	if player.battery.charge <= 0.0:
 		$LHNormal.visible = false
 		$LCNormal.visible = false
+		# TODO: move out
 		light_status = LIGHT_STATUS.Off
 		player.battery.lights = false
 		player.battery.fullbeam = false

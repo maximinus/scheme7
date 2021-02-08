@@ -50,7 +50,7 @@ TODO:
 	Then "fire a rocket", "land somewhere", "shoot something"
 
 	* Add a dialog screen
-		Make it the start scene
+		* Make it the start scene
 
 	Make second level
 		Now have Dialog > Level > Dialog > Level
@@ -58,7 +58,7 @@ TODO:
 
 - 19th Feb?
 
-	Add some dialog
+	* Add some dialog
 		The character is a simple AI that comes with you
 	Add some tutorial levels.
 		This needs practice levels that have a heavy shader to look virtual

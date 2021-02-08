@@ -75,7 +75,6 @@ shader_param/TIME_FACTOR = 0.3
 
 [sub_resource type="NoiseTexture" id=3]
 seamless = true
-as_normalmap = true
 bump_strength = 7.8
 
 [node name="World" type="Node2D"]
@@ -172,24 +171,28 @@ position = Vector2( 704, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="SimpleLight6" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 192, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="SimpleLight7" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 1408, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="SimpleLight8" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 1152, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="TeleportScene" parent="." instance=ExtResource( 7 )]
 
@@ -214,6 +217,7 @@ position = Vector2( 448, 2112 )
 position = Vector2( 1224, 2304 )
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color( 0.545098, 0.423529, 0.32549, 1 )
 [connection signal="timeout" from="TeleportTimer" to="." method="_on_TeleportTimer_timeout"]
 [connection signal="electric_contact_end" from="Doors/ElectricBarrier" to="Player" method="_on_ElectricBarrier_electric_contact_end"]
