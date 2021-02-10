@@ -11,7 +11,7 @@ var fuel
 
 func _ready():
 	battery = Globals.player.battery
-	fuel = Globals.player.fuel
+	fuel = Globals.player.rocket.fuel
 
 func _process(delta):
 	displayBattery(delta)

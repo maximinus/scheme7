@@ -1,5 +1,7 @@
 extends Node
 
+const ROCKET_FORCE = 1.6
+
 class RocketTemperature:
 	const NOZZLE_HEATING = 8
 	const NOZZLE_COOLING = 3
@@ -28,44 +30,6 @@ class RocketTemperature:
 		nozzle_temp = 0
 		injection_temp = 0
 
-
-class BatteryCharge:
-	const LIGHT_COST = 5.0
-	const FULLBEAM_COST = 6.0
-	const MAX_DRAIN = 30.0
-	const MAX_CHARGE = 1000.0
-	
-	var lights = false
-	var fullbeam = false
-	var charge = MAX_CHARGE
-	var drain = 0
-	
-	func _init():
-		pass
-	
-	func chargeLeft():
-		# returned as a float from 0 to 1
-		return (charge / MAX_CHARGE)
-	
-	func currentDrain():
-		# returned as a float from 0 to 1
-		return (drain / MAX_DRAIN)
-	
-	func update(delta):
-		drain = 0
-		if lights == true:
-			charge -= (LIGHT_COST * delta)
-			drain += LIGHT_COST
-			if fullbeam == true:
-				charge -= (FULLBEAM_COST * delta)
-				drain += FULLBEAM_COST
-		charge = max(0, charge)
-
-	func reset():
-		lights = false
-		fullbeam = false
-		charge = MAX_CHARGE
-		drain = 0
 
 class FuelTank:
 	const STARTING_FUEL = 5000.0
@@ -102,6 +66,105 @@ class FuelTank:
 	func reset():
 		fuel = STARTING_FUEL
 		burning = false
+
+class Rocket:
+	var fuel = FuelTank.new()
+	var temp = RocketTemperature.new(0.0, 0.0)
+	var working = true
+	var can_turn = true
+	var firing_rocket = false
+	
+	func _init():
+		pass
+		
+	func update(delta, energy):
+		if energy > 0.0 == true and working == true:
+			firing_rocket = true
+		else:
+			firing_rocket = false
+		fuel.update(delta, firing_rocket)
+		temp.update(energy, delta)
+		
+	
+	func canFireRocket():
+		if working == false:
+			return false
+		return fuel.haveFuel()
+	
+	func canTurn():
+		return can_turn
+	
+	func reset():
+		fuel.reset()
+		temp.reset()
+	
+	func getForceVector(rotation):
+		var x_force = sin(rotation) * ROCKET_FORCE
+		var y_force = cos(rotation) * -ROCKET_FORCE
+		return Vector2(x_force, y_force)
+	
+
+enum LIGHT_STATUS { Normal, Circle, Off }
+
+class BatteryCharge:
+	const LIGHT_COST = 5.0
+	const FULLBEAM_COST = 6.0
+	const MAX_DRAIN = 30.0
+	const MAX_CHARGE = 1000.0
+
+	var fullbeam = false
+	var status = LIGHT_STATUS.Off
+	var charge = MAX_CHARGE
+	var drain = 0
+	
+	func _init():
+		pass
+	
+	func chargeLeft():
+		# returned as a float from 0 to 1
+		return (charge / MAX_CHARGE)
+	
+	func currentDrain():
+		# returned as a float from 0 to 1
+		return (drain / MAX_DRAIN)
+	
+	func cycleLights():
+		# move to next status if we can
+		if charge <= 0:
+			status = LIGHT_STATUS.Off
+			return LIGHT_STATUS.Off
+		if status == LIGHT_STATUS.Off:
+			status = LIGHT_STATUS.Normal
+		elif status == LIGHT_STATUS.Normal:
+			status = LIGHT_STATUS.Circle
+		else:
+			status == LIGHT_STATUS.Off
+		return status
+	
+	func update(delta):
+		drain = 0
+		if status == LIGHT_STATUS.Off:
+			charge -= (LIGHT_COST * delta)
+			drain += LIGHT_COST
+			if fullbeam == true:
+				charge -= (FULLBEAM_COST * delta)
+				drain += FULLBEAM_COST
+		charge = max(0, charge)
+
+	func switchFullbeam():
+		# return new status
+		fullbeam = !fullbeam
+		return fullbeam
+
+	func lightsOff():
+		fullbeam = false
+		status = LIGHT_STATUS.Off
+
+	func reset():
+		fullbeam = false
+		charge = MAX_CHARGE
+		status = LIGHT_STATUS.Off
+		drain = 0
 
 class Shield:
 	# shield - an electrical shield to protect
@@ -196,35 +259,10 @@ class Shield:
 		last_speed = 0
 
 
-class EnergyShield:
-	func _init():
-		pass
-	
-	func canUse():
-		return false
-	
-	func reset():
-		pass
-
-
-class Gun:
-	func _init():
-		pass
-	
-	func canFire():
-		return true
-		
-	func reset():
-		pass
-
-
 class Player:
-	var rocket = RocketTemperature.new(0, 0)
+	var rocket = Rocket.new()
 	var battery = BatteryCharge.new()
-	var fuel = FuelTank.new()
 	var shield = Shield.new()
-	var energy = EnergyShield.new()
-	var gun = Gun.new()
 	
 	var last_force = Vector2(0.0, 0.0)
 	var position = Vector2(0, 0)
@@ -239,9 +277,9 @@ class Player:
 		last_force = Vector2(0, 0)
 		rocket.reset()
 		battery.reset()
-		fuel.reset()
 		shield.reset()
 		position = Vector2()
+
 
 class Level:
 	func _init():

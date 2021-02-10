@@ -3,7 +3,6 @@ extends KinematicBody2D
 const ROTATION_SPEED = 120.0
 const GRAVITY_VECTOR = Vector2(0, 5.0)
 const TAKEOFF_INJECTION = Vector2(0, -20.0)
-const ROCKET_FORCE = 1.6
 const BOUNCE = 0.5
 const SPIN_BRAKING = 0.1
 const LANDING_MAX_ROTATION = 10.0
@@ -18,9 +17,6 @@ const LIGHT_ENERGY = 1.0
 const ELECTRIC_MOVE_FORCE = 50.0
 const ELECTRIC_TURN_FORCE = 20.0
 
-# TODO: move out
-enum LIGHT_STATUS { Normal, Circle, Off }
-
 signal player_collision
 signal player_landed
 signal laser_fire
@@ -29,16 +25,12 @@ signal player_dead
 # sum of forces acting on the ship
 var velocity = Vector2(0, 0)
 
-# TODO: move out
-var firing_rocket = false
 # turned by hitting something
 var turning = 0
 var landing = false
 var landed = false
 var takeoff = false
 var processing = false
-# TODO: move out
-var light_status = LIGHT_STATUS.Off
 var electrified = false
 var electric_meet_force = Vector2(0.0, 0.0)
 
@@ -48,23 +40,16 @@ var player
 
 func _ready():
 	randomize()
-	# TODO: move out
 	player = Globals.player
-	player.battery.lights = false
-	player.battery.fullbeam = false
 
 func reset():
 	velocity = Vector2(0.0, 0.0)
 	rotation = 0.0
-	# TODO: move out
-	firing_rocket = false
 	flameOff(0.0)
 	turning = 0
 	landing = false
 	landed = false
 	takeoff = false
-	# TODO: move out
-	light_status = LIGHT_STATUS.Off
 	electrified = false
 	electric_meet_force = Vector2(0.0, 0.0)
 	$Image.frame = 0
@@ -84,7 +69,7 @@ func _process(delta):
 	$Image.frame = player.shield.getDamageFrame()
 
 	# TODO: confirm with API
-	if Input.is_action_pressed('Thrust') and player.fuel.haveFuel():
+	if Input.is_action_pressed('Thrust') and player.rocket.canFireRocket():
 		landing = false
 		if landed == true:
 			landed = false
@@ -99,10 +84,11 @@ func _process(delta):
 		return
 	
 	# TODO: confirm with API
-	if Input.is_action_pressed('LeftTurn'):
-		rotation_degrees -= ROTATION_SPEED * delta
-	if Input.is_action_pressed('RightTurn'):
-		rotation_degrees += ROTATION_SPEED * delta
+	if player.rocket.canTurn() == true:
+		if Input.is_action_pressed('LeftTurn'):
+			rotation_degrees -= ROTATION_SPEED * delta
+		if Input.is_action_pressed('RightTurn'):
+			rotation_degrees += ROTATION_SPEED * delta
 	
 	if electrified == true:
 		rotation += rand_range(-ELECTRIC_TURN_FORCE, ELECTRIC_TURN_FORCE) * delta
@@ -140,7 +126,6 @@ func zoomCamera(delta):
 
 func checkLaser():
 	if Input.is_action_just_pressed('FireLaser'):
-		# TODO: check with API
 		emit_signal('laser_fire')
 
 func checkLights():
@@ -148,44 +133,34 @@ func checkLights():
 	if player.battery.charge <= 0.0:
 		$LHNormal.visible = false
 		$LCNormal.visible = false
-		# TODO: move out
-		light_status = LIGHT_STATUS.Off
-		player.battery.lights = false
-		player.battery.fullbeam = false
+		player.battery.lightsOff()
 		return
 	
+	# ok, can do lights
+	
 	if Input.is_action_just_pressed('Lights'):
-		if light_status == LIGHT_STATUS.Normal:
-			# to circle
-			$LHNormal.visible = false
-			$LCNormal.visible = true
-			light_status = LIGHT_STATUS.Circle
-			player.battery.lights = true
-		elif light_status == LIGHT_STATUS.Circle:
-			# all off
-			$LHNormal.visible = false
-			$LCNormal.visible = false
-			player.battery.lights = false
-			light_status = LIGHT_STATUS.Off
-		else:
-			# all off, to normal
+		var current_status = player.battery.cycleLights()	
+		if current_status == Globals.LIGHT_STATUS.Normal:
 			$LHNormal.visible = true
 			$LCNormal.visible = false
-			player.battery.lights = true
-			light_status = LIGHT_STATUS.Normal
+		elif current_status == Globals.LIGHT_STATUS.Circle:
+			$LHNormal.visible = false
+			$LCNormal.visible = false
+		else:
+			# all off, to normal
+			$LHNormal.visible = false
+			$LCNormal.visible = true
 	
 	if Input.is_action_just_pressed('FullBeam'):
 		# if lights are off, ignore
-		if light_status == LIGHT_STATUS.Off:
+		if player.battery.status == Globals.LIGHT_STATUS.Off:
 			return
-		if player.battery.fullbeam == false:
+		if player.battery.switchFullbeam() == false:
 			$LCNormal.energy = FULLBEAM_ENERGY
 			$LHNormal.energy = FULLBEAM_ENERGY
-			player.battery.fullbeam = true
 		else:
 			$LCNormal.energy = LIGHT_ENERGY
 			$LHNormal.energy = LIGHT_ENERGY
-			player.battery.fullbeam = false
 
 func processLanding(delta):
 	# we are trying to land
@@ -234,8 +209,8 @@ func _physics_process(delta):
 	# don't apply on takeoff
 	if takeoff == false:
 		velocity += GRAVITY_VECTOR * delta
-	if firing_rocket == true:
-		velocity += getForceVector()
+	if player.rocket.firing_rocket == true:
+		velocity += player.rocket.getForceVector(rotation)
 	if takeoff == true:
 		velocity += TAKEOFF_INJECTION
 	
@@ -269,7 +244,7 @@ func _physics_process(delta):
 	if dead == true:
 		# we are dead, raise the signal and finish
 		# kill all sounds and animations
-		flameOff(0.1)
+		flameOff(delta)
 		$RocketSound.stop()
 		$ElectricCollision.stop()
 		emit_signal('player_dead')
@@ -358,26 +333,17 @@ func collidePlayer(position, speed):
 	$CollisionSound.play()
 	emit_signal('player_collision', position)
 
-func getForceVector():
-	var x_force = sin(rotation) * ROCKET_FORCE
-	var y_force = cos(rotation) * -ROCKET_FORCE
-	return Vector2(x_force, y_force)
-
 func flameOn(delta):
-	firing_rocket = true
 	$FlameLight.visible = true
-	player.rocket.update(1.0, delta)
-	player.fuel.update(delta, true)
+	player.rocket.update(delta, 1.0)
 	$Flame/OuterParticle.emitting = true
 	$Flame/InnerParticle.emitting = true
 	if $RocketSound.playing == false:
 		$RocketSound.play()
 
 func flameOff(delta):
-	firing_rocket = false
 	$FlameLight.visible = false
-	player.rocket.update(0.0, delta)
-	player.fuel.update(delta, false)
+	player.rocket.update(delta, 0.0)
 	$Flame/OuterParticle.emitting = false
 	$Flame/InnerParticle.emitting = false
 	$RocketSound.stop()
