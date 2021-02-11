@@ -6,7 +6,7 @@ const BAR_HEIGHT = 3
 var shield
 
 func _ready():
-	shield = Globals.player.shield
+	shield = Globals.ship.shield
 
 func _process(delta):
 	var electric_pos = convertPos(shield.getShield())

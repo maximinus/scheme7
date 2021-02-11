@@ -6,7 +6,7 @@ var last_temp
 var rocket
 
 func _ready():
-	rocket = Globals.player.rocket.temp
+	rocket = Globals.ship.rocket.temp
 	last_temp = rocket.nozzle_temp
 
 func _process(delta):

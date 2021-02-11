@@ -3,7 +3,7 @@ extends Node2D
 var last_force
 
 func _ready():
-	last_force = Globals.player.last_force
+	last_force = Globals.ship.last_force
 
 func getBarSize(speed):
 	speed = abs(speed)

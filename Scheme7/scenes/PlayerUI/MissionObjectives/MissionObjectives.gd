@@ -58,10 +58,9 @@ func downloaded():
 func _process(delta):
 	if lander_found == true:
 		return
-	var player_pos = Globals.player.position
+	var player_pos = Globals.ship.position
 	var delta_distance = player_pos - lander_pos
-	var distance = pow(delta_distance.x, 2.0) + pow(delta_distance.y, 2.0)
-	distance = sqrt(distance)
+	var distance = delta_distance.length()
 	if distance < 360:
 		lander_found = true
 		moveTopLabel()

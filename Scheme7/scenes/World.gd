@@ -12,10 +12,10 @@ func _ready():
 	# remember for the next life
 	player_start = $Player.position
 	$Player.hide()
-	$Player.connect('player_collision', self, 'playerCollision')
-	$Player.connect('laser_fire', self, 'playerLaser')
-	$Player.connect('player_dead', self, 'playerDead')
-	$Player.connect('player_landed', self, 'playerLanded')
+	$Player.connect('ship_collision', self, 'shipCollision')
+	$Player.connect('laser_fire', self, 'shipLaser')
+	$Player.connect('ship_dead', self, 'shipDead')
+	$Player.connect('ship_landed', self, 'shipLanded')
 	$UILayer/LanderDataTransfer.connect('download_finished', self, 'downloaded')
 	$UILayer/DeathNotice.connect('next_life', self, 'nextLife')
 	$CanvasModulate.show()
@@ -31,12 +31,12 @@ func _process(delta):
 func downloaded():
 	$UILayer/MissionObjectives.downloaded()
 
-func playerCollision(position):
+func shipCollision(position):
 	var new_node = EXPLOSION.instance()
 	new_node.position = position
 	add_child(new_node)
 
-func playerLaser():
+func shipLaser():
 	var new_laser = LASER.instance()
 	# match position and rotation
 	new_laser.position = $Player/LaserStart.global_position
@@ -45,11 +45,11 @@ func playerLaser():
 	new_laser.add_collision_exception_with($Player)
 	add_child_below_node($Lights, new_laser)
 
-func playerLanded():
+func shipLanded():
 	$UILayer/LanderDataTransfer.show()
 	$UILayer/LanderDataTransfer.processing = true
 
-func playerDead():
+func shipDead():
 	# we can't pause
 	$UILayer/PauseScreen.can_pause = false
 	var player_pos = $Player.position

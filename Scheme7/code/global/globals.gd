@@ -138,7 +138,8 @@ class BatteryCharge:
 		elif status == LIGHT_STATUS.Normal:
 			status = LIGHT_STATUS.Circle
 		else:
-			status == LIGHT_STATUS.Off
+			# must be circle
+			status = LIGHT_STATUS.Off
 		return status
 	
 	func update(delta):
@@ -154,7 +155,10 @@ class BatteryCharge:
 	func switchFullbeam():
 		# return new status
 		fullbeam = !fullbeam
-		return fullbeam
+		if status != LIGHT_STATUS.Off:
+			return fullbeam
+		# lights are off
+		return false
 
 	func lightsOff():
 		fullbeam = false
@@ -259,7 +263,7 @@ class Shield:
 		last_speed = 0
 
 
-class Player:
+class Ship:
 	var rocket = Rocket.new()
 	var battery = BatteryCharge.new()
 	var shield = Shield.new()
@@ -291,7 +295,7 @@ class Level:
 				'Download data',
 				'Find landing point']
 
-var player = Player.new()
+var ship = Ship.new()
 var level = Level.new()
 
 func _ready():
