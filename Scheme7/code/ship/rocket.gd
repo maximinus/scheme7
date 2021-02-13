@@ -4,8 +4,8 @@ class_name Rocket
 
 const ROCKET_FORCE: float = 1.6
 
-var fuel: FuelTank = FuelTank.new()
-var temp: RocketTemperature = RocketTemperature.new(0.0, 0.0)
+var fuel = FuelTank.new()
+var temp = RocketTemperature.new(0.0, 0.0)
 var working: bool = true
 var can_turn: bool = true
 var firing_rocket: bool = false
