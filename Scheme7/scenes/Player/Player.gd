@@ -10,10 +10,6 @@ const LANDING_TURN_SPEED = 20.0
 const LANDING_X_SLOWDOWN = 1.5
 const SHIP_MASS = 5.0
 
-# TODO: Move out
-const FULLBEAM_ENERGY = 2.0
-const LIGHT_ENERGY = 1.0
-
 const ELECTRIC_MOVE_FORCE = 50.0
 const ELECTRIC_TURN_FORCE = 20.0
 
@@ -155,12 +151,9 @@ func checkLights():
 		# if lights are off, ignore
 		if ship.battery.status == Globals.LIGHT_STATUS.Off:
 			return
-		if ship.battery.switchFullbeam() == true:
-			$LCNormal.energy = FULLBEAM_ENERGY
-			$LHNormal.energy = FULLBEAM_ENERGY
-		else:
-			$LCNormal.energy = LIGHT_ENERGY
-			$LHNormal.energy = LIGHT_ENERGY
+		var energy: float = ship.battery.getFullbeam()
+		$LCNormal.energy = energy
+		$LHNormal.energy = energy
 
 func processLanding(delta):
 	# we are trying to land

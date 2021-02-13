@@ -2,37 +2,37 @@ extends Node
 
 class_name FuelTank
 
-const STARTING_FUEL = 5000.0
-const ROCKET_CONSUMPTION = 50.0
+const STARTING_FUEL: float = 5000.0
+const ROCKET_CONSUMPTION: float = 50.0
 	
-var fuel = STARTING_FUEL
-var burning = false
+var fuel: float = STARTING_FUEL
+var burning: bool = false
 	
-func _init():
+func _init() -> void:
 	pass
 	
-func fuelLeft():
+func fuelLeft() -> float:
 	return fuel / STARTING_FUEL
 	
-func fuelDrain():
+func fuelDrain() -> float:
 	# always max if rocket is on
 	if burning == true:
 		return 1.0
 	else:
 		return 0.0
 	
-func update(delta, rocket_on):
+func update(delta, rocket_on) -> void:
 	if rocket_on == true:
 		fuel = max(0, fuel - (ROCKET_CONSUMPTION * delta))
 		burning = true
 	else:
 		burning = false
 
-func haveFuel():
+func haveFuel() -> bool:
 	if fuelLeft() <= 0.0:
 		return false
 	return true
 
-func reset():
+func reset() -> void:
 	fuel = STARTING_FUEL
 	burning = false

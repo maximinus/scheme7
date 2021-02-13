@@ -20,6 +20,11 @@ _global_script_classes=[ {
 "path": "res://code/ship/fuel_tank.gd"
 }, {
 "base": "Node",
+"class": "Level",
+"language": "GDScript",
+"path": "res://code/level/level.gd"
+}, {
+"base": "Node",
 "class": "Rocket",
 "language": "GDScript",
 "path": "res://code/ship/rocket.gd"
@@ -42,6 +47,7 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "BatteryCharge": "",
 "FuelTank": "",
+"Level": "",
 "Rocket": "",
 "RocketTemperature": "",
 "Shield": "",

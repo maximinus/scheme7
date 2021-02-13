@@ -15,7 +15,7 @@ func _process(delta):
 	
 	# the bar is for the nozzle temp
 	# get range and convert
-	var bar_length = (rocket.nozzle_temp / Globals.RocketTemperature.MAX_NOZZLE_TEMP) * 0.9
+	var bar_length = (rocket.nozzle_temp / rocket.MAX_NOZZLE_TEMP) * 0.9
 	bar_length = min(bar_length, 1.0)
 	bar_length *= 48
 	$HeatBarNozzle.region_rect.end.x = int(bar_length)
@@ -34,7 +34,7 @@ func _process(delta):
 		$TempNozzle/Red.visible = true
 
 	# repeat for injection
-	bar_length = (rocket.injection_temp / Globals.RocketTemperature.MAX_INJECTION_TEMP) * 0.9
+	bar_length = (rocket.injection_temp / rocket.MAX_INJECTION_TEMP) * 0.9
 	bar_length = min(bar_length, 1.0)
 	bar_length *= 48	
 	$HeatBarInjection.region_rect.end.x = int(bar_length)
