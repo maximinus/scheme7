@@ -32,29 +32,29 @@ TODO:
 	* Detect objectives complete and remove them
 	- Add a menu to the pause
 	- Add energy shield
-	Handle the winning situation
-	Transition scene back to yourself
-	Needs to reset level, so scene reload should handle that
-	Make a new level, please. Shouldn't take that long
-
-
-- 12th Feb?
-
-	Put all decision code into player class in globals
-		That's the decision to do or not. The actual code for
-		moving the ship can still be in the player
-	Find some way to inject data into the starting player on a level
-		Maybe needs a Ship() class different from a Player()
-	Build a level with restricted use because of this
-	Improve objectives and script a training level "Turn the lights on"
-	Then "fire a rocket", "land somewhere", "shoot something"
-
+	* Make a new level, please. Shouldn't take that long
 	* Add a dialog screen
 		* Make it the start scene
 
-	Make second level
-		Now have Dialog > Level > Dialog > Level
+	* Make second level
+		* Now have Dialog > Level > Dialog > Level
 		* If you die, go back to start of level
+	* Put all decision code into player class in globals
+		* That's the decision to do or not. The actual code for
+		* moving the ship can still be in the player
+
+	* Model the rocket and player as objects exposed globally and cleanup code
+		* AKA "Decide what the boundary is"
+
+- 12th Feb?
+
+	Find some way to inject data into the starting player on a level
+		* Maybe needs a Ship() class different from a Player()
+	Build a level with restricted use because of this
+	Improve objectives and script a training level "Turn the lights on"
+	Then "fire a rocket", "land somewhere", "shoot something"
+	Handle the winning situation with a scene fade
+
 
 - 19th Feb?
 
@@ -62,20 +62,18 @@ TODO:
 		The character is a simple AI that comes with you
 	Add some tutorial levels.
 		This needs practice levels that have a heavy shader to look virtual
+	Add the ball with verlet physics
 
 - 26th Feb?
 
 	Add "stuff" to the levels
-		Doors
+		* Doors
 		Blowers and suckers
 		Enemy guns
-		Keys and downloading
+		* Downloading
+	Add some new levels
 
 - 5th Mar?
-
-	Model the rocket and player as objects exposed globally and cleanup code
-		AKA "Decide what the boundary is"
-
 	Add particles that move away from your force
 	Tidy up colour of flame
 	Allow to change flame size easily
