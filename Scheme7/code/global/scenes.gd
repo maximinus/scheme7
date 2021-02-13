@@ -5,13 +5,13 @@ extends Node
 var next_scene = []
 var scene_list
 
-func _ready():
+func _ready() -> void:
 	# we need to load in the level structure
 	# this tells where to go from scene to scene
 	pass
 	
-func getNextScene():
+func getNextScene() -> String:
 	return next_scene.pop_front()
 
-func addScene(scene):
+func addScene(scene) -> void:
 	next_scene.append(scene)

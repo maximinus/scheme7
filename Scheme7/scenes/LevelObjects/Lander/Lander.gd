@@ -1,11 +1,9 @@
 extends StaticBody2D
 
-var now = 0
-
-func _ready():
+func _ready() -> void:
 	pass
 
-func _on_Timer_timeout():
+func _on_Timer_timeout() -> void:
 	if $Light2D.visible:
 		$Light2D.hide()
 	else:

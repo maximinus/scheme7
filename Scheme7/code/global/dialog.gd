@@ -5,14 +5,15 @@ var text = ['Good morning.\nToday we will be conducting the standard startup tes
 			'We begin with testing the simpler controls.\nThe L key will cycle through the lights.',
 			'Prepare to be transferred to the test site. \nRemember to test the lights with the L key.']
 
-class Dialog:
-	var speaker
+
+class  Dialog:
+	var speaker: String
 	var text
 	
 	func _init():
 		pass
 
-func getDialog():
+func getDialog() -> Array:
 	# return a chunk of dialog
 	var dialogs = []
 	for i in text:
