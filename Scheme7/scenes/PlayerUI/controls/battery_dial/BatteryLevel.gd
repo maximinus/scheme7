@@ -30,7 +30,7 @@ func displayBattery(delta):
 	var blocks = int(ceil(charge * BLOCKS))
 	$Battery/BatteryLevel.region_rect.end.x = max(0, (blocks * BLOCK_WIDTH) - 3)
 
-func displayFuel(delta):
+func displayFuel(_delta):
 	var fuel_left = fuel.fuelLeft()
 	var drain = fuel.fuelDrain()
 	

@@ -19,7 +19,7 @@ func _on_Timer_timeout():
 	else:
 		$Title.show()
 
-func _process(delta):
+func _process(_delta):
 	if active == false:
 		return
 	# did player press space bar?
@@ -33,7 +33,7 @@ func _on_StartPause_timeout():
 	$BlinkTimer.start()
 	$AlarmSFX.play()
 
-func _on_AnimationPlayer_animation_finished(anim_name):
+func _on_AnimationPlayer_animation_finished(_anim_name):
 	$FadeAnimation/CanvasModulate.color = Color(1.0, 1.0, 1.0, 1.0)
 	$AlarmSFX.stop()
 	$BlinkTimer.stop()

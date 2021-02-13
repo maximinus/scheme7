@@ -15,6 +15,6 @@ func setPosition(new_pos: Vector2) -> void:
 func _on_SFX_finished() -> void:
 	$Animation/Teleport.hide()
 
-func _on_Animation_animation_finished(anim_name: String) -> void:
+func _on_Animation_animation_finished(_anim_name: String) -> void:
 	$Animation/Teleport.hide()
 	$Animation/FakePlayer.hide()

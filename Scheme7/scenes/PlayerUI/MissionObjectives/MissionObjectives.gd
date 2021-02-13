@@ -55,7 +55,7 @@ func moveTopLabel():
 func downloaded():
 	moveTopLabel()
 
-func _process(delta):
+func _process(_delta):
 	if lander_found == true:
 		return
 	var player_pos = Globals.ship.position

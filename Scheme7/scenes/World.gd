@@ -21,7 +21,7 @@ func _ready() -> void:
 	$CanvasModulate.show()
 	spawnIn()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# if we are thrusting, better hide and reset the download animation
 	if $UILayer/LanderDataTransfer.visible == true:
 		if $Player.landed == false:
@@ -82,7 +82,7 @@ func spawnIn() -> void:
 	$UILayer/MissionObjectives.reset()
 	$TeleportScene.show()
 	$TeleportScene.setPosition($Player.position)
-	$TeleportScene/Animation.play('Fade')
+	$TeleportScene/Animation.play('Teleport')
 	$TeleportTimer.start()
 
 func _on_TeleportTimer_timeout() -> void:

@@ -7,7 +7,7 @@ func _ready():
 	$BlurFilter.hide()
 	$Sprite.hide()
 
-func _process(delta):
+func _process(_delta):
 	if can_pause == false:
 		return
 	if Input.is_action_just_pressed('Pause'):

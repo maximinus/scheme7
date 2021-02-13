@@ -259,7 +259,7 @@ func _physics_process(delta) -> void:
 		collidePlayer(result.position, speed)
 	takeoff = false
 
-func checkLanding(normal) -> void:
+func checkLanding(_normal) -> void:
 	# if contact is slow, and going down, then we may be landing
 	var speed = ship.last_force.length()
 	if speed > 30:

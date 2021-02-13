@@ -17,7 +17,7 @@ func _ready():
 	dialogs = Dialog.getDialog()
 	displayDialog()
 
-func _process(delta):
+func _process(_delta):
 	# was the enter key pressed?
 	if Input.is_action_just_pressed('Enter'):
 		# update status
@@ -58,7 +58,7 @@ func stopAnimation():
 	$Next.show()
 	current_status = Status.WAITING	
 
-func _on_Tween_tween_completed(object, key):
+func _on_Tween_tween_completed(_object, _key):
 	stopAnimation()
 
 func _on_Timer_timeout():

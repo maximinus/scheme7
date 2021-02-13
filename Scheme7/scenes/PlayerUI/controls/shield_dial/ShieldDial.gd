@@ -8,7 +8,7 @@ var shield
 func _ready():
 	shield = Globals.ship.shield
 
-func _process(delta):
+func _process(_delta):
 	var electric_pos = convertPos(shield.getShield())
 	var structure_pos = convertPos(shield.getStruct())
 	var internals_pos = convertPos(shield.getInternals())

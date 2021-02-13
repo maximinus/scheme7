@@ -38,7 +38,7 @@ func setDirection(direct):
 		rotation_degrees = 270.0
 	direction = direct
 
-func collide(velocity):
+func collide(_velocity):
 	if broken == true:
 		# already done
 		return

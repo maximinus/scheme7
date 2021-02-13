@@ -90,7 +90,7 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id=3]
 shader = SubResource( 2 )
 shader_param/glitch = 0.008
-shader_param/active = true
+shader_param/active = false
 
 [node name="Dialog" type="Control"]
 anchor_right = 1.0
