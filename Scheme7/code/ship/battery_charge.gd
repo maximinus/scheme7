@@ -43,7 +43,7 @@ func cycleLights() -> int:
 	
 func update(delta) -> void:
 	drain = 0
-	if status == LIGHT_STATUS.Off:
+	if status != LIGHT_STATUS.Off:
 		charge -= (LIGHT_COST * delta)
 		drain += LIGHT_COST
 		if fullbeam == true:

@@ -136,10 +136,10 @@ func checkLights():
 	
 	if Input.is_action_just_pressed('Lights'):
 		var current_status = ship.battery.cycleLights()
-		if current_status == Globals.LIGHT_STATUS.Normal:
+		if current_status == BatteryCharge.LIGHT_STATUS.Normal:
 			$LHNormal.visible = true
 			$LCNormal.visible = false
-		elif current_status == Globals.LIGHT_STATUS.Circle:
+		elif current_status == BatteryCharge.LIGHT_STATUS.Circle:
 			$LHNormal.visible = false
 			$LCNormal.visible = true
 		else:
@@ -149,7 +149,7 @@ func checkLights():
 	
 	if Input.is_action_just_pressed('FullBeam'):
 		# if lights are off, ignore
-		if ship.battery.status == Globals.LIGHT_STATUS.Off:
+		if ship.battery.status == BatteryCharge.LIGHT_STATUS.Off:
 			return
 		var energy: float = ship.battery.getFullbeam()
 		$LCNormal.energy = energy
