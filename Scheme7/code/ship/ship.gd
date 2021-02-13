@@ -2,9 +2,9 @@ extends Node
 
 class_name Ship
 
-var rocket: Rocket
-var battery: BatteryCharge
-var shield: Shield
+var rocket
+var battery
+var shield
 	
 var last_force: Vector2 = Vector2(0.0, 0.0)
 var position: Vector2 = Vector2(0, 0)
@@ -14,7 +14,7 @@ func _init(r, b, s):
 	battery = b
 	shield = s
 		
-func calculateSystemFailure(speed, position) -> void:
+func calculateSystemFailure(speed: float, position: Vector2) -> void:
 	pass
 
 func reset() -> void:

@@ -4,11 +4,11 @@ const EXPLOSION = preload('res://scenes/ExplosionDebris/ExplosionDebris.tscn')
 const LASER = preload('res://scenes/LevelObjects/Laser/Laser.tscn')
 const DEAD_PLAYER = preload('res://scenes/Player/PlayerDeath/PlayerDeath.tscn')
 
-var player_start
+var player_start: Vector2
 var dead_player
-var lander_found = false
+var lander_found: bool = false
 
-func _ready():
+func _ready() -> void:
 	# remember for the next life
 	player_start = $Player.position
 	$Player.hide()
@@ -21,22 +21,22 @@ func _ready():
 	$CanvasModulate.show()
 	spawnIn()
 
-func _process(delta):
+func _process(delta: float) -> void:
 	# if we are thrusting, better hide and reset the download animation
 	if $UILayer/LanderDataTransfer.visible == true:
 		if $Player.landed == false:
 			# we took off, so reset animation
 			$UILayer/LanderDataTransfer.reset()
 
-func downloaded():
+func downloaded() -> void:
 	$UILayer/MissionObjectives.downloaded()
 
-func shipCollision(position):
+func shipCollision(position: Vector2) -> void:
 	var new_node = EXPLOSION.instance()
 	new_node.position = position
 	add_child(new_node)
 
-func shipLaser():
+func shipLaser() -> void:
 	var new_laser = LASER.instance()
 	# match position and rotation
 	new_laser.position = $Player/LaserStart.global_position
@@ -45,16 +45,16 @@ func shipLaser():
 	new_laser.add_collision_exception_with($Player)
 	add_child_below_node($Lights, new_laser)
 
-func shipLanded():
+func shipLanded() -> void:
 	$UILayer/LanderDataTransfer.show()
 	$UILayer/LanderDataTransfer.processing = true
 
-func shipDead():
+func shipDead() -> void:
 	# we can't pause
 	$UILayer/PauseScreen.can_pause = false
-	var player_pos = $Player.position
-	var player_rot = $Player.rotation
-	var player_speed = $Player.velocity
+	var player_pos: Vector2 = $Player.position
+	var player_rot: float = $Player.rotation
+	var player_speed: Vector2 = $Player.velocity
 	# hide the player
 	$Player.hide()
 	$Player.processing = false
@@ -67,7 +67,7 @@ func shipDead():
 	add_child_below_node($Lights, dead_player)
 	$UILayer/DeathNotice.start()
 
-func nextLife():
+func nextLife() -> void:
 	# kill the playerdeath
 	dead_player.queue_free()
 	$Player.position = player_start
@@ -75,7 +75,7 @@ func nextLife():
 	# we can pause again
 	$UILayer/PauseScreen.can_pause = true
 
-func spawnIn():
+func spawnIn() -> void:
 	$Player.hide()
 	$Player.reset()
 	$Player.processing = false
@@ -85,7 +85,7 @@ func spawnIn():
 	$TeleportScene/Animation.play('Fade')
 	$TeleportTimer.start()
 
-func _on_TeleportTimer_timeout():
+func _on_TeleportTimer_timeout() -> void:
 	$TeleportScene.hide()
 	$Player.show()
 	$Player.processing = true

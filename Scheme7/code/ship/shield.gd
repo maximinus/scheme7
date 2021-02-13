@@ -44,7 +44,7 @@ func update(player, collider) -> bool:
 	last_speed = speed
 	return internals <= 0.0
 
-func updateDamage(damage_amount) -> void:
+func updateDamage(damage_amount: float) -> void:
 	if struct <= 0:
 		internals = max(0.0, internals - damage_amount)
 		return

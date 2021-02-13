@@ -41,7 +41,7 @@ func cycleLights() -> int:
 		status = LIGHT_STATUS.Off
 	return status
 	
-func update(delta) -> void:
+func update(delta: float) -> void:
 	drain = 0
 	if status != LIGHT_STATUS.Off:
 		charge -= (LIGHT_COST * delta)

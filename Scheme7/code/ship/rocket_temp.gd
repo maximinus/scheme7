@@ -13,11 +13,11 @@ const MAX_INJECTION_TEMP: float = INJECTION_HEATING * 15.0
 var nozzle_temp: float = 0.0
 var injection_temp: float = 0.0
 
-func _init(start_nozzle , start_injection) -> void:
+func _init(start_nozzle:float, start_injection: float) -> void:
 	nozzle_temp = start_nozzle
 	injection_temp = start_injection
 	
-func update(energy, delta) -> void:
+func update(energy: float, delta: float) -> void:
 	if energy <= 0:
 		nozzle_temp = max(0, nozzle_temp - (NOZZLE_COOLING * delta))
 		injection_temp = max(0, injection_temp - (INJECTION_COOLING * delta))

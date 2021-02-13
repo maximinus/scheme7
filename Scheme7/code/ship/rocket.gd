@@ -13,7 +13,7 @@ var firing_rocket: bool = false
 func _init() -> void:
 	pass
 		
-func update(delta, energy) -> void:
+func update(delta: float, energy: float) -> void:
 	if energy > 0.0 == true and working == true:
 		firing_rocket = true
 	else:
@@ -33,7 +33,7 @@ func reset() -> void:
 	fuel.reset()
 	temp.reset()
 	
-func getForceVector(rotation) -> Vector2:
+func getForceVector(rotation: float) -> Vector2:
 	var x_force = sin(rotation) * ROCKET_FORCE
 	var y_force = cos(rotation) * -ROCKET_FORCE
 	return Vector2(x_force, y_force)

@@ -21,7 +21,7 @@ func fuelDrain() -> float:
 	else:
 		return 0.0
 	
-func update(delta, rocket_on) -> void:
+func update(delta: float, rocket_on: bool) -> void:
 	if rocket_on == true:
 		fuel = max(0, fuel - (ROCKET_CONSUMPTION * delta))
 		burning = true
