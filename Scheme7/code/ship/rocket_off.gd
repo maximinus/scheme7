@@ -4,10 +4,12 @@ class_name RocketOff
 
 var fuel
 var temp
+var firing_rocket
 
 func _init():
 	fuel = FuelTankOff.new()
 	temp = RocketTemperatureOff.new()
+	firing_rocket = false
 		
 func update(delta: float, energy: float) -> void:
 	pass

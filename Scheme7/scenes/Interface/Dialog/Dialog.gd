@@ -14,13 +14,15 @@ func _ready():
 	setupShip()
 	# next is static, then to the tutorial level
 	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
-	Scenes.addScene('res://scenes/Levels/BaseLevel/BaseLevel.tscn')
+	Scenes.addScene('res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.tscn')
 	index = 0
 	dialogs = Dialog.getDialog()
 	displayDialog()
 
 func setupShip():
 	Globals.ship.gun = GunsOff.new()
+	Globals.ship.shield = ShieldOff.new()
+	Globals.ship.rocket = RocketOff.new()
 
 func _process(_delta):
 	# was the enter key pressed?

@@ -6,13 +6,15 @@ const SCREEN_WIDTH = 1024
 const SCREEN_HEIGHT = 600
 const MARGIN = 32
 
-var lander_pos = Vector2(1224.0, 2304.0)
-var lander_found = false
 var objectives = []
 var index = 0
+var callback = null
 
 func _ready():
-	var txt_objectives = Globals.level.getObjectives()
+	pass
+
+func setup():
+	var txt_objectives = Globals.level.objectives
 	for i in txt_objectives:
 		# create a label
 		var obj_label = OBJ_SCENE.instance()
@@ -23,6 +25,7 @@ func _ready():
 		objectives.append(obj_label)
 		add_child(obj_label)
 		index = len(objectives) - 1
+	callback = Globals.level.callback
 
 func reset():
 	# move all objectives back to correct place
@@ -52,15 +55,5 @@ func moveTopLabel():
 	$Tween.start()
 	index -= 1
 
-func downloaded():
-	moveTopLabel()
-
 func _process(_delta):
-	if lander_found == true:
-		return
-	var player_pos = Globals.ship.position
-	var delta_distance = player_pos - lander_pos
-	var distance = delta_distance.length()
-	if distance < 360:
-		lander_found = true
-		moveTopLabel()
+	pass
