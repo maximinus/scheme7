@@ -79,7 +79,6 @@ polygon = PoolVector2Array( 384, 64, 128, 320, 128, 576, 256, 576, 384, 448, 640
 [node name="Objectives" parent="CanvasLayer" instance=ExtResource( 6 )]
 
 [node name="PauseScreen" parent="CanvasLayer" instance=ExtResource( 4 )]
-visible = false
 
 [node name="MapTiles" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )

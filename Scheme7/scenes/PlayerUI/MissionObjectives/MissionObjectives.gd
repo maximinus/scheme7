@@ -1,6 +1,7 @@
 extends Node2D
 
 const OBJ_SCENE = preload('res://scenes/PlayerUI/MissionObjectives/Objective/ObjectiveLabel.tscn')
+const SLIDE_SPEED = 1.0
 
 const SCREEN_WIDTH = 1024
 const SCREEN_HEIGHT = 600
@@ -14,7 +15,9 @@ func _ready():
 	pass
 
 func setup():
-	var txt_objectives = Globals.level.objectives
+	var txt_objectives = Globals.level.objectives.duplicate()
+	# don't forget we display these backwards
+	txt_objectives.invert()
 	for i in txt_objectives:
 		# create a label
 		var obj_label = OBJ_SCENE.instance()
@@ -51,9 +54,12 @@ func moveTopLabel():
 	var distance = node.rect_size.x + MARGIN
 	var to = Vector2(from.x + distance, from.y)
 	$Tween.interpolate_property(node, 'rect_position', from, to,
-		1.5, Tween.TRANS_QUAD, Tween.EASE_IN)
+		SLIDE_SPEED, Tween.TRANS_QUAD, Tween.EASE_IN)
 	$Tween.start()
 	index -= 1
 
 func _process(_delta):
-	pass
+	if index >= 0:
+		if callback.call_func() == true:
+			moveTopLabel()
+	# we have completed all objectives

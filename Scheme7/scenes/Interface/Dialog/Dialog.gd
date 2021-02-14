@@ -8,6 +8,7 @@ const SPEED = 30.0
 var dialogs = []
 var index = 0
 var current_status = Status.DRAWING
+var timer_on = false
 	
 func _ready():
 	# get data ready for when we swap to the baselevel
@@ -25,6 +26,9 @@ func setupShip():
 	Globals.ship.rocket = RocketOff.new()
 
 func _process(_delta):
+	# if the timer is on, do nothing
+	if timer_on == true:
+		return
 	# was the enter key pressed?
 	if Input.is_action_just_pressed('Enter'):
 		# update status
@@ -41,6 +45,7 @@ func _process(_delta):
 				displayDialog()
 
 func sceneTransition():
+	timer_on = true
 	$Glitch.material.set_shader_param('active', true)
 	$Timer.start()
 
