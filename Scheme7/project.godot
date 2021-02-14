@@ -30,6 +30,16 @@ _global_script_classes=[ {
 "path": "res://code/ship/fuel_tank_off.gd"
 }, {
 "base": "Node",
+"class": "Guns",
+"language": "GDScript",
+"path": "res://code/ship/guns.gd"
+}, {
+"base": "Node",
+"class": "GunsOff",
+"language": "GDScript",
+"path": "res://code/ship/guns_off.gd"
+}, {
+"base": "Node",
 "class": "Level",
 "language": "GDScript",
 "path": "res://code/level/level.gd"
@@ -74,6 +84,8 @@ _global_script_class_icons={
 "BatteryChargeOff": "",
 "FuelTank": "",
 "FuelTankOff": "",
+"Guns": "",
+"GunsOff": "",
 "Level": "",
 "Rocket": "",
 "RocketOff": "",

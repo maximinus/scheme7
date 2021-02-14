@@ -120,7 +120,8 @@ func zoomCamera(delta: float) -> void:
 
 func checkLaser() -> void:
 	if Input.is_action_just_pressed('FireLaser'):
-		emit_signal('laser_fire')
+		if ship.gun.canFire() == true:
+			emit_signal('laser_fire')
 
 func checkLights() -> void:
 	# no charge? turn off the lights and ignore everything else

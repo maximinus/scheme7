@@ -10,12 +10,17 @@ var index = 0
 var current_status = Status.DRAWING
 	
 func _ready():
-	# next is static, then back here
+	# get data ready for when we swap to the baselevel
+	setupShip()
+	# next is static, then to the tutorial level
 	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
-	Scenes.addScene('res://scenes/World.tscn')
+	Scenes.addScene('res://scenes/Levels/BaseLevel/BaseLevel.tscn')
 	index = 0
 	dialogs = Dialog.getDialog()
 	displayDialog()
+
+func setupShip():
+	Globals.ship.gun = GunsOff.new()
 
 func _process(_delta):
 	# was the enter key pressed?

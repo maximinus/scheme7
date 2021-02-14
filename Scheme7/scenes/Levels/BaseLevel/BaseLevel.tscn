@@ -88,7 +88,6 @@ tile_data = PoolIntArray( 5, 5, 0, 6, 1, 0, 8, 1, 0, 10, 6, 0, 65540, 16, 0, 655
 [node name="SimpleLight" parent="Lights" instance=ExtResource( 2 )]
 position = Vector2( 512, 64 )
 rotation = 3.14159
-cycle_length = 5.0
 strength = 1.5
 direction = 1
 
