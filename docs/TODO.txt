@@ -48,13 +48,12 @@ TODO:
 
 - 12th Feb?
 
-	Find some way to inject data into the starting player on a level
+	* Find some way to inject data into the starting player on a level
 		* Maybe needs a Ship() class different from a Player()
-	Build a level with restricted use because of this
-	Improve objectives and script a training level "Turn the lights on"
-	Then "fire a rocket", "land somewhere", "shoot something"
+	* Build a level with restricted use because of this
+	* Improve objectives and script a training level "Turn the lights on"
 	Handle the winning situation with a scene fade
-
+	Then "fire a rocket", "land somewhere", "shoot something"
 
 - 19th Feb?
 

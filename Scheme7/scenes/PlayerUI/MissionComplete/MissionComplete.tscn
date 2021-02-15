@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://gfx/gui/mission_complete/header.png" type="Texture" id=1]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float radius: hint_range(0, 5.0);
+uniform float size: hint_range(0, 1.0);
+uniform float amount: hint_range(0.0, 1.0);
+uniform sampler2D noise: hint_albedo;
+
+const float SIZE = 2.0;
+
+void fragment() {
+	// calculate distance from center
+	vec2 pos = UV;
+	// offset so we can measure against the origin
+	pos -= vec2(0.5, 0.5);
+	// scale the x
+	pos.x = (pos.x / 256.0) * 1024.0;
+	float lngth = distance(vec2(0.0, 0.0), pos);
+	if(lngth < (radius - size)) {
+		COLOR = texture(TEXTURE, UV);
+	}
+	else if(lngth < radius) {
+		float cover = texture(noise, pos).r;
+		if(cover > amount + 0.1) {
+			COLOR = vec4(1.0, 0.0, 0.0, 1.0);
+		} else if(cover > amount) {
+			COLOR = vec4(0.0, 0.0, 0.0, 1.0);
+		} else {
+			COLOR = texture(TEXTURE, UV);
+		}
+		COLOR = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+}"
+
+[sub_resource type="OpenSimplexNoise" id=3]
+
+[sub_resource type="NoiseTexture" id=4]
+width = 1024
+height = 256
+seamless = true
+noise = SubResource( 3 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/radius = 0.797
+shader_param/size = 0.309
+shader_param/amount = 0.457
+shader_param/noise = SubResource( 4 )
+
+[node name="MissionComplete" type="Node2D"]
+
+[node name="Logo" type="Sprite" parent="."]
+material = SubResource( 2 )
+position = Vector2( 528, 656 )
+texture = ExtResource( 1 )
+centered = false
+offset = Vector2( -528, -484 )
