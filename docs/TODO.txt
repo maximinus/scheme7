@@ -58,7 +58,7 @@ TODO:
 - 19th Feb?
 
 	* Add some dialog
-		The character is a simple AI that comes with you
+		* The character is a simple AI that comes with you
 	Add some tutorial levels.
 		This needs practice levels that have a heavy shader to look virtual
 	Add the ball with verlet physics

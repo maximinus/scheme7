@@ -1,61 +1,133 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://gfx/gui/mission_complete/header.png" type="Texture" id=1]
+[ext_resource path="res://sfx/interface/whoosh.wav" type="AudioStream" id=2]
+[ext_resource path="res://gfx/gui/mission_complete/instructions.png" type="Texture" id=3]
+[ext_resource path="res://scenes/PlayerUI/MissionComplete/MissionComplete.gd" type="Script" id=4]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
+render_mode unshaded;
 
-uniform float radius: hint_range(0, 5.0);
-uniform float size: hint_range(0, 1.0);
-uniform float amount: hint_range(0.0, 1.0);
+uniform float radius: hint_range(0.0, 4.0);
+uniform float size: hint_range(0.0, 2.0);
+uniform float highlight: hint_range(0.0, 0.5);
 uniform sampler2D noise: hint_albedo;
 
-const float SIZE = 2.0;
-
 void fragment() {
-	// calculate distance from center
 	vec2 pos = UV;
-	// offset so we can measure against the origin
 	pos -= vec2(0.5, 0.5);
-	// scale the x
-	pos.x = (pos.x / 256.0) * 1024.0;
-	float lngth = distance(vec2(0.0, 0.0), pos);
-	if(lngth < (radius - size)) {
-		COLOR = texture(TEXTURE, UV);
-	}
-	else if(lngth < radius) {
-		float cover = texture(noise, pos).r;
-		if(cover > amount + 0.1) {
-			COLOR = vec4(1.0, 0.0, 0.0, 1.0);
-		} else if(cover > amount) {
-			COLOR = vec4(0.0, 0.0, 0.0, 1.0);
+	pos.x *= 4.0;
+	pos = round(pos * 32.0) / 24.0;
+	float dist = distance(vec2(0.0, 0.0), pos);
+	
+	vec2 uv_blocked = round(UV * 32.0) / 32.0;
+	float noise_extra = texture(noise, uv_blocked + (TIME / 25.0)).r;
+	dist += (noise_extra - 0.5) / 1.5;
+	
+	vec4 bmix = texture(noise, UV);
+	
+	if(dist < (radius - (2.0 * size))) {
+		// do as normal, except blur the background
+		vec4 logo_pixel = texture(TEXTURE, UV);
+		vec4 blur_pixel = textureLod(SCREEN_TEXTURE, SCREEN_UV, 5.0);
+		blur_pixel.g /= 1.5;
+		blur_pixel.b /= 2.0;
+		COLOR = mix(logo_pixel, blur_pixel, 1.0 - logo_pixel.a);
+	} else if(dist < (radius - size)) {
+		float offset = -(dist - (radius - size));
+		offset /= size;
+		COLOR = mix(bmix, texture(TEXTURE, UV), offset);
+	} else if(dist < radius) {
+		float offset = dist - (radius - size);
+		offset /= size;
+		float noise_offset = texture(noise, pos).r;
+		if(offset < noise_offset) {
+			COLOR = mix(bmix, vec4(0.0, 0.0, 0.0, 1.0), offset);
 		} else {
-			COLOR = texture(TEXTURE, UV);
+			COLOR = vec4(0.0, 0.0, 0.0, 1.0);
 		}
-		COLOR = vec4(1.0, 0.0, 0.0, 1.0);
+	} else {
+		COLOR = vec4(0.0, 0.0, 0.0, 1.0);
 	}
-}"
+}
+"
 
-[sub_resource type="OpenSimplexNoise" id=3]
+[sub_resource type="OpenSimplexNoise" id=2]
 
-[sub_resource type="NoiseTexture" id=4]
+[sub_resource type="NoiseTexture" id=3]
 width = 1024
 height = 256
 seamless = true
-noise = SubResource( 3 )
+noise = SubResource( 2 )
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=4]
 shader = SubResource( 1 )
-shader_param/radius = 0.797
-shader_param/size = 0.309
-shader_param/amount = 0.457
-shader_param/noise = SubResource( 4 )
+shader_param/radius = 3.645
+shader_param/size = 0.4
+shader_param/highlight = null
+shader_param/noise = SubResource( 3 )
+
+[sub_resource type="Animation" id=5]
+resource_name = "fadeIn"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/radius")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 3.645 ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "flash"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
 
 [node name="MissionComplete" type="Node2D"]
+script = ExtResource( 4 )
 
 [node name="Logo" type="Sprite" parent="."]
-material = SubResource( 2 )
+visible = false
+material = SubResource( 4 )
 position = Vector2( 528, 656 )
 texture = ExtResource( 1 )
 centered = false
 offset = Vector2( -528, -484 )
+
+[node name="Reveal" type="AnimationPlayer" parent="Logo"]
+anims/fadeIn = SubResource( 5 )
+
+[node name="Whoosh" type="AudioStreamPlayer" parent="Logo"]
+stream = ExtResource( 2 )
+
+[node name="Instructions" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 3 )
+centered = false
+offset = Vector2( 0, 370 )
+
+[node name="Flash" type="AnimationPlayer" parent="Instructions"]
+anims/flash = SubResource( 6 )
+
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+[connection signal="animation_finished" from="Logo/Reveal" to="." method="_on_Reveal_animation_finished"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]

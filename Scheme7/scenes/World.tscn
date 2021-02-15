@@ -171,24 +171,28 @@ position = Vector2( 704, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="SimpleLight6" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 192, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="SimpleLight7" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 1408, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="SimpleLight8" parent="Lights" instance=ExtResource( 9 )]
 position = Vector2( 1152, 2304 )
 cycle_length = 3.0
 strength = 1.5
 max_variation = 0.03
+direction = 0
 
 [node name="TeleportScene" parent="." instance=ExtResource( 7 )]
 

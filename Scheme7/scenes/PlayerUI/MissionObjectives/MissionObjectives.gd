@@ -7,14 +7,18 @@ const SCREEN_WIDTH = 1024
 const SCREEN_HEIGHT = 600
 const MARGIN = 32
 
+signal mission_complete
+
 var objectives = []
-var index = 0
+var index: int = 0
+var complete: bool
 var callback = null
 
 func _ready():
 	pass
 
 func setup():
+	complete = false
 	var txt_objectives = Globals.level.objectives.duplicate()
 	# don't forget we display these backwards
 	txt_objectives.invert()
@@ -59,7 +63,12 @@ func moveTopLabel():
 	index -= 1
 
 func _process(_delta):
+	if complete == true:
+		return
 	if index >= 0:
 		if callback.call_func() == true:
 			moveTopLabel()
+		return
 	# we have completed all objectives
+	emit_signal('mission_complete')#
+	complete = true
