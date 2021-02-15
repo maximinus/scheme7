@@ -35,14 +35,12 @@ TODO:
 	* Make a new level, please. Shouldn't take that long
 	* Add a dialog screen
 		* Make it the start scene
-
 	* Make second level
 		* Now have Dialog > Level > Dialog > Level
 		* If you die, go back to start of level
 	* Put all decision code into player class in globals
 		* That's the decision to do or not. The actual code for
 		* moving the ship can still be in the player
-
 	* Model the rocket and player as objects exposed globally and cleanup code
 		* AKA "Decide what the boundary is"
 
@@ -52,8 +50,10 @@ TODO:
 		* Maybe needs a Ship() class different from a Player()
 	* Build a level with restricted use because of this
 	* Improve objectives and script a training level "Turn the lights on"
-	Handle the winning situation with a scene fade
-	Then "fire a rocket", "land somewhere", "shoot something"
+	* Handle the winning situation with a scene fade
+	Load next scene in background
+	Start the ship fully landed
+	Add "land somewhere", "shoot something"
 
 - 19th Feb?
 

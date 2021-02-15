@@ -19,7 +19,8 @@ func _process(delta):
 	if waiting == false:
 		return
 	if Input.is_action_just_pressed('Enter'):
-		print('End scene')
+		var scene = Scenes.getNextScene()
+		get_tree().change_scene(scene)
 
 func _on_StartTimer_timeout():
 	$Logo.show()

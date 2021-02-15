@@ -10,15 +10,16 @@ const MARGIN = 32
 signal mission_complete
 
 var objectives = []
-var index: int = 0
+var index: int
 var complete: bool
-var callback = null
+var callback: FuncRef
 
 func _ready():
-	pass
+	callback = null
+	complete = false
+	index = 0
 
 func setup():
-	complete = false
 	var txt_objectives = Globals.level.objectives.duplicate()
 	# don't forget we display these backwards
 	txt_objectives.invert()
@@ -31,7 +32,7 @@ func setup():
 		setPosition(obj_label)
 		objectives.append(obj_label)
 		add_child(obj_label)
-		index = len(objectives) - 1
+	index = len(objectives) - 1
 	callback = Globals.level.callback
 
 func reset():
@@ -70,5 +71,5 @@ func _process(_delta):
 			moveTopLabel()
 		return
 	# we have completed all objectives
-	emit_signal('mission_complete')#
+	emit_signal('mission_complete')
 	complete = true

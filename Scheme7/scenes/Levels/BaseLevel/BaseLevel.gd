@@ -1,7 +1,10 @@
 extends Node2D
 
+var index: int
+
 func _ready():
 	$Player.processing = true
+	index = 0
 	setupObjectives()
 
 func setupObjectives():
@@ -34,13 +37,13 @@ func checkHeadlightOn() -> bool:
 func testObjectives() -> bool:
 	# returns true if a mission objective completes
 	# take the first and check it
-	var data = objectives[0]
+	var data = objectives[index]
 	# call the first argument
 	if data[1].call_func() == false:
 		# nothing to do
 		return false
-	# remove this objective
-	objectives.pop_front()
+	# move to next objective
+	index += 1
 	return true
 
 # finally, we need dump the results out here into an array
