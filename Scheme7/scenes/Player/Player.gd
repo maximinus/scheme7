@@ -23,11 +23,11 @@ var velocity: Vector2 = Vector2(0, 0)
 
 # turned by hitting something
 var turning: float = 0.0
-var landing: bool = false
-var landed: bool = false
-var takeoff: bool = false
+#var landing: bool = false
+#var landed: bool = false
+#var takeoff: bool = false
+#var electrified: bool = false
 var processing: bool = false
-var electrified: bool = false
 var electric_meet_force: Vector2 = Vector2(0.0, 0.0)
 
 var zoom_target: float = 1.1
@@ -43,10 +43,6 @@ func reset() -> void:
 	rotation = 0.0
 	flameOff(0.0)
 	turning = 0.0
-	landing = false
-	landed = false
-	takeoff = false
-	electrified = false
 	electric_meet_force = Vector2(0.0, 0.0)
 	$Image.frame = 0
 	ship.reset()
@@ -65,17 +61,17 @@ func _process(delta: float) -> void:
 	$Image.frame = ship.shield.getDamageFrame()
 
 	if Input.is_action_pressed('Thrust') and ship.rocket.canFireRocket():
-		landing = false
-		if landed == true:
-			landed = false
-			takeoff = true
+		ship.setStatus(Ship.Status.Landing, false)
+		if ship.getStatus(Ship.Status.Landed):
+			ship.setStatus(Ship.Status.Landed, false)
+			ship.setStatus(Ship.Status.Takeoff, true)
 			zoom_target = 1.1
 			zoom_speed = 0.3
 		flameOn(delta)
 	else:
 		flameOff(delta)
 	
-	if landing == true or landed == true:
+	if ship.getStatus(Ship.Status.Landing) or ship.getStatus(Ship.Status.Landed):
 		return
 
 	if ship.rocket.canTurn() == true:
@@ -84,7 +80,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed('RightTurn'):
 			rotation_degrees += ROTATION_SPEED * delta
 	
-	if electrified == true:
+	if ship.getStatus(Ship.Status.Electrified) == true:
 		rotation += rand_range(-ELECTRIC_TURN_FORCE, ELECTRIC_TURN_FORCE) * delta
 	
 	if turning != 0:
@@ -180,7 +176,7 @@ func processLanding(delta: float):
 		return
 	# we did, are we actually landed?
 	if velocity.x == 0.0 and rotation_degrees == 0.0:
-		landed = true
+		ship.setStatus(Ship.Status.Landed, true)
 		turning = 0.0
 		# what did we land on?
 		if collision.collider.is_in_group('lander'):
@@ -189,23 +185,22 @@ func processLanding(delta: float):
 			zoom_speed = -0.4
 
 func _physics_process(delta) -> void:
-	if landed == true or processing == false:
+	if ship.getStatus(Ship.Status.Landed) or processing == false:
 		return
 	
-	if landing == true:
+	if ship.getStatus(Ship.Status.Landing):
 		processLanding(delta)
 		return
 	
-	# apply gravity and move
-	# don't apply on takeoff
-	if takeoff == false:
+	# apply gravity and move - don't apply on takeoff
+	if ship.getStatus(Ship.Status.Takeoff) == false:
 		velocity += GRAVITY_VECTOR * delta
+	else:
+		velocity += TAKEOFF_INJECTION
 	if ship.rocket.firing_rocket == true:
 		velocity += ship.rocket.getForceVector(rotation)
-	if takeoff == true:
-		velocity += TAKEOFF_INJECTION
 	
-	if electrified == true:
+	if ship.getStatus(Ship.Status.Electrified):
 		# force is opposite to current movement
 		if electric_meet_force.x > 0:
 			velocity.x -= rand_range(0, ELECTRIC_MOVE_FORCE)
@@ -258,7 +253,7 @@ func _physics_process(delta) -> void:
 			velocity.y *= -BOUNCE
 		var speed = min(collision_speed, 100)
 		collidePlayer(result.position, speed)
-	takeoff = false
+	ship.setStatus(Ship.Status.Takeoff, true)
 
 func checkLanding(_normal) -> void:
 	# if contact is slow, and going down, then we may be landing
@@ -279,7 +274,7 @@ func checkLanding(_normal) -> void:
 		# not landing, too much angle
 		return
 	# finally, we are landing
-	landing = true
+	ship.setStatus(Ship.Status.Landing, true)
 
 func addTurning(normal) -> void:
 	var angle_rad: float = atan2(normal.y, normal.x)
@@ -315,7 +310,7 @@ func collidePlayer(position, speed) -> void:
 	# player has hit something
 	# speed ranges from 0 - 50
 	# don't collide on first frame after takeoff
-	if takeoff == true:
+	if ship.getStatus(Ship.Status.Takeoff):
 		return
 	$CollisionSound.volume_db = (speed - 50) / 10.0
 	$CollisionSound.play()
@@ -337,12 +332,12 @@ func flameOff(delta) -> void:
 	$RocketSound.stop()
 
 func _on_ElectricBarrier_electric_contact_end() -> void:
-	electrified = false
+	ship.setStatus(Ship.Status.Electrified, false)
 	if $ElectricCollision.playing == true:
 		$ElectricCollision.stop()
 
 func _on_ElectricBarrier_electric_contact_start() -> void:
-	electrified = true
+	ship.setStatus(Ship.Status.Electrified, true)
 	electric_meet_force = velocity
 	if $ElectricCollision.playing == false:
 		$ElectricCollision.play()
