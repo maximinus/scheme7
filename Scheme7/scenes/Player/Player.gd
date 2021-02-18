@@ -48,6 +48,9 @@ func reset() -> void:
 	ship.reset()
 
 func _process(delta: float) -> void:
+	
+	print(position)
+	
 	# update general access area
 	ship.position = position
 	if processing == false:

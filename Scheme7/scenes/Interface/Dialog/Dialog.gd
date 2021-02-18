@@ -28,6 +28,7 @@ func setupShip():
 	Globals.ship.shield = ShieldOff.new()
 	Globals.ship.rocket = RocketOff.new()
 	Globals.ship.reset()
+	Globals.ship.status.landed = true
 
 func _process(_delta):
 	# if the timer is on, do nothing
