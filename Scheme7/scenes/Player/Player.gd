@@ -61,17 +61,17 @@ func _process(delta: float) -> void:
 	$Image.frame = ship.shield.getDamageFrame()
 
 	if Input.is_action_pressed('Thrust') and ship.rocket.canFireRocket():
-		ship.setStatus(Ship.Status.Landing, false)
-		if ship.getStatus(Ship.Status.Landed):
-			ship.setStatus(Ship.Status.Landed, false)
-			ship.setStatus(Ship.Status.Takeoff, true)
+		ship.status.landing = false
+		if ship.status.landed == true:
+			ship.status.landed = false
+			ship.status.takeoff = true
 			zoom_target = 1.1
 			zoom_speed = 0.3
 		flameOn(delta)
 	else:
 		flameOff(delta)
 	
-	if ship.getStatus(Ship.Status.Landing) or ship.getStatus(Ship.Status.Landed):
+	if ship.status.landing == true or ship.status.landed == true:
 		return
 
 	if ship.rocket.canTurn() == true:
@@ -80,7 +80,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed('RightTurn'):
 			rotation_degrees += ROTATION_SPEED * delta
 	
-	if ship.getStatus(Ship.Status.Electrified) == true:
+	if ship.status.electrified == true:
 		rotation += rand_range(-ELECTRIC_TURN_FORCE, ELECTRIC_TURN_FORCE) * delta
 	
 	if turning != 0:
@@ -169,6 +169,7 @@ func processLanding(delta: float):
 		if abs(xspeed) < 0.1:
 			xspeed = 0.0
 	velocity.x = xspeed	
+	# add gravity and then move
 	velocity += GRAVITY_VECTOR * delta
 	var collision = move_and_collide(velocity * delta)
 	# did we collide?
@@ -176,7 +177,7 @@ func processLanding(delta: float):
 		return
 	# we did, are we actually landed?
 	if velocity.x == 0.0 and rotation_degrees == 0.0:
-		ship.setStatus(Ship.Status.Landed, true)
+		ship.status.landed = true
 		turning = 0.0
 		# what did we land on?
 		if collision.collider.is_in_group('lander'):
@@ -185,22 +186,22 @@ func processLanding(delta: float):
 			zoom_speed = -0.4
 
 func _physics_process(delta) -> void:
-	if ship.getStatus(Ship.Status.Landed) or processing == false:
+	if ship.status.landed == true or processing == false:
 		return
 	
-	if ship.getStatus(Ship.Status.Landing):
+	if ship.status.landing == true:
 		processLanding(delta)
 		return
 	
 	# apply gravity and move - don't apply on takeoff
-	if ship.getStatus(Ship.Status.Takeoff) == false:
+	if ship.status.takeoff == false:
 		velocity += GRAVITY_VECTOR * delta
-	else:
-		velocity += TAKEOFF_INJECTION
 	if ship.rocket.firing_rocket == true:
 		velocity += ship.rocket.getForceVector(rotation)
+	if ship.status.takeoff == true:
+		velocity += TAKEOFF_INJECTION
 	
-	if ship.getStatus(Ship.Status.Electrified):
+	if ship.status.electrified == true:
 		# force is opposite to current movement
 		if electric_meet_force.x > 0:
 			velocity.x -= rand_range(0, ELECTRIC_MOVE_FORCE)
@@ -253,7 +254,7 @@ func _physics_process(delta) -> void:
 			velocity.y *= -BOUNCE
 		var speed = min(collision_speed, 100)
 		collidePlayer(result.position, speed)
-	ship.setStatus(Ship.Status.Takeoff, true)
+	ship.status.takeoff = false
 
 func checkLanding(_normal) -> void:
 	# if contact is slow, and going down, then we may be landing
@@ -274,7 +275,7 @@ func checkLanding(_normal) -> void:
 		# not landing, too much angle
 		return
 	# finally, we are landing
-	ship.setStatus(Ship.Status.Landing, true)
+	ship.status.landing = true
 
 func addTurning(normal) -> void:
 	var angle_rad: float = atan2(normal.y, normal.x)
@@ -310,7 +311,7 @@ func collidePlayer(position, speed) -> void:
 	# player has hit something
 	# speed ranges from 0 - 50
 	# don't collide on first frame after takeoff
-	if ship.getStatus(Ship.Status.Takeoff):
+	if ship.status.takeoff == true:
 		return
 	$CollisionSound.volume_db = (speed - 50) / 10.0
 	$CollisionSound.play()
@@ -332,12 +333,12 @@ func flameOff(delta) -> void:
 	$RocketSound.stop()
 
 func _on_ElectricBarrier_electric_contact_end() -> void:
-	ship.setStatus(Ship.Status.Electrified, false)
+	ship.status.electrified = false
 	if $ElectricCollision.playing == true:
 		$ElectricCollision.stop()
 
 func _on_ElectricBarrier_electric_contact_start() -> void:
-	ship.setStatus(Ship.Status.Electrified, true)
+	ship.status.electrified = true
 	electric_meet_force = velocity
 	if $ElectricCollision.playing == false:
 		$ElectricCollision.play()
