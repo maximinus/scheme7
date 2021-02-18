@@ -13,7 +13,7 @@ func setupObjectives():
 		texts.append(i[0])
 	Globals.level.objectives = texts
 	Globals.level.callback = funcref(self, 'testObjectives')
-#	$CanvasLayer/Objectives.setup()
+	$CanvasLayer/Objectives.setup()
 
 # we need to handle level objectives here.
 # So first the code to check each objective
