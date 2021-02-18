@@ -52,7 +52,7 @@ TODO:
 	* Improve objectives and script a training level "Turn the lights on"
 	* Handle the winning situation with a scene fade
 	Load next scene in background
-	Start the ship fully landed
+	* Start the ship fully landed
 	Add "land somewhere", "shoot something"
 
 - 19th Feb?

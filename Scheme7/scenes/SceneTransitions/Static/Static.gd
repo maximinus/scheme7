@@ -1,8 +1,22 @@
 extends Node2D
 
+var switch_scene: bool
+var scene_loaded: bool
+var scene: String
+
 func _ready():
-	pass
+	scene_loaded = false
+	switch_scene = false
+	scene = Scenes.getNextScene()
+	Scenes.loadScene(scene)
+
+func _process(delta):
+	# keep loading until there is no more
+	if scene_loaded == false:
+		scene_loaded = Scenes.loadChunk()
+	else:
+		if switch_scene == true:
+			Scenes.changeScene()
 
 func _on_Timer_timeout():
-	var scene = Scenes.getNextScene()
-	get_tree().change_scene(scene)
+	switch_scene = true
