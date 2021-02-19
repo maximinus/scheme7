@@ -15,7 +15,7 @@ func _ready() -> void:
 	$Player.connect('ship_collision', self, 'shipCollision')
 	$Player.connect('laser_fire', self, 'shipLaser')
 	$Player.connect('ship_dead', self, 'shipDead')
-	$Player.connect('ship_landed', self, 'shipLanded')
+	$Player.connect('ship_landedlanded', self, 'shipLanded')
 	$UILayer/LanderDataTransfer.connect('download_finished', self, 'downloaded')
 	$UILayer/DeathNotice.connect('next_life', self, 'nextLife')
 	$CanvasModulate.show()
@@ -24,7 +24,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# if we are thrusting, better hide and reset the download animation
 	if $UILayer/LanderDataTransfer.visible == true:
-		if $Player.landed == false:
+		if $Player.status.landed == false:
 			# we took off, so reset animation
 			$UILayer/LanderDataTransfer.reset()
 

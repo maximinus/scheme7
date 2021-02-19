@@ -2,7 +2,7 @@
 
 [ext_resource path="res://scenes/Levels/MapTiles.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scenes/Levels/BaseLevel/BaseLevel.gd" type="Script" id=3]
+[ext_resource path="res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.gd" type="Script" id=3]
 [ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" type="PackedScene" id=6]

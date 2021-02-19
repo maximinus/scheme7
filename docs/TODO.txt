@@ -51,17 +51,24 @@ TODO:
 	* Build a level with restricted use because of this
 	* Improve objectives and script a training level "Turn the lights on"
 	* Handle the winning situation with a scene fade
-	Load next scene in background
+	* Load next scene in background
 	* Start the ship fully landed
-	Add "land somewhere", "shoot something"
+	Add "Takeoff to given height", "land somewhere", "shoot something"
 
 - 19th Feb?
 
 	* Add some dialog
 		* The character is a simple AI that comes with you
+		Upgrade the dialog screen so you can choose options
+		Change the highlight to a moving pointy thing
+		Add a portrait for the dialog character
+		Write better text for the tutorial
 	Add some tutorial levels.
-		This needs practice levels that have a heavy shader to look virtual
+		- This needs practice levels that have a heavy shader to look virtual
 	Add the ball with verlet physics
+		Add tractor beam graphic and mechanic
+		Add collision detection to ball
+	Add "control verlet ball" - probably 2 levels
 
 - 26th Feb?
 
