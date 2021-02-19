@@ -34,9 +34,9 @@ func calculateSystemFailure(_speed: float, _pos: Vector2) -> void:
 	pass
 
 func reset() -> void:
-	last_force = Vector2(0.0, 0.0)
 	rocket.reset()
 	battery.reset()
 	shield.reset()
+	last_force = Vector2(0.0, 0.0)
 	position = Vector2(0.0, 0.0)
 	status = Status.new()

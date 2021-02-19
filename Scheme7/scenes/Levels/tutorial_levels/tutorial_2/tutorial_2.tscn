@@ -113,7 +113,7 @@ strength = 1.5
 direction = 0
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 512, 416 )
+position = Vector2( 512, 423.95 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true
@@ -126,3 +126,4 @@ position = Vector2( 1360, 448 )
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
 color = Color( 0.262745, 0.278431, 0.435294, 1 )
+[connection signal="mission_complete" from="CanvasLayer/Objectives" to="." method="_on_Objectives_mission_complete"]

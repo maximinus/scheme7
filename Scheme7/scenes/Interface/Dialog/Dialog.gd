@@ -19,6 +19,8 @@ func _ready():
 	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
 	# then back to here
 	Scenes.addScene('res://scenes/Interface/Dialog/Dialog.tscn')
+	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
+	Scenes.addScene('res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_2.tscn')
 	index = 0
 	dialogs = Dialog.getDialog()
 	displayDialog()
