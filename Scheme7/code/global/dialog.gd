@@ -1,19 +1,19 @@
 extends Node
 
-var text = ['Good morning.\nToday we will be conducting the standard startup test.',
-			'This test will determine if your system has been installed correctly so you can begin active service.',
-			'We begin with testing the simpler controls.\nThe L key will cycle through the lights.']
-
+var text: Array
 
 class  Dialog:
 	var speaker: String
-	var text
+	var text: String
 	
-	func _init():
+	func _init() -> void:
 		pass
 
+func setDialog(data) -> void:
+	text = data
+
 func getDialog() -> Array:
-	# return a chunk of dialog
+	# return a chunk of dialog after converting
 	var dialogs = []
 	for i in text:
 		var d = Dialog.new()

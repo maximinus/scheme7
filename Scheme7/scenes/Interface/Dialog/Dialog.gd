@@ -11,27 +11,10 @@ var current_status = Status.DRAWING
 var timer_on = false
 	
 func _ready():
-	# get data ready for when we swap to the baselevel
-	setupShip()
-	# next is static, then to the tutorial level
-	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
-	Scenes.addScene('res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.tscn')
-	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
-	# then back to here
-	Scenes.addScene('res://scenes/Interface/Dialog/Dialog.tscn')
-	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
-	Scenes.addScene('res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.tscn')
 	index = 0
 	dialogs = Dialog.getDialog()
 	$Next/Next/Margin/HBoxContainer/TextureRect/AnimationPlayer.play('show')
 	displayDialog()
-
-func setupShip():
-	Globals.ship.gun = GunsOff.new()
-	Globals.ship.shield = ShieldOff.new()
-	Globals.ship.rocket = RocketOff.new()
-	Globals.ship.reset()
-	Globals.ship.status.landed = true
 
 func _process(_delta):
 	# if the timer is on, do nothing
@@ -82,5 +65,5 @@ func _on_Tween_tween_completed(_object, _key):
 	stopAnimation()
 
 func _on_Timer_timeout():
-	var scene = Scenes.getNextScene()
-	get_tree().change_scene(scene)
+	# we are done, move on to the next scene
+	Scenes.moveToTransition()

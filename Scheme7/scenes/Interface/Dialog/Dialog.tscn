@@ -220,9 +220,9 @@ margin_right = 232.0
 margin_bottom = 56.0
 
 [node name="TextureRect" type="TextureRect" parent="Next/Next/Margin/HBoxContainer"]
-margin_left = 0.00459671
+margin_left = 1.93593
 margin_top = 12.0
-margin_right = 32.0046
+margin_right = 33.9359
 margin_bottom = 44.0
 size_flags_vertical = 4
 texture = ExtResource( 6 )

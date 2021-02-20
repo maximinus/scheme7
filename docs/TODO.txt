@@ -53,20 +53,19 @@ TODO:
 	* Handle the winning situation with a scene fade
 	* Load next scene in background
 	* Start the ship fully landed
-	Add:
-		* Land somewhere
-		Shoot something
+	* Add land somewhere
 
 - 19th Feb?
 
 	* Add some dialog
 		* The character is a simple AI that comes with you
-		Upgrade the dialog screen so you can choose options
-		Change the highlight to a moving pointy thing
-		Add a portrait for the dialog character
-		Write better text for the tutorial
-	Add some tutorial levels.
+		- Upgrade the dialog screen so you can choose options
+		* Change the highlight to a moving pointy thing
+		* Add a portrait for the dialog character
+		* Write better text for the tutorial
+	* Add some tutorial levels.
 		- This needs practice levels that have a heavy shader to look virtual
+		  Add shoot something level
 	Add the ball with verlet physics
 		Add tractor beam graphic and mechanic
 		Add collision detection to ball

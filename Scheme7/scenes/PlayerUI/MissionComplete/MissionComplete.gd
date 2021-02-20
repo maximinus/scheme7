@@ -23,8 +23,7 @@ func _process(delta):
 		return
 	# did the player ask to move on?
 	if Input.is_action_just_pressed('Enter'):
-		var scene = Scenes.getNextScene()
-		get_tree().change_scene(scene)
+		Scenes.moveToTransition()
 
 func _on_StartTimer_timeout():
 	# we waited a little before starting, but now we start

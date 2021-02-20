@@ -1,0 +1,6 @@
+{
+	"dialog": ["Good job once more. It can take some time for your neural net to adjust to flying.\nWhenever you get the chance, try to practise.",
+			   "Just a few more tests now. On this next one, you'll have a gun. Use it to destroy the lights found in the simulation.",
+			   "Crashing into the light does not count for this test.\nUse the spacebar to activate your gun and blow them up.",
+			   "Your system readings indicate this should be fairly easy for you to do."]
+}

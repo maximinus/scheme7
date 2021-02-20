@@ -1,0 +1,6 @@
+{
+	"dialog": ["Well done. That cognitive and understasning code appears to work. Now we'll start to get more serious.",
+			   "The next simulation is about takeoff and landing.\nYou'll ese the W key to thrust and W and D keys to turn.",
+			   "Move your craft to the right and land on the obvious lander (it has a blocking yellow light",
+			   "Don't worry if you crash - the simulation will just reset\n. Good luck, and press enter to continue"]
+}

@@ -7,7 +7,7 @@ var scene: String
 func _ready():
 	scene_loaded = false
 	switch_scene = false
-	scene = Scenes.getNextScene()
+	scene = Scenes.next_scene
 	Scenes.loadScene(scene)
 
 func _process(delta):
@@ -16,6 +16,7 @@ func _process(delta):
 		scene_loaded = Scenes.loadChunk()
 	else:
 		if switch_scene == true:
+			Scenes.setupScene()
 			Scenes.changeScene()
 
 func _on_Timer_timeout():
