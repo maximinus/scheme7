@@ -1,41 +1,31 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://gfx/interface/9-patch/window.png" type="Texture" id=1]
 [ext_resource path="res://gfx/fonts/SpaceRegular.tres" type="DynamicFont" id=2]
 [ext_resource path="res://gfx/interface/backgrounds/PurpleNebula1.png" type="Texture" id=3]
 [ext_resource path="res://scenes/Interface/Dialog/Dialog.gd" type="Script" id=4]
 [ext_resource path="res://sfx/interface/text_display.wav" type="AudioStream" id=5]
+[ext_resource path="res://gfx/interface/gui_objects/select.png" type="Texture" id=6]
+[ext_resource path="res://gfx/interface/objects/processor.png" type="Texture" id=7]
 
-[sub_resource type="Animation" id=1]
-resource_name = "PressEnter"
-length = 2.0
+[sub_resource type="Animation" id=3]
+resource_name = "show"
+length = 0.6
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("..:rect_position")
+tracks/0/path = NodePath(".:rect_position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1, 2 ),
+"times": PoolRealArray( 0, 0.3, 0.6 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 736, 416 ), Vector2( 732, 414 ), Vector2( 736, 416 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("..:rect_size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 1, 2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ Vector2( 160, 56 ), Vector2( 168, 60 ), Vector2( 160, 56 ) ]
+"values": [ Vector2( 0, 12 ), Vector2( 4, 12 ), Vector2( 0, 12 ) ]
 }
 
-[sub_resource type="Shader" id=2]
+[sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
 uniform float glitch;
@@ -87,8 +77,8 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
 shader_param/glitch = 0.008
 shader_param/active = false
 
@@ -113,10 +103,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -360.0
-margin_top = -128.0
-margin_right = 360.0
-margin_bottom = 128.0
+margin_left = -480.0
+margin_top = -204.0
+margin_right = 480.0
+margin_bottom = 116.0
 rect_min_size = Vector2( 720, 256 )
 texture = ExtResource( 1 )
 patch_margin_left = 6
@@ -127,32 +117,30 @@ patch_margin_bottom = 6
 [node name="Margin" type="MarginContainer" parent="Main"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 24.0
-margin_top = 24.0
-margin_right = -24.0
-margin_bottom = -24.0
+margin_left = 36.0
+margin_top = 36.0
+margin_right = -36.0
+margin_bottom = -36.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Text" type="Label" parent="Main/Margin"]
-margin_right = 672.0
-margin_bottom = 208.0
+margin_right = 888.0
+margin_bottom = 248.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
 text = "This is a test of the dialog system"
-align = 1
-valign = 1
 autowrap = true
 
 [node name="Tween" type="Tween" parent="Main/Margin/Text"]
 
 [node name="Speaker" type="NinePatchRect" parent="."]
-margin_left = 128.0
-margin_top = 120.0
-margin_right = 384.0
-margin_bottom = 184.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 320.0
+margin_bottom = 112.0
 texture = ExtResource( 1 )
 patch_margin_left = 6
 patch_margin_top = 6
@@ -166,31 +154,46 @@ __meta__ = {
 [node name="Margin" type="MarginContainer" parent="Speaker"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 12.0
+margin_left = 20.0
 margin_top = 12.0
-margin_right = -12.0
+margin_right = -20.0
 margin_bottom = -12.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Text" type="Label" parent="Speaker/Margin"]
-margin_right = 232.0
-margin_bottom = 40.0
+[node name="HBoxContainer" type="HBoxContainer" parent="Speaker/Margin"]
+margin_right = 264.0
+margin_bottom = 72.0
+
+[node name="TextureRect" type="TextureRect" parent="Speaker/Margin/HBoxContainer"]
+margin_top = 4.0
+margin_right = 64.0
+margin_bottom = 68.0
+size_flags_vertical = 4
+texture = ExtResource( 7 )
+
+[node name="Text" type="Label" parent="Speaker/Margin/HBoxContainer"]
+margin_left = 68.0
+margin_right = 264.0
+margin_bottom = 72.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
-text = "Test Engineer"
+text = "Auto-Test AI"
 align = 1
 valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Next" type="Node2D" parent="."]
 
 [node name="Next" type="NinePatchRect" parent="Next"]
-margin_left = 732.0
-margin_top = 414.0
-margin_right = 900.0
-margin_bottom = 474.0
+margin_left = 720.0
+margin_top = 400.0
+margin_right = 976.0
+margin_bottom = 480.0
 texture = ExtResource( 1 )
 patch_margin_left = 6
 patch_margin_top = 6
@@ -212,15 +215,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Next/Next/Margin"]
-autoplay = "PressEnter"
-anims/PressEnter = SubResource( 1 )
+[node name="HBoxContainer" type="HBoxContainer" parent="Next/Next/Margin"]
+margin_right = 232.0
+margin_bottom = 56.0
 
-[node name="Label" type="Label" parent="Next"]
-margin_left = 748.0
-margin_top = 428.0
-margin_right = 884.0
-margin_bottom = 460.0
+[node name="TextureRect" type="TextureRect" parent="Next/Next/Margin/HBoxContainer"]
+margin_left = 0.00459671
+margin_top = 12.0
+margin_right = 32.0046
+margin_bottom = 44.0
+size_flags_vertical = 4
+texture = ExtResource( 6 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Next/Next/Margin/HBoxContainer/TextureRect"]
+anims/show = SubResource( 3 )
+
+[node name="Label" type="Label" parent="Next/Next/Margin/HBoxContainer"]
+margin_left = 36.0
+margin_right = 232.0
+margin_bottom = 56.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
@@ -236,7 +249,7 @@ __meta__ = {
 stream = ExtResource( 5 )
 
 [node name="Glitch" type="ColorRect" parent="."]
-material = SubResource( 3 )
+material = SubResource( 2 )
 margin_right = 1024.0
 margin_bottom = 600.0
 color = Color( 0.0313726, 0.0196078, 0.0196078, 1 )

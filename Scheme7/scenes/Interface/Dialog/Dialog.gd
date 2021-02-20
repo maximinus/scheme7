@@ -3,7 +3,7 @@ extends Node
 enum Status {DRAWING, WAITING}
 
 # characters per second
-const SPEED = 30.0
+const SPEED = 50.0
 	
 var dialogs = []
 var index = 0
@@ -20,9 +20,10 @@ func _ready():
 	# then back to here
 	Scenes.addScene('res://scenes/Interface/Dialog/Dialog.tscn')
 	Scenes.addScene('res://scenes/SceneTransitions/Static/Static.tscn')
-	Scenes.addScene('res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_2.tscn')
+	Scenes.addScene('res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.tscn')
 	index = 0
 	dialogs = Dialog.getDialog()
+	$Next/Next/Margin/HBoxContainer/TextureRect/AnimationPlayer.play('show')
 	displayDialog()
 
 func setupShip():
@@ -59,7 +60,7 @@ func sceneTransition():
 func displayDialog():
 	$Next.hide()
 	var new_dialog = dialogs[index]
-	$Speaker/Margin/Text.text = new_dialog.speaker
+	$Speaker/Margin/HBoxContainer/Text.text = new_dialog.speaker
 	$Main/Margin/Text.percent_visible = 0.0
 	$Main/Margin/Text.text = new_dialog.text
 	# animate the text appearing

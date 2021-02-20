@@ -54,3 +54,6 @@ var objectives = [
 	['Turn on headlights [K]',		funcref(self, 'checkHeadlightOn')]
 ]
 
+func _on_Objectives_mission_complete():
+	$CanvasLayer/MissionComplete.show()
+	$CanvasLayer/MissionComplete.playAnim()

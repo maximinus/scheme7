@@ -53,7 +53,9 @@ TODO:
 	* Handle the winning situation with a scene fade
 	* Load next scene in background
 	* Start the ship fully landed
-	Add "Takeoff to given height", "land somewhere", "shoot something"
+	Add:
+		* Land somewhere
+		Shoot something
 
 - 19th Feb?
 
