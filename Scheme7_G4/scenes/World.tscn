@@ -1,0 +1,220 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://scenes/PlayerUI/controls/force_dial/ForceDial.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/World.gd" type="Script" id=3]
+[ext_resource path="res://scenes/Levels/MapTiles.tres" type="TileSet" id=4]
+[ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/PlayerUI/controls/heat_dial/HeatDial.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/Animations/Teleport/TeleportScene.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/LevelObjects/Lander/Lander.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/LevelObjects/ExitDoor/ExitDoor.tscn" type="PackedScene" id=13]
+[ext_resource path="res://scenes/PlayerUI/controls/shield_dial/ShieldDial.tscn" type="PackedScene" id=14]
+[ext_resource path="res://scenes/PlayerUI/DeathNotice/DeathNotice.tscn" type="PackedScene" id=15]
+[ext_resource path="res://scenes/LevelObjects/Lander/DataTransfer/LanderDataTransfer.tscn" type="PackedScene" id=16]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform vec4 color : source_color = vec4(0.35, 0.48, 0.95, 1.0);
+uniform float noise_scale = 20.0;
+uniform float alpha_power = 2.0;
+uniform int OCTAVES = 1;
+uniform float TIME_FACTOR = 1.0;
+
+float rand(vec2 coord){
+	return fract(sin(dot(coord, vec2(56, 78)) * 1000.0) * 1000.0);
+}
+
+float noise(vec2 coord){
+	vec2 i = floor(coord);
+	vec2 f = fract(coord);
+
+	// 4 corners of a rectangle surrounding our point
+	float a = rand(i);
+	float b = rand(i + vec2(1.0, 0.0));
+	float c = rand(i + vec2(0.0, 1.0));
+	float d = rand(i + vec2(1.0, 1.0));
+
+	vec2 cubic = f * f * (3.0 - 2.0 * f);
+
+	return mix(a, b, cubic.x) + (c - a) * cubic.y * (1.0 - cubic.x) + (d - b) * cubic.x * cubic.y;
+}
+
+float fbm(vec2 coord){
+	float value = 0.0;
+	float scale = 0.5;
+
+	for(int i = 0; i < OCTAVES; i++){
+		value += noise(coord) * scale;
+		coord *= 2.0;
+		scale *= 0.5;
+	}
+	return value;
+}
+
+void fragment() {
+	vec2 coord = UV * noise_scale;
+	float abs_time = TIME * TIME_FACTOR;
+	vec2 motion = vec2( fbm(coord + vec2(abs_time * -0.5, abs_time * 0.5)) );
+	float final = fbm(coord + motion);
+	COLOR = vec4(color.rgb, pow(final, alpha_power) * color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/color = Color( 0.3, 0.261, 0.222, 1 )
+shader_param/noise_scale = 3.0
+shader_param/alpha_power = 2.0
+shader_param/OCTAVES = 3
+shader_param/TIME_FACTOR = 0.3
+
+[sub_resource type="NoiseTexture" id=3]
+seamless = true
+bump_strength = 7.8
+
+[node name="World" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Background" type="Polygon2D" parent="."]
+material = SubResource( 2 )
+texture = SubResource( 3 )
+polygon = PackedVector2Array( 384, -384, 640, -384, 640, 768, 768, 768, 768, 896, 896, 896, 896, 1280, 768, 1408, 0, 1408, 0, 1920, 256, 1920, 384, 2048, 512, 2048, 640, 1920, 768, 1920, 768, 1792, 1664, 1792, 1664, 2304, 640, 2304, 512, 2176, 384, 2176, 256, 2304, -512, 2304, -512, 1152, -128, 1152, -128, 896, 128, 896, 256, 768, 384, 768 )
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="ForceDial" parent="UILayer" instance=ExtResource( 1 )]
+position = Vector2( 50, 550 )
+
+[node name="HeatDial" parent="UILayer" instance=ExtResource( 6 )]
+position = Vector2( 120, 550 )
+
+[node name="BatteryLevel" parent="UILayer" instance=ExtResource( 8 )]
+position = Vector2( 20, 20 )
+
+[node name="ShieldDial" parent="UILayer" instance=ExtResource( 14 )]
+position = Vector2( 652, 20 )
+
+[node name="MissionObjectives" parent="UILayer" instance=ExtResource( 11 )]
+
+[node name="PauseScreen" parent="UILayer" instance=ExtResource( 5 )]
+
+[node name="DeathNotice" parent="UILayer" instance=ExtResource( 15 )]
+
+[node name="LanderDataTransfer" parent="UILayer" instance=ExtResource( 16 )]
+visible = false
+
+[node name="MapTiles" type="TileMap" parent="."]
+tile_set = ExtResource( 4 )
+format = 1
+tile_data = PackedInt32Array( -458747, 5, 0, -458742, 6, 0, -393211, 2, 0, -393206, 3, 0, -262139, 2, 0, -262134, 3, 0, -131067, 2, 0, -131062, 3, 0, 5, 2, 0, 10, 3, 0, 131077, 2, 0, 131082, 3, 0, 262149, 2, 0, 262154, 3, 0, 393221, 2, 0, 393226, 3, 0, 524293, 2, 0, 524298, 3, 0, 655364, 12, 0, 655370, 13, 0, 720899, 5, 0, 720908, 6, 0, 786434, 16, 0, 786444, 13, 0, 917501, 5, 0, 917502, 1, 0, 851968, 1, 0, 851982, 6, 0, 983037, 2, 0, 917518, 3, 0, 1114108, 12, 0, 1048590, 3, 0, 1179639, 5, 0, 1179640, 1, 0, 1179642, 1, 0, 1245175, 2, 0, 1179662, 3, 0, 1376247, 2, 0, 1310732, 18, 0, 1310734, 19, 0, 1507319, 2, 0, 1441792, 14, 0, 1441794, 20, 0, 1441796, 20, 0, 1441798, 20, 0, 1441800, 20, 0, 1441802, 20, 0, 1441804, 7, 0, 1638391, 2, 0, 1572864, 3, 0, 1769463, 2, 0, 1703936, 3, 0, 1769483, 5, 0, 1769484, 1, 0, 1769486, 1, 0, 1769488, 1, 0, 1769490, 1, 0, 1769492, 1, 0, 1769494, 1, 0, 1769496, 1, 0, 1769498, 6, 0, 1900535, 2, 0, 1835008, 13, 0, 1835018, 12, 0, 1835034, 3, 0, 1900546, 1, 0, 1900548, 6, 0, 1900553, 5, 0, 2031607, 2, 0, 1966084, 17, 0, 1966088, 16, 0, 1966106, 3, 0, 2031622, 1, 0, 2162679, 2, 0, 2097178, 3, 0, 2293751, 2, 0, 2228228, 18, 0, 2228230, 20, 0, 2228232, 15, 0, 2228250, 3, 0, 2424823, 4, 0, 2424824, 20, 0, 2424826, 20, 0, 2424828, 20, 0, 2424830, 20, 0, 2359296, 20, 0, 2359298, 20, 0, 2359300, 19, 0, 2359305, 4, 0, 2359306, 20, 0, 2359308, 20, 0, 2359310, 20, 0, 2359312, 20, 0, 2359314, 20, 0, 2359316, 20, 0, 2359318, 20, 0, 2359320, 20, 0, 2359322, 19, 0 )
+
+[node name="ExitDoor" parent="." instance=ExtResource( 13 )]
+position = Vector2( 384, -288 )
+
+[node name="Lights" type="Node2D" parent="."]
+
+[node name="SimpleLight" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 896, 1152 )
+rotation = 4.71239
+cycle_length = 3.0
+strength = 2.0
+max_variation = 0.03
+direction = 2
+
+[node name="SimpleLight2" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 0, 896 )
+rotation = 3.14159
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+direction = 1
+
+[node name="SimpleLight3" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( -512, 2048 )
+rotation = 1.5708
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+direction = 3
+
+[node name="SimpleLight5" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( -512, 1536 )
+rotation = 1.5708
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+direction = 3
+
+[node name="SimpleLight4" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 192, 1920 )
+rotation = 3.14159
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+direction = 1
+
+[node name="SimpleLight9" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 704, 1920 )
+rotation = 3.14159
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+direction = 1
+
+[node name="SimpleLight10" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 704, 2304 )
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+
+[node name="SimpleLight6" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 192, 2304 )
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+
+[node name="SimpleLight7" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 1408, 2304 )
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+
+[node name="SimpleLight8" parent="Lights" instance=ExtResource( 9 )]
+position = Vector2( 1152, 2304 )
+cycle_length = 3.0
+strength = 1.5
+max_variation = 0.03
+
+[node name="TeleportScene" parent="." instance=ExtResource( 7 )]
+
+[node name="TeleportTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 512, 896 )
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+current = true
+zoom = Vector2( 1.1, 1.1 )
+position_smoothing_enabled = true
+
+[node name="Doors" type="Node2D" parent="."]
+
+[node name="ElectricBarrier" parent="Doors" instance=ExtResource( 12 )]
+position = Vector2( 448, 2112 )
+
+[node name="Lander" parent="." instance=ExtResource( 10 )]
+position = Vector2( 1224, 2304 )
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
+color = Color( 0.545098, 0.423529, 0.32549, 1 )
+[connection signal="timeout" from="TeleportTimer" to="." method="_on_TeleportTimer_timeout"]
+[connection signal="electric_contact_end" from="Doors/ElectricBarrier" to="Player" method="_on_ElectricBarrier_electric_contact_end"]
+[connection signal="electric_contact_start" from="Doors/ElectricBarrier" to="Player" method="_on_ElectricBarrier_electric_contact_start"]

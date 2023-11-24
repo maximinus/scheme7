@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://gfx/fonts/SpaceRegular.tres" type="FontFile" id=1]
+[ext_resource path="res://scenes/PlayerUI/MissionObjectives/Objective/ObjectiveLabel.gd" type="Script" id=2]
+
+[node name="Objective" type="Label"]
+offset_bottom = 14.0
+theme_override_fonts/font = ExtResource( 1 )
+theme_override_colors/font_color = Color( 0.470588, 0.262745, 0.262745, 1 )
+align = 2
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

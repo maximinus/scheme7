@@ -1,0 +1,87 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://gfx/fonts/SpaceRegular.tres" type="FontFile" id=1]
+[ext_resource path="res://gfx/gui/lander_download/download_bar.png" type="Texture2D" id=2]
+[ext_resource path="res://scenes/LevelObjects/Lander/DataTransfer/LanderDataTransfer.gd" type="Script" id=3]
+[ext_resource path="res://gfx/gui/lander_download/download_border.png" type="Texture2D" id=4]
+[ext_resource path="res://sfx/level_objects/lander/data_transfer.wav" type="AudioStream" id=5]
+[ext_resource path="res://sfx/level_objects/lander/data_start.wav" type="AudioStream" id=6]
+
+[node name="LanderDataTransfer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -512.375
+offset_top = -600.0
+offset_right = 511.625
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 992.0
+offset_bottom = 550.0
+alignment = 2
+
+[node name="InfoLbl" type="Label" parent="Margin/VBox"]
+offset_top = 486.0
+offset_right = 960.0
+offset_bottom = 514.0
+size_flags_vertical = 5
+theme_override_fonts/font = ExtResource( 1 )
+text = "Ready To Download: Initiate Sequence"
+align = 1
+valign = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Margin/VBox"]
+offset_top = 518.0
+offset_right = 960.0
+offset_bottom = 518.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BarBorder" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource( 4 )
+centered = false
+offset = Vector2( 312, 550 )
+
+[node name="Bar" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource( 2 )
+centered = false
+offset = Vector2( 314, 552 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 0, 6 )
+region_filter_clip_enabled = true
+
+[node name="HeaderSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+
+[node name="DownloadSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+volume_db = 2.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+[connection signal="finished" from="HeaderSFX" to="." method="_on_HeaderSFX_finished"]
+[connection signal="finished" from="DownloadSFX" to="." method="_on_DownloadSFX_finished"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

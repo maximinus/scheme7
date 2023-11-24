@@ -1,0 +1,22 @@
+[
+	{
+		"level": "Dialog",
+		"dialog": "tutorials/tutorial1.json"
+	},
+	{
+		"level": "tutorial_1",
+		"ship": ["GunsOff", "ShieldOff", "RocketOff", "Landed"]
+	},
+	{
+		"level": "Dialog",
+		"dialog": "tutorials/tutorial1.json"
+	},
+	{
+		"level": "tutorial_2",
+		"ship": ["GunsOff", "ShieldOff", "Landed"]
+	},
+	{
+		"level": "Dialog",
+		"dialog": "tutorials/tutorial1.json"
+	}
+]

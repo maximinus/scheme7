@@ -1,0 +1,108 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.gdshader" type="Shader" id=1]
+[ext_resource path="res://gfx/objects/electric_barrier/particle.png" type="Texture2D" id=2]
+[ext_resource path="res://gfx/objects/electric_barrier/overlay.png" type="Texture2D" id=3]
+[ext_resource path="res://sfx/level_objects/electric_barrier/electric_hum.wav" type="AudioStream" id=5]
+[ext_resource path="res://scenes/LevelObjects/ElectricBarrier/ElectricBarrier.gd" type="Script" id=25]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 1 )
+shader_param/line_width = 0.004
+shader_param/color = Color( 0.356863, 0.592157, 0.894118, 1 )
+shader_param/border_color = Color( 0.788235, 0.933333, 0.960784, 1 )
+
+[sub_resource type="FastNoiseLite" id=2]
+period = 32.0
+
+[sub_resource type="NoiseTexture" id=3]
+width = 128
+height = 128
+seamless = true
+noise = SubResource( 2 )
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 0.636364 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.163636 ), -1.13062, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=5]
+curve = SubResource( 4 )
+
+[sub_resource type="ParticleProcessMaterial" id=6]
+lifetime_randomness = 1.0
+flag_disable_z = true
+direction = Vector3( 1, 1, 1 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 100.0
+orbit_velocity = 1.0
+orbit_velocity_random = 1.0
+tangential_accel = 1.0
+scale_curve = SubResource( 5 )
+
+[sub_resource type="CanvasItemMaterial" id=7]
+light_mode = 1
+
+[sub_resource type="RectangleShape2D" id=8]
+size = Vector2( 13, 2 )
+
+[sub_resource type="RectangleShape2D" id=9]
+size = Vector2( 3.9453, 64 )
+
+[node name="ElectricBarrier" type="StaticBody2D" groups=[
+"door",
+]]
+position = Vector2( 64, 64 )
+script = ExtResource( 25 )
+
+[node name="Electric" type="Sprite2D" parent="."]
+material = SubResource( 1 )
+texture = SubResource( 3 )
+
+[node name="SparksTop" type="GPUParticles2D" parent="."]
+position = Vector2( 0, -64 )
+amount = 2
+lifetime = 0.3
+randomness = 1.0
+process_material = SubResource( 6 )
+texture = ExtResource( 2 )
+
+[node name="SparksBottom" type="GPUParticles2D" parent="."]
+position = Vector2( 0, 64 )
+amount = 2
+lifetime = 0.3
+randomness = 1.0
+process_material = SubResource( 6 )
+texture = ExtResource( 2 )
+
+[node name="Overlay" type="Sprite2D" parent="."]
+material = SubResource( 7 )
+texture = ExtResource( 3 )
+
+[node name="Button1" type="CollisionShape2D" parent="."]
+position = Vector2( -27, -62 )
+shape = SubResource( 8 )
+
+[node name="Button2" type="CollisionShape2D" parent="."]
+position = Vector2( 25, -62 )
+shape = SubResource( 8 )
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="Wall" type="CollisionShape2D" parent="Area2D" groups=[
+"electric",
+]]
+shape = SubResource( 9 )
+
+[node name="ElectricHum" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 5 )
+volume_db = -2.0
+autoplay = true
+max_distance = 600.0
+attenuation = 1.03527
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

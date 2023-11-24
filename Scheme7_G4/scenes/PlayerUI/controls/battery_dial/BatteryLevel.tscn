@@ -1,0 +1,73 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://gfx/gui/battery_dial/border.png" type="Texture2D" id=1]
+[ext_resource path="res://gfx/gui/battery_dial/level.png" type="Texture2D" id=2]
+[ext_resource path="res://gfx/gui/battery_dial/drain_level_thick.png" type="Texture2D" id=3]
+[ext_resource path="res://gfx/gui/battery_dial/drain_level_thin.png" type="Texture2D" id=4]
+[ext_resource path="res://gfx/gui/battery_dial/drain_indicator.png" type="Texture2D" id=5]
+[ext_resource path="res://scenes/PlayerUI/controls/battery_dial/BatteryLevel.gd" type="Script" id=6]
+[ext_resource path="res://gfx/gui/battery_dial/fuel_drain_thin.png" type="Texture2D" id=7]
+[ext_resource path="res://gfx/gui/battery_dial/fuel_drain_thick.png" type="Texture2D" id=8]
+[ext_resource path="res://gfx/gui/battery_dial/fuel_level.png" type="Texture2D" id=9]
+
+[node name="BatteryLevel" type="Node2D"]
+script = ExtResource( 6 )
+
+[node name="Border" type="Sprite2D" parent="."]
+texture = ExtResource( 1 )
+centered = false
+offset = Vector2( 0, 11 )
+
+[node name="Battery" type="Node2D" parent="."]
+position = Vector2( 0, 11 )
+
+[node name="BatteryLevel" type="Sprite2D" parent="Battery"]
+texture = ExtResource( 2 )
+centered = false
+offset = Vector2( 6, 16 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 0, 9 )
+
+[node name="BatteryLevelThick" type="Sprite2D" parent="Battery"]
+texture = ExtResource( 3 )
+centered = false
+offset = Vector2( 6, 34 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 335, 3 )
+
+[node name="BatteryLevelThin" type="Sprite2D" parent="Battery"]
+texture = ExtResource( 4 )
+centered = false
+offset = Vector2( 6, 35 )
+
+[node name="BatteryIndicator" type="Sprite2D" parent="Battery"]
+texture = ExtResource( 5 )
+centered = false
+offset = Vector2( 3, 31 )
+
+[node name="Fuel" type="Node2D" parent="."]
+
+[node name="FuelLevel" type="Sprite2D" parent="Fuel"]
+texture = ExtResource( 2 )
+centered = false
+offset = Vector2( 6, 15 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 0, 9 )
+
+[node name="FuelLevelThick" type="Sprite2D" parent="Fuel"]
+texture = ExtResource( 8 )
+centered = false
+offset = Vector2( 6, 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 335, 3 )
+region_filter_clip_enabled = true
+
+[node name="FuleLevelThin" type="Sprite2D" parent="Fuel"]
+texture = ExtResource( 7 )
+centered = false
+offset = Vector2( 6, 4 )
+
+[node name="FuelIndicator" type="Sprite2D" parent="Fuel"]
+texture = ExtResource( 9 )
+centered = false
+offset = Vector2( 3, 0 )
