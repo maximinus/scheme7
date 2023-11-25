@@ -1,6 +1,4 @@
 res://default_env.tres
 res://scenes/Interface/Dialog/Dialog.tscn
-res://code/ship/battery_charge.gd
-res://scenes/Interface/Dialog/Dialog.gd
-res://code/global/dialog.gd
 res://code/global/scenes.gd
+res://scenes/Interface/Dialog/Dialog.gd

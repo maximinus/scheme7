@@ -35,6 +35,7 @@ code = "shader_type canvas_item;
 
 uniform float glitch;
 uniform bool active;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 float rand(float t) {
     return fract(sin(t) * 1000.0);
@@ -43,53 +44,54 @@ float rand(float t) {
 void fragment() {
 	if(active == false) {
 		COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
-		return;
 	}
-	
-	vec4 pixel = vec4(0.0, 0.0, 0.0, 1.0);
-	vec2 fUV = SCREEN_UV;
-    vec2 uvR = SCREEN_UV;
-    vec2 uvB = SCREEN_UV;
+	else {
+		vec4 pixel = vec4(0.0, 0.0, 0.0, 1.0);
+		vec2 fUV = SCREEN_UV;
+		vec2 uvR = SCREEN_UV;
+		vec2 uvB = SCREEN_UV;
 
-    uvR.x = fUV.x - (rand(TIME) * glitch);
-    uvB.y = fUV.y + (rand(TIME) * glitch);
-    
-    // 
-    if(fUV.y < rand(TIME) && fUV.y > rand(TIME) - 0.1 && sin(TIME) < 0.0)
-    {
-    	fUV.x = (fUV + glitch * rand(TIME)).x;
-    }
-    
-    //
-    pixel.r = texture(SCREEN_TEXTURE, uvR).r;
-    pixel.g = texture(SCREEN_TEXTURE, fUV).g;
-    pixel.b = texture(SCREEN_TEXTURE, uvB).b;
-	pixel.a = 1.0;
-	
-    //
-    float scanline = sin( fUV.y * 600.0 * rand(TIME)) / 30.0; 
-	pixel *= 1.0 - scanline;
-    
-    //vignette
-    float vegDist = length(vec2(0.5, 0.5) - fUV);
-    pixel *= 1.0 - vegDist * 0.6;
-	
-	if(active == false) {
-		pixel.rbg = texture(SCREEN_TEXTURE, UV).rbg;
+		uvR.x = fUV.x - (rand(TIME) * glitch);
+		uvB.y = fUV.y + (rand(TIME) * glitch);
+
+		if(fUV.y < rand(TIME) && fUV.y > rand(TIME) - 0.1 && sin(TIME) < 0.0)
+		{
+			fUV.x = (fUV + glitch * rand(TIME)).x;
+		}
+
+		pixel.r = texture(SCREEN_TEXTURE, uvR).r;
+		pixel.g = texture(SCREEN_TEXTURE, fUV).g;
+		pixel.b = texture(SCREEN_TEXTURE, uvB).b;
 		pixel.a = 1.0;
+
+		float scanline = sin( fUV.y * 600.0 * rand(TIME)) / 30.0; 
+		pixel *= 1.0 - scanline;
+    
+		//vignette
+		float vegDist = length(vec2(0.5, 0.5) - fUV);
+		pixel *= 1.0 - vegDist * 0.6;
+	
+		if(active == false) {
+			pixel.rbg = texture(SCREEN_TEXTURE, UV).rbg;
+			pixel.a = 1.0;
+		}
+    	COLOR = pixel;
 	}
-    COLOR = pixel;
 }
 "
 
 [sub_resource type="ShaderMaterial" id="2"]
 shader = SubResource("1")
+shader_parameter/glitch = null
+shader_parameter/active = null
 
 [node name="Dialog" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("4")
 
 [node name="TextureRect" type="TextureRect" parent="."]

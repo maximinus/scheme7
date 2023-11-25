@@ -3,6 +3,7 @@ extends Node
 # the first scene is dictated in the project settings
 
 var loader: ResourceLoader
+var load_status
 var level_data
 var level_index: int
 var next_scene
@@ -27,19 +28,19 @@ func setupScene():
 	setupLevel()
 
 func loadLevelData() -> void:
-	var json_file = FileAccess.open('res://json/levels/tutorial.json', FileAccess.READ)
+	# load the json data
+	var filename = 'res://json/levels/tutorial.json'
+	var json_file = FileAccess.open(filename, FileAccess.READ)
 	if json_file == null:
-		print('Error: Failed to load json')
+		print('Failed to load level data')
 		get_tree().quit()
 	var json_text = json_file.get_as_text()
 	json_file.close()
-	var test_json_conv = JSON.new()
-	test_json_conv.parse(json_text)
-	var json_data = test_json_conv.get_data()
-	if json_data.error != OK:
-		print('Error: JSON error')
+	var json_data = JSON.parse_string(json_text)
+	if json_data == null:
+		print('Error: Failed to load json')
 		get_tree().quit()
-	level_data = json_data.result
+	level_data = json_data
 
 func setupLevel():
 	print('Setting up: ', level_index)
@@ -65,18 +66,15 @@ func addDialog(level):
 		return
 	# load the dialog json and store it in Dialog singleton
 	var filename = 'res://json/levels/' + level['dialog']
-	# does this file exist?
 	var dialog_file = FileAccess.open(filename, FileAccess.READ)
 	if dialog_file == null:
 		print('Error: Failed to load ' + filename)
 	var dialog_text = dialog_file.get_as_text()
 	dialog_file.close()
-	var test_json_conv = JSON.new()
-	test_json_conv.parse(dialog_text)
-	var dialog_data = test_json_conv.get_data()
-	if dialog_data.error != OK:
+	var json_data = JSON.parse_string(dialog_text)
+	if json_data == null:
 		print('Error: JSON error')
-	Dialog.setDialog(dialog_data.result['dialog'])
+	Dialog.setDialog(json_data['dialog'])
 
 func buildShip(level):
 	if not level.has('ship'):
@@ -96,10 +94,11 @@ func buildShip(level):
 # code to handle loading scenes
 
 func loadScene(scene_path):
-	loader = ResourceLoader.load_threaded_request(scene_path)
-	if loader == null:
-		print('Error: New ResourceLoader instance is null')
-		get_tree().quit()
+	ResourceLoader.load_threaded_request(scene_path)
+	#loader = ResourceLoader.load_threaded_request(scene_path)
+	#if loader == null:
+	#	print('Error: New ResourceLoader instance is null')
+	#	get_tree().quit()
 
 func loadChunk() -> bool:
 	if loader == null:

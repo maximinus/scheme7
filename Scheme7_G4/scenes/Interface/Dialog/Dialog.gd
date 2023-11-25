@@ -47,19 +47,19 @@ func displayDialog():
 	$Next.hide()
 	var new_dialog = dialogs[index]
 	$Speaker/Margin/HBoxContainer/Text.text = new_dialog.speaker
-	$Main/Margin/Text.percent_visible = 0.0
+	$Main/Margin/Text.visible_ratio = 0.0
 	$Main/Margin/Text.text = new_dialog.text
 	# animate the text appearing
 	current_status = Status.DRAWING
 	var time = len(new_dialog.text) / SPEED	
-	text_tween.tween_property($Main/Margin/Text, 'percent_visible', 1.0, time)
+	text_tween.tween_property($Main/Margin/Text, 'visible_ratio', 1.0, time)
 	text_tween.tween_callback(_on_Tween_tween_completed).set_delay(time)
 	text_tween.play()
 	$TextNoise.play()
 
 func stopAnimation():
 	$TextNoise.stop()
-	$Main/Margin/Text.percent_visible = 1.0
+	$Main/Margin/Text.visible_ratio = 1.0
 	$Next.show()
 	current_status = Status.WAITING	
 
