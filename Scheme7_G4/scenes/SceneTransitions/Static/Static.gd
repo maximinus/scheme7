@@ -10,7 +10,7 @@ func _ready():
 	scene = Scenes.next_scene
 	Scenes.loadScene(scene)
 
-func _process(delta):
+func _process(_delta):
 	# keep loading until there is no more
 	if scene_loaded == false:
 		scene_loaded = Scenes.loadChunk()

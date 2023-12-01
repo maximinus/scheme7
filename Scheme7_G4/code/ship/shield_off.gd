@@ -6,7 +6,7 @@ class_name ShieldOff
 func _init() -> void:
 	pass
 
-func update(player, collider) -> bool:
+func update(_player, _collider) -> bool:
 	# returns true if player is dead
 	return false
 

@@ -2,7 +2,7 @@ extends Node
 
 # the first scene is dictated in the project settings
 
-var loader: ResourceLoader
+var current_load_path: String
 var load_status
 var level_data
 var level_index: int
@@ -12,7 +12,7 @@ var transition = preload('res://scenes/SceneTransitions/Static/Static.tscn')
 func _ready() -> void:
 	# we need to load in the level structure
 	# this tells where to go from scene to scene
-	loader = null
+	current_load_path = ''
 	# we need to load and parse the level data
 	level_index = 0
 	loadLevelData()
@@ -94,27 +94,33 @@ func buildShip(level):
 # code to handle loading scenes
 
 func loadScene(scene_path):
-	ResourceLoader.load_threaded_request(scene_path)
-	#loader = ResourceLoader.load_threaded_request(scene_path)
-	#if loader == null:
-	#	print('Error: New ResourceLoader instance is null')
-	#	get_tree().quit()
+	if current_load_path != '':
+		print('Error: Aloready loading scene')
+		return
+	current_load_path = scene_path
+	# this is called first, then loadChunk until it returns true
+	ResourceLoader.load_threaded_request(current_load_path)
 
 func loadChunk() -> bool:
-	if loader == null:
+	if current_load_path == '':
 		print('Error: Null loader')
 		return false
-	var err = loader.poll()
-	if err == ERR_FILE_EOF:
-		# we have finished loading
+	var status = ResourceLoader.load_threaded_get_status(current_load_path)
+	if status == ResourceLoader.THREAD_LOAD_LOADED:
 		return true
+	if status != ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		print('Error loading scene ' + current_load_path)
+		get_tree().quit()
+	# still waiting
 	return false
 
 func getLoadedScene():
-	if loader == null:
-		print('Error: Cannot load scene from null')
+	if current_load_path == '':
+		print('Error: No current scene loading')
 		get_tree().quit()
-	return(loader.get_resource())
+	var new_resource = ResourceLoader.load_threaded_get(current_load_path)
+	current_load_path = ''
+	return new_resource
 
 func changeScene():
 	var scene: PackedScene = getLoadedScene()

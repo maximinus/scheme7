@@ -1,111 +1,122 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=3 uid="uid://c4wtqsed81ix4"]
 
-[ext_resource path="res://sfx/player/teleport.wav" type="AudioStream" id=64]
-[ext_resource path="res://gfx/sprites/player.png" type="Texture2D" id=66]
-[ext_resource path="res://scenes/Animations/Teleport/TeleportScene.gd" type="Script" id=67]
-[ext_resource path="res://scenes/Animations/Teleport/teleport.gdshader" type="Shader" id=68]
+[ext_resource type="AudioStream" uid="uid://7hlrg05n8vb3" path="res://sfx/player/teleport.wav" id="64"]
+[ext_resource type="Texture2D" uid="uid://cpp7a85ifv1di" path="res://gfx/sprites/player.png" id="66"]
+[ext_resource type="Script" path="res://scenes/Animations/Teleport/TeleportScene.gd" id="67"]
+[ext_resource type="Shader" path="res://scenes/Animations/Teleport/teleport.gdshader" id="68"]
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="Animation" id="1"]
 length = 2.0
 tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("Animation/FakePlayer:self_modulate")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
 tracks/0/keys = {
-"times": PackedFloat32Array( 0, 2 ),
-"transitions": PackedFloat32Array( 1, 1 ),
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [ Color( 0, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
+"values": [Color(0, 0, 0, 1), Color(1, 1, 1, 1)]
 }
 tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
 tracks/1/path = NodePath("Animation/Teleport:material:shader_param/radius")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
 tracks/1/keys = {
-"points": PackedFloat32Array( 0, -0.25, 0, 0.25, 0, 1.4, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0 ),
-"times": PackedFloat32Array( 0, 1, 2 )
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
 }
 tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
 tracks/2/path = NodePath("Animation/Teleport:material:shader_param/color:r")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
 tracks/2/keys = {
-"points": PackedFloat32Array( 0.231373, -0.25, 0, 0.25, 0, 0.666667, -0.25, 0, 0.25, 0, 0.211765, -0.25, 0, 0.25, 0 ),
-"times": PackedFloat32Array( 0, 1, 2 )
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
 }
 tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
 tracks/3/path = NodePath("Animation/Teleport:material:shader_param/color:g")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
 tracks/3/keys = {
-"points": PackedFloat32Array( 0.14902, -0.25, 0, 0.25, 0, 0.305882, -0.25, 0, 0.25, 0, 0.164706, -0.25, 0, 0.25, 0 ),
-"times": PackedFloat32Array( 0, 1, 2 )
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
 }
 tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
 tracks/4/path = NodePath("Animation/Teleport:material:shader_param/color:b")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
 tracks/4/keys = {
-"points": PackedFloat32Array( 0.129412, -0.25, 0, 0.25, 0, 0.247059, -0.25, 0, 0.25, 0, 0.129412, -0.25, 0, 0.25, 0 ),
-"times": PackedFloat32Array( 0, 1, 2 )
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
 }
 tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
 tracks/5/path = NodePath("Animation/Teleport:material:shader_param/color:a")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
-tracks/5/imported = false
-tracks/5/enabled = true
 tracks/5/keys = {
-"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 0.705882, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PackedFloat32Array( 0, 1, 2 )
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
 }
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = ExtResource( 68 )
-shader_param/color = Color( 0.231373, 0.14902, 0.129412, 1 )
-shader_param/radius = 0.0
-shader_param/width = 0.3
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_iqb4b"]
+_data = {
+"Teleport": SubResource("1")
+}
 
-[sub_resource type="FastNoiseLite" id=3]
+[sub_resource type="ShaderMaterial" id="2"]
+shader = ExtResource("68")
+shader_parameter/color = null
+shader_parameter/radius = null
+shader_parameter/width = null
+
+[sub_resource type="FastNoiseLite" id="3"]
 seed = 3
 fractal_octaves = 1
-period = 9.0
-persistence = 0.0
 
-[sub_resource type="NoiseTexture" id=4]
+[sub_resource type="NoiseTexture2D" id="4"]
 width = 200
 height = 200
 seamless = true
-noise = SubResource( 3 )
+noise = SubResource("3")
 
 [node name="TeleportScene" type="Node2D"]
-script = ExtResource( 67 )
+script = ExtResource("67")
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Teleport = SubResource( 1 )
+libraries = {
+"": SubResource("AnimationLibrary_iqb4b")
+}
 
 [node name="Teleport" type="Sprite2D" parent="Animation"]
-material = SubResource( 2 )
-texture = SubResource( 4 )
+material = SubResource("2")
+texture = SubResource("4")
 
 [node name="FakePlayer" type="Sprite2D" parent="Animation"]
-self_modulate = Color( 0, 0, 0, 1 )
-texture = ExtResource( 66 )
+self_modulate = Color(0, 0, 0, 1)
+texture = ExtResource("66")
 
 [node name="SFX" type="AudioStreamPlayer2D" parent="."]
 visible = false
-stream = ExtResource( 64 )
+stream = ExtResource("64")
 volume_db = 2.0
 autoplay = true
+
 [connection signal="animation_finished" from="Animation" to="." method="_on_Animation_animation_finished"]
 [connection signal="finished" from="SFX" to="." method="_on_SFX_finished"]

@@ -1,8 +1,65 @@
-TODO:Tiled + Gimp
 
-Build and render a level in Tiled + Gimp
-* Save this level, pull out the co-ords with Python
-* Build the level co-ords in Python
-Add the level as image + co-ords in Phaser
-Add collision detection for the level
-Add documentation for all of this
+Issues found converting, active:
+
+	Don't allow turning when landed
+	Increase friction when touching ground
+	Final mission objective does not trigger
+	Add click sound when changing lights
+	Add dialog on screen when playing
+	Add title screen to start
+
+Solved bugs so far:
+	Enter button not shown
+	Second dialog not shown
+	"Press Enter" in wrong place
+	Sound doesn't stop playing
+	Text overflows box
+	Needs an "enter pressed" sound
+	Glitch does not overlay whole screen
+	Error null loader on transition scene
+	Electric barrier shader not working
+	Cannot have velocity as ship value
+	Funcref not allowed for callbacks
+	Remove Tween from Mission Objectives
+	Current shaders are not Godot 4 compatible
+	Default objectives are empty
+	Do not know keys
+	Normal and velocity are no longer properties of a collision
+	No invert function for GdScript array
+	Mission complete shader currently broken
+	Game crashes on a collision
+	Fix current collision messing up position when stationary
+	Some tilemap tiles are offset
+	Fix all unused parameters in functions
+	Mission objectives need aligning
+	Mission complete objectives move around early
+	Remove final funcrefs
+	Highlight current objective
+	Play sound when objective met
+
+
+Improvements:
+
+* Input:
+	Allow key maps to be shown and redefined
+		Current keys: W/A/D - Thrust and turn
+					  L/K   - Lights
+					  P     - Pause
+					  Space - Fire laser
+					  M     - Download
+					  Enter - Select dialog
+
+* Objective display
+	Objectives need reward sound
+	Current objective needs highlight
+	Finishing objective needs simple glow and fade animation
+
+
+Base game improvements
+	Needs a flow of title screen -> tutorial #1 dialog -> tutorial level.
+	From level:
+		Death screen (simple dialog)
+		Complete screen
+	The dialog needs to continue in the tutorial levels, so the game is literally telling you what to do
+	The tutorial levels need a CRT display for the non-dialog
+	A starting screen might be nice. Likely some kind of shader animation

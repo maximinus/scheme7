@@ -2,18 +2,28 @@ extends Node2D
 
 var index: int
 
+var dialog_text: Array = ['Press <Enter> to move this dialog forward',
+						  'First, check the lights',
+						  'You can see the objectives in the bottom right',
+						  'Press the keys as described',
+						  'The tutorial will automatically end']
+
 func _ready():
 	$Player.processing = true
+	# TODO: Set ship status here
 	index = 0
 	setupObjectives()
+	$CanvasLayer/OverlayDialog.setup(dialog_text)
+
+func _process(_delta):
+	# advance dialog if enter pressed
+	if Input.is_action_just_pressed('Enter'):
+		$CanvasLayer/OverlayDialog.next()
 
 func setupObjectives():
 	var texts = []
-	for i in objectives:
-		texts.append(i[0])
-	Globals.level.objectives = texts
-	Globals.level.callback = funcref(self, 'testObjectives')
-	$CanvasLayer/Objectives.setup()
+	#Globals.level.objectives = objectives
+	$CanvasLayer/Objectives.setup(objectives)
 
 # we need to handle level objectives here.
 # So first the code to check each objective
@@ -49,9 +59,9 @@ func testObjectives() -> bool:
 # finally, we need dump the results out here into an array
 # the second entry to the array is the function that checks
 var objectives = [
-	['Turn on lights [L]', 			funcref(self, 'checkLightsOn')],
-	['Turn on surround lights [L]',	funcref(self, 'checkLightCircle')],
-	['Turn on headlights [K]',		funcref(self, 'checkHeadlightOn')]
+	['Turn on lights [L]', 			Callable(self, 'checkLightsOn')],
+	['Turn on surround lights [L]',	Callable(self, 'checkLightCircle')],
+	['Turn on headlights [K]',		Callable(self, 'checkHeadlightOn')]
 ]
 
 func _on_Objectives_mission_complete():

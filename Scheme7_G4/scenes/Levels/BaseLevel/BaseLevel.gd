@@ -12,7 +12,7 @@ func setupObjectives():
 	for i in objectives:
 		texts.append(i[0])
 	Globals.level.objectives = texts
-	Globals.level.callback = funcref(self, 'testObjectives')
+	Globals.level.callback = Callable(self, 'testObjectives')
 	$CanvasLayer/Objectives.setup()
 
 # we need to handle level objectives here.
@@ -49,9 +49,9 @@ func testObjectives() -> bool:
 # finally, we need dump the results out here into an array
 # the second entry to the array is the function that checks
 var objectives = [
-	['Turn on lights [L]', 			funcref(self, 'checkLightsOn')],
-	['Turn on surround lights [L]',	funcref(self, 'checkLightCircle')],
-	['Turn on headlights [K]',		funcref(self, 'checkHeadlightOn')]
+	['Turn on lights [L]', 			Callable(self, 'checkLightsOn')],
+	['Turn on surround lights [L]',	Callable(self, 'checkLightCircle')],
+	['Turn on headlights [K]',		Callable(self, 'checkHeadlightOn')]
 ]
 
 func _on_Objectives_mission_complete():

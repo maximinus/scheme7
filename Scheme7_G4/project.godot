@@ -23,6 +23,8 @@ Scenes="*res://code/global/scenes.gd"
 
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=800
 window/stretch/mode="2d"
 window/per_pixel_transparency/allowed=true
 

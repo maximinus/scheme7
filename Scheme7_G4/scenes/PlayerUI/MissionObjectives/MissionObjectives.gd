@@ -3,73 +3,92 @@ extends Node2D
 const OBJ_SCENE = preload('res://scenes/PlayerUI/MissionObjectives/Objective/ObjectiveLabel.tscn')
 const SLIDE_SPEED = 1.0
 
-const SCREEN_WIDTH = 1024
-const SCREEN_HEIGHT = 600
-const MARGIN = 32
+const SCREEN_WIDTH = 1280
+const SCREEN_HEIGHT = 800
+const MARGIN = 48
 
 signal mission_complete
 
 var objectives = []
-var index: int
+var labels = []
+var objective_index: int
 var complete: bool
-var callback: FuncRef
+var move_tween: Tween
 
 func _ready():
-	callback = null
-	complete = false
-	index = 0
+	move_tween = null
+	complete = true
+	# it fires at zero, so set to 1 to start
+	objective_index = 0
 
-func setup():
-	var txt_objectives = Globals.level.objectives.duplicate()
+
+func _process(_delta):
+	if complete == true:
+		return
+	checkObjectives()
+
+
+func checkObjectives():
+	var objective_passed_test = objectives[objective_index][1]
+	if objective_passed_test.call() == true:
+		moveTopLabel()
+		labels[objective_index].setNormal()
+		if objective_index == 0:
+			$AllCompleted.play()
+			emit_signal('mission_complete')
+			complete = true
+		else:
+			$ObjectiveComplete.play()
+			objective_index -= 1
+			labels[objective_index].setHighlight()
+		
+func setup(passed_objectives):
+	objectives = passed_objectives
+	# add in a warning if we are missing an item
+	if len(objectives) == 0:
+		print('Error: No objective set')
+		return
 	# don't forget we display these backwards
-	txt_objectives.invert()
-	for i in txt_objectives:
+	objectives.reverse()
+	for i in objectives:
 		# create a label
 		var obj_label = OBJ_SCENE.instantiate()
 		# set text
-		obj_label.setText(i)
+		obj_label.setText(i[0])
 		# add position
 		setPosition(obj_label)
-		objectives.append(obj_label)
+		labels.append(obj_label)
 		add_child(obj_label)
-	index = len(objectives) - 1
-	callback = Globals.level.callback
+	objective_index = len(objectives) - 1
+	labels[objective_index].setHighlight()
+	complete = false
 
 func reset():
 	# move all objectives back to correct place
-	$Tween.stop_all()
-	for i in objectives:
+	if move_tween != null:
+		move_tween.kill()
+	for i in labels:
 		var size = i.get_minimum_size()
 		i.position.x = SCREEN_WIDTH - (size.x + MARGIN)
-	index = len(objectives) - 1
+	objective_index = len(objectives) - 1
 
 func setPosition(label_node):
+	# the position should be a fixed value away from the right hand side
 	var size = label_node.get_minimum_size()
-	var xpos = SCREEN_WIDTH - (size.x + MARGIN)
+	var xpos = SCREEN_WIDTH - (size.x + MARGIN)	
 	var ypos = SCREEN_HEIGHT - MARGIN
-	for i in objectives:
+	for i in labels:
 		ypos -= i.get_minimum_size().y
 	ypos -= size.y
 	label_node.position = Vector2(xpos, ypos)
 
 func moveTopLabel():
-	# the top label is the last one in the list
-	var node = objectives[index]
+	var node = labels[objective_index]
 	var from = node.position
 	var distance = node.size.x + MARGIN
 	var to = Vector2(from.x + distance, from.y)
-	$Tween.interpolate_property(node, 'position', from, to,
-		SLIDE_SPEED, Tween.TRANS_QUAD, Tween.EASE_IN)
-	$Tween.start()
-	index -= 1
-
-func _process(_delta):
-	if complete == true:
-		return
-	if index >= 0:
-		if callback.call_func() == true:
-			moveTopLabel()
-		return
-	# we have completed all objectives
-	emit_signal('mission_complete')
-	complete = true
+	node.position = from
+	move_tween = get_tree().create_tween()
+	move_tween.set_ease(Tween.EASE_IN)
+	move_tween.set_trans(Tween.TRANS_QUAD)
+	move_tween.tween_property(node, 'position', to, SLIDE_SPEED)

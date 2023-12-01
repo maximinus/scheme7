@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://q5jgpdk3ppkv"]
 
-[ext_resource path="res://icon.png" type="Texture2D" id=1]
-[ext_resource path="res://sfx/interface/static_tv.wav" type="AudioStream" id=2]
-[ext_resource path="res://scenes/SceneTransitions/Static/Static.gd" type="Script" id=3]
+[ext_resource type="AudioStream" uid="uid://dyqay6gojx6n6" path="res://sfx/interface/static_tv.wav" id="2"]
+[ext_resource type="Script" path="res://scenes/SceneTransitions/Static/Static.gd" id="3"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -38,32 +37,27 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/brightness = 1.0
-shader_param/contrast = 1.0
-shader_param/saturation = 1.0
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("1")
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
 
 [node name="Static" type="Node2D"]
-script = ExtResource( 3 )
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2( 368, 240 )
-scale = Vector2( 4, 4 )
-texture = ExtResource( 1 )
+script = ExtResource("3")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource( 2 )
+material = SubResource("2")
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 1024.0
-offset_bottom = 600.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="StaticSFX" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 2 )
+stream = ExtResource("2")
 volume_db = -8.0
 autoplay = true
 
@@ -71,4 +65,5 @@ autoplay = true
 wait_time = 0.6
 one_shot = true
 autostart = true
+
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

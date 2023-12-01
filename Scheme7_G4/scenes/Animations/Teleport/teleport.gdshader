@@ -4,7 +4,7 @@ render_mode unshaded;
 uniform vec4 color : source_color;
 uniform float radius;
 uniform float width;
-const float PI = 3.1415926535897;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 void fragment() {
     float xscale = 1.0;

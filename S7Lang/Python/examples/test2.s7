@@ -1,0 +1,3 @@
+;test a simple list
+
+(print ("Hello" "World"))

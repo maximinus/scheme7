@@ -2,8 +2,7 @@ extends Node
 
 enum Status {DRAWING, WAITING}
 
-# characters per second
-const SPEED = 50.0
+const CHARACTERS_PER_SECOND = 100.0
 	
 var dialogs = []
 var index = 0
@@ -12,9 +11,9 @@ var timer_on = false
 var text_tween: Tween
 	
 func _ready():
-	text_tween = get_tree().create_tween()
 	index = 0
 	dialogs = Dialog.getDialog()
+	# this is animating the arrow
 	$Next/Next/Margin/HBoxContainer/TextureRect/AnimationPlayer.play('show')
 	displayDialog()
 
@@ -27,15 +26,16 @@ func _process(_delta):
 		# update status
 		if current_status == Status.DRAWING:
 			# stop tween, show text
-			text_tween.stop_all()
-			# $Main/Margin/Text/Tween.stop_all()
 			stopAnimation()
 		else:
 			# must be waiting
 			index += 1
 			if index == len(dialogs):
+				# end of the dialog
 				sceneTransition()
 			else:
+				# show next dialog
+				$Selected.play()
 				displayDialog()
 
 func sceneTransition():
@@ -51,20 +51,20 @@ func displayDialog():
 	$Main/Margin/Text.text = new_dialog.text
 	# animate the text appearing
 	current_status = Status.DRAWING
-	var time = len(new_dialog.text) / SPEED	
+	var time = len(new_dialog.text) / CHARACTERS_PER_SECOND
+	# unlike Godot 3, need to recreate the tween for this
+	text_tween = get_tree().create_tween()
 	text_tween.tween_property($Main/Margin/Text, 'visible_ratio', 1.0, time)
-	text_tween.tween_callback(_on_Tween_tween_completed).set_delay(time)
-	text_tween.play()
+	text_tween.tween_callback(stopAnimation)
 	$TextNoise.play()
 
 func stopAnimation():
+	# probably stopped anyway, but early enter can also force this
+	text_tween.stop()
 	$TextNoise.stop()
 	$Main/Margin/Text.visible_ratio = 1.0
 	$Next.show()
-	current_status = Status.WAITING	
-
-func _on_Tween_tween_completed(_object, _key):
-	stopAnimation()
+	current_status = Status.WAITING
 
 func _on_Timer_timeout():
 	# we are done, move on to the next scene

@@ -1,0 +1,10 @@
+;simple S7 example of a function
+
+(func add_string () (
+    (while (and (!= peek "'") (not at_end))) (
+        (if (== (peek) "\n") (
+            (+= line 1))
+        (advance))
+    (advance)
+    (set value (index source (+ start 1)) (+ current 1))
+    (add_token STRING value))))

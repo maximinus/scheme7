@@ -4,14 +4,16 @@ render_mode unshaded;
 uniform float line_width;
 uniform vec4 color : source_color;
 uniform vec4 border_color : source_color;
+uniform float strength;
 
 void fragment() {
 	float variance = UV.y;
 	if(variance > 0.5) {
 		variance = 1.0 - variance;
 	}
-	variance = variance * 3.0;
-	float weight = texture(TEXTURE, UV + TIME).r;
+	variance = variance * strength;
+	vec2 time_offset = vec2(fract(UV.x + TIME), fract(UV.y + TIME));
+	float weight = texture(TEXTURE, time_offset).r;
 	float xpos = UV.x + ((((weight / 2.0) - 0.25)) * variance);
 	if(xpos > 0.5) {
 		xpos = 1.0 - xpos;
@@ -34,4 +36,5 @@ void fragment() {
 			COLOR = vec4(0, 0, 0, 0);	
 		}
 	}
+	//COLOR = texture(TEXTURE, vec2(UV.x, mod(UV.y + TIME, 1.0)));
 }

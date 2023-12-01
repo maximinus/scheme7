@@ -1,12 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://c1dcwjfjnlp2j"]
+[gd_scene load_steps=13 format=3 uid="uid://c1dcwjfjnlp2j"]
 
 [ext_resource type="Texture2D" uid="uid://ctuphxxbynlcv" path="res://gfx/interface/9-patch/window.png" id="1"]
-[ext_resource type="FontFile" path="res://gfx/fonts/SpaceRegular.tres" id="2"]
+[ext_resource type="FontFile" uid="uid://dvjbqohrcibhk" path="res://gfx/fonts/SpaceRegular.tres" id="2"]
 [ext_resource type="Texture2D" uid="uid://0anf3a703iav" path="res://gfx/interface/backgrounds/PurpleNebula1.png" id="3"]
 [ext_resource type="Script" path="res://scenes/Interface/Dialog/Dialog.gd" id="4"]
 [ext_resource type="AudioStream" uid="uid://ca8wuxrbdckel" path="res://sfx/interface/text_display.wav" id="5"]
 [ext_resource type="Texture2D" uid="uid://dlallowq0jdl4" path="res://gfx/interface/gui_objects/select.png" id="6"]
 [ext_resource type="Texture2D" uid="uid://d3twll5bkp3co" path="res://gfx/interface/objects/processor.png" id="7"]
+[ext_resource type="AudioStream" uid="uid://btbyq3bqifwag" path="res://sfx/interface/dialog_selected.wav" id="7_ldiy4"]
+[ext_resource type="Shader" path="res://scenes/Interface/Dialog/DialogGlitch.gdshader" id="8_8346l"]
 
 [sub_resource type="Animation" id="3"]
 resource_name = "show"
@@ -30,60 +32,13 @@ _data = {
 "show": SubResource("3")
 }
 
-[sub_resource type="Shader" id="1"]
-code = "shader_type canvas_item;
-
-uniform float glitch;
-uniform bool active;
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
-
-float rand(float t) {
-    return fract(sin(t) * 1000.0);
-}
-
-void fragment() {
-	if(active == false) {
-		COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
-	}
-	else {
-		vec4 pixel = vec4(0.0, 0.0, 0.0, 1.0);
-		vec2 fUV = SCREEN_UV;
-		vec2 uvR = SCREEN_UV;
-		vec2 uvB = SCREEN_UV;
-
-		uvR.x = fUV.x - (rand(TIME) * glitch);
-		uvB.y = fUV.y + (rand(TIME) * glitch);
-
-		if(fUV.y < rand(TIME) && fUV.y > rand(TIME) - 0.1 && sin(TIME) < 0.0)
-		{
-			fUV.x = (fUV + glitch * rand(TIME)).x;
-		}
-
-		pixel.r = texture(SCREEN_TEXTURE, uvR).r;
-		pixel.g = texture(SCREEN_TEXTURE, fUV).g;
-		pixel.b = texture(SCREEN_TEXTURE, uvB).b;
-		pixel.a = 1.0;
-
-		float scanline = sin( fUV.y * 600.0 * rand(TIME)) / 30.0; 
-		pixel *= 1.0 - scanline;
-    
-		//vignette
-		float vegDist = length(vec2(0.5, 0.5) - fUV);
-		pixel *= 1.0 - vegDist * 0.6;
-	
-		if(active == false) {
-			pixel.rbg = texture(SCREEN_TEXTURE, UV).rbg;
-			pixel.a = 1.0;
-		}
-    	COLOR = pixel;
-	}
-}
-"
-
 [sub_resource type="ShaderMaterial" id="2"]
-shader = SubResource("1")
-shader_parameter/glitch = null
-shader_parameter/active = null
+shader = ExtResource("8_8346l")
+shader_parameter/range = 0.1
+shader_parameter/noiseQuality = 20.0
+shader_parameter/noiseIntensity = 4.65814e-09
+shader_parameter/offsetIntensity = 0.001
+shader_parameter/colorOffsetIntensity = 0.1
 
 [node name="Dialog" type="Control"]
 layout_mode = 3
@@ -132,6 +87,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_fonts/font = ExtResource("2")
 text = "This is a test of the dialog system"
+autowrap_mode = 3
 
 [node name="Speaker" type="NinePatchRect" parent="."]
 layout_mode = 0
@@ -156,6 +112,7 @@ offset_bottom = -12.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Speaker/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 8
 
 [node name="TextureRect" type="TextureRect" parent="Speaker/Margin/HBoxContainer"]
 layout_mode = 2
@@ -172,9 +129,9 @@ text = "Auto-Test AI"
 [node name="Next" type="Node2D" parent="."]
 
 [node name="Next" type="NinePatchRect" parent="Next"]
-offset_left = 720.0
+offset_left = 760.0
 offset_top = 400.0
-offset_right = 976.0
+offset_right = 1016.0
 offset_bottom = 480.0
 texture = ExtResource("1")
 patch_margin_left = 6
@@ -193,6 +150,7 @@ offset_bottom = -12.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Next/Next/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 9
 
 [node name="TextureRect" type="TextureRect" parent="Next/Next/Margin/HBoxContainer"]
 layout_mode = 2
@@ -209,16 +167,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_fonts/font = ExtResource("2")
-text = "Press Enter"
+text = "
+Press Enter"
+vertical_alignment = 1
+
+[node name="Selected" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_ldiy4")
 
 [node name="TextNoise" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5")
+volume_db = -5.0
 
 [node name="Glitch" type="ColorRect" parent="."]
+visible = false
 material = SubResource("2")
-layout_mode = 0
-offset_right = 1024.0
-offset_bottom = 600.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.0313726, 0.0196078, 0.0196078, 1)
 
 [node name="Timer" type="Timer" parent="."]

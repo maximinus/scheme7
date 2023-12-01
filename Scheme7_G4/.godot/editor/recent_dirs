@@ -1,1 +1,17 @@
+res://scenes
+res://scenes/Interface/Dialog
+res://gfx/fonts
+res://scenes/PlayerUI/MissionObjectives/Objective
+res://gfx/tiles
+res://scenes/PlayerUI/MissionComplete
+res://scenes/Levels/tutorial_levels/tutorial_1
+res://scenes/PlayerUI/DeathNotice
+res://scenes/Animations/Teleport
+res://scenes/PlayerUI/Pause
+res://scenes/PlayerUI/MissionObjectives
+/home/sparky/code/scheme7/Scheme7_G4/code/level
+res://scenes/Levels/BaseLevel
+res://scenes/Levels/tutorial_levels/tutorial_2
+res://scenes/SceneTransitions/Static
+/home/sparky/code/scheme7/Scheme7_G4/scenes/SceneTransitions/Static
 /home/sparky/code/scheme7/Scheme7_G4/code/ship

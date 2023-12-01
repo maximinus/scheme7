@@ -17,7 +17,7 @@ func _on_Reveal_animation_finished(_anim_name) -> void:
 	# we are done, now we wait for input
 	waiting = true
 
-func _process(delta):
+func _process(_delta):
 	# are we waiting for input?
 	if waiting == false:
 		return

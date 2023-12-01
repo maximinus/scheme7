@@ -1,0 +1,9 @@
+;simple S7 example
+
+(print 'Hello, World!')
+(setq foo 7)
+(print foo)
+
+;another comment
+(for x in (range 5) (
+    (print x)))

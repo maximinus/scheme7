@@ -19,7 +19,7 @@ signal laser_fire
 signal ship_dead
 
 # sum of forces acting on the ship
-var velocity: Vector2 = Vector2(0, 0)
+var ship_velocity: Vector2 = Vector2(0, 0)
 
 # turned by hitting something
 var turning: float = 0.0
@@ -39,7 +39,7 @@ func _ready() -> void:
 	ship = Globals.ship
 
 func reset() -> void:
-	velocity = Vector2(0.0, 0.0)
+	ship_velocity = Vector2(0.0, 0.0)
 	rotation = 0.0
 	flameOff(0.0)
 	turning = 0.0
@@ -60,11 +60,14 @@ func _process(delta: float) -> void:
 	# update sprite damage
 	$Image.frame = ship.shield.getDamageFrame()
 
+	# add thrust if thrusting
 	if Input.is_action_pressed('Thrust') and ship.rocket.canFireRocket():
 		ship.status.landing = false
 		if ship.status.landed == true:
+			# no longer landed since we are thrusting
 			ship.status.landed = false
 			ship.status.takeoff = true
+			# and zoom out
 			zoom_target = 1.1
 			zoom_speed = 0.3
 		flameOn(delta)
@@ -80,6 +83,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed('RightTurn'):
 			rotation_degrees += ROTATION_SPEED * delta
 	
+	# if being shocked, move randomly
 	if ship.status.electrified == true:
 		rotation += randf_range(-ELECTRIC_TURN_FORCE, ELECTRIC_TURN_FORCE) * delta
 	
@@ -89,13 +93,13 @@ func _process(delta: float) -> void:
 			turning += SPIN_BRAKING
 		else:
 			turning -= SPIN_BRAKING
+		# if below a fixed value, reduce to zero
+		# (otherwise it will oscillate around zero)
 		if abs(turning) < SPIN_BRAKING:
 			turning = 0.0
 	
-	if rotation_degrees < 0.0:
-		rotation_degrees += 360.0
-	if rotation_degrees > 360.0:
-		rotation_degrees -= 360.0
+	# kepp rotation around -360 to +360
+	rotation_degrees = fmod(rotation_degrees, 360.0)
 
 func zoomCamera(delta: float) -> void:
 	if zoom_speed == 0.0:
@@ -130,6 +134,7 @@ func checkLights() -> void:
 	# ok, can do lights
 	if Input.is_action_just_pressed('Lights'):
 		var current_status = ship.battery.cycleLights()
+		$LightSwitch.play()
 		if current_status == BatteryCharge.LIGHT_STATUS.Normal:
 			$LHNormal.visible = true
 			$LCNormal.visible = false
@@ -163,20 +168,20 @@ func processLanding(delta: float):
 			rotation_degrees = 0.0	
 	
 	# take the current velocity and reduce the x portion
-	var xspeed: float = velocity.x
+	var xspeed: float = ship_velocity.x
 	if xspeed != 0:
 		xspeed /= LANDING_X_SLOWDOWN
 		if abs(xspeed) < 0.1:
 			xspeed = 0.0
-	velocity.x = xspeed	
+	ship_velocity.x = xspeed
 	# add gravity and then move
-	velocity += GRAVITY_VECTOR * delta
-	var collision = move_and_collide(velocity * delta)
+	ship_velocity += GRAVITY_VECTOR * delta
+	var collision = move_and_collide(ship_velocity * delta)
 	# did we collide?
 	if collision == null:
 		return
 	# we did, are we actually landed?
-	if velocity.x == 0.0 and rotation_degrees == 0.0:
+	if ship_velocity.x == 0.0 and rotation_degrees == 0.0:
 		ship.status.landed = true
 		turning = 0.0
 		# what did we land on?
@@ -186,9 +191,11 @@ func processLanding(delta: float):
 			zoom_speed = -0.4
 
 func _physics_process(delta) -> void:
+	# if we are not doing anything, don't do anything
 	if ship.status.landed == true or processing == false:
 		return
 	
+	# if we are currently landing, keep doing it
 	if ship.status.landing == true:
 		processLanding(delta)
 		return
@@ -198,6 +205,7 @@ func _physics_process(delta) -> void:
 		velocity += GRAVITY_VECTOR * delta
 	if ship.rocket.firing_rocket == true:
 		velocity += ship.rocket.getForceVector(rotation)
+	# TODO: Why do we need this?
 	if ship.status.takeoff == true:
 		velocity += TAKEOFF_INJECTION
 	
@@ -213,26 +221,28 @@ func _physics_process(delta) -> void:
 			velocity.y += randf_range(0, ELECTRIC_MOVE_FORCE)
 
 	updateCameraZoom()
+	
+	# update for move_and_slide
 	set_velocity(velocity)
-	set_up_direction(Vector2(0, 0))
+	set_up_direction(Vector2(0, -1))
 	set_floor_stop_on_slope_enabled(false)
 	set_max_slides(4)
 	set_floor_max_angle(0.785398)
-	# TODOConverter3To4 infinite_inertia were removed in Godot 4 - previous value `false`
 	move_and_slide()
 	
 	# push all the bodies
 	var dead = false
 	for index in get_slide_collision_count():
 		var collision = get_slide_collision(index)
-		dead = ship.shield.update(velocity, collision.collider_velocity)
-		if collision.collider.is_in_group('Bodies'):
-			collision.collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
-		if collision.collider.is_in_group('breakable'):
+		dead = ship.shield.update(velocity, collision.get_collider_velocity())
+		var item_collider = collision.get_collider()
+		if item_collider.is_in_group('Bodies'):
+			item_collider.apply_central_impulse(-collision.normal * velocity.length() * SHIP_MASS)
+		if item_collider.is_in_group('breakable'):
 			# break and remove
-			collision.collider.collide(velocity.length())
-		if collision.collider.is_in_group('door'):
-			collision.collider.doorHit()
+			item_collider.collide(velocity.length())
+		if item_collider.is_in_group('door'):
+			item_collider.doorHit()
 
 	if dead == true:
 		# we are dead, raise the signal and finish
@@ -243,45 +253,47 @@ func _physics_process(delta) -> void:
 		emit_signal('ship_dead')
 		return
 
+	# TODO: what is this for?
 	ship.last_force = velocity
-	if get_slide_collision_count() > 0:
-		var result = get_slide_collision(0)
-		# handle landing seperately
-		if checkLanding(result.normal) == true:
-			return
-		# do turning before calculating forces
-		addTurning(result.normal)
-		var collision_speed = 0
-		if abs(result.normal.x) > 0:
-			collision_speed += abs(velocity.x)
-			velocity.x *= -BOUNCE
-		if abs(result.normal.y) > 0:
-			collision_speed += abs(velocity.y)
-			velocity.y *= -BOUNCE
-		var speed = min(collision_speed, 100)
-		collidePlayer(result.position, speed)
-	ship.status.takeoff = false
+	#if get_slide_collision_count() > 0:
+	#	var result = get_slide_collision(0)
+	#	# handle landing seperately
+	#	if checkLanding(result.get_normal()) == true:
+	#		return
+	#	# do turning before calculating forces
+	#	#addTurning(result.get_normal())
+	#	var collision_speed = 0
+	#	if abs(result.get_normal().x) > 0:
+	#		collision_speed += abs(velocity.x)
+	#		velocity.x *= -BOUNCE
+	#	if abs(result.get_normal().y) > 0:
+	#		collision_speed += abs(velocity.y)
+	#		velocity.y *= -BOUNCE
+	#	var speed = min(collision_speed, 100)
+	#	collidePlayer(result.get_position(), speed)
+	#ship.status.takeoff = false
 
-func checkLanding(_normal) -> void:
+func checkLanding(_normal) -> bool:
 	# if contact is slow, and going down, then we may be landing
 	var speed = ship.last_force.length()
 	if speed > 30:
 		# not landing
-		return
+		return false
 	# the current movement needs to be increasing y
 	if velocity.y <= 0:
 		# another direction
-		return
+		return false
 	# and x cannot be larger
 	if abs(velocity.x) > abs(velocity.y):
-		return
+		return false
 	# we need to be more or less upright, so get the current rotation and compare
 	var current_rotation = rotation_degrees
 	if current_rotation < -LANDING_MAX_ROTATION or current_rotation > LANDING_MAX_ROTATION:
 		# not landing, too much angle
-		return
+		return false
 	# finally, we are landing
 	ship.status.landing = true
+	return true
 
 func addTurning(normal) -> void:
 	var angle_rad: float = atan2(normal.y, normal.x)
@@ -313,7 +325,7 @@ func updateCameraZoom() -> void:
 	# TODO: zoom the camera based on the ship velocity
 	pass
 	
-func collidePlayer(position, speed) -> void:
+func collidePlayer(pos, speed) -> void:
 	# player has hit something
 	# speed ranges from 0 - 50
 	# don't collide on first frame after takeoff
@@ -321,7 +333,7 @@ func collidePlayer(position, speed) -> void:
 		return
 	$CollisionSound.volume_db = (speed - 50) / 10.0
 	$CollisionSound.play()
-	emit_signal('ship_collision', position)
+	emit_signal('ship_collision', pos)
 
 func flameOn(delta) -> void:
 	$FlameLight.visible = true

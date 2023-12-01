@@ -8,7 +8,7 @@ var injection_temp: float = 0.0
 func _init() -> void:
 	pass
 	
-func update(energy: float, delta: float) -> void:
+func update(_energy: float, _delta: float) -> void:
 	pass
 	
 func reset() -> void:
