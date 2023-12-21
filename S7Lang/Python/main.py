@@ -190,7 +190,6 @@ class Scanner:
             if char == '\n':
                 self.line += 1
                 return
-        return
 
     def advance(self):
         char = self.source[self.current]

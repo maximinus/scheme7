@@ -3,17 +3,17 @@ extends Node
 enum Status {DRAWING, WAITING}
 
 const CHARACTERS_PER_SECOND = 100.0
-	
-var dialogs = []
+
+var dialogs = [Dialog.SingleDialog.new('Error', 'No dialog set')]
 var index = 0
 var current_status = Status.DRAWING
 var timer_on = false
 var text_tween: Tween
-	
+
 func _ready():
 	index = 0
-	dialogs = Dialog.getDialog()
 	# this is animating the arrow
+	dialogs = Dialog.next_dialog
 	$Next/Next/Margin/HBoxContainer/TextureRect/AnimationPlayer.play('show')
 	displayDialog()
 

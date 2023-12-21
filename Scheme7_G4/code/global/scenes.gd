@@ -1,107 +1,67 @@
 extends Node
 
 # the first scene is dictated in the project settings
+# we use this code to transition
 
 var current_load_path: String
-var load_status
-var level_data
-var level_index: int
-var next_scene
 var transition = preload('res://scenes/SceneTransitions/Static/Static.tscn')
+var dialog_scene = preload('res://scenes/Interface/Dialog/Dialog.tscn')
+var next_dialogs: Array = []
+var loading_dialog: bool
+var scene_stack: Array
 
 func _ready() -> void:
-	# we need to load in the level structure
-	# this tells where to go from scene to scene
 	current_load_path = ''
-	# we need to load and parse the level data
-	level_index = 0
-	loadLevelData()
-	setupLevel()
+	scene_stack = []
 
-func moveToTransition():
-	# we always transition using a scene transistion
+func addScenes(new_scenes: Array):
+	scene_stack.append_array(new_scenes)
+
+func addSingleScene(new_scene: String):
+	scene_stack.append(new_scene)
+
+func moveToNextScene():
+	# the scene calling this is responsible for doiung any fade outs etc...
+	# this code will:
+	# start playing the "static" scene
+	# load the next scene in the background
+	# when the background load is complete, we set a flag
+	# when the static transition is complete and loading is done,
+	#   static scene will call "completeSceneTransition"
+	# and then the new scene is loaded
+	# If there are no scenes to move to, crash out
+	if len(scene_stack) == 0:
+		print('Error: No more scenes')
+		get_tree().quit()
 	get_tree().change_scene_to_packed(transition)
+	loadScene(scene_stack[0])
+	scene_stack.pop_front()
 
-func setupScene():
-	# and this is called by the transition
-	level_index += 1
-	setupLevel()
+func completeSceneTransition():
+	if loading_dialog == true:
+		get_tree().change_scene_to_packed(dialog_scene)
+	else:
+		var scene: PackedScene = getLoadedScene()
+		get_tree().change_scene_to_packed(scene)
 
-func loadLevelData() -> void:
-	# load the json data
-	var filename = 'res://json/levels/tutorial.json'
-	var json_file = FileAccess.open(filename, FileAccess.READ)
-	if json_file == null:
-		print('Failed to load level data')
-		get_tree().quit()
-	var json_text = json_file.get_as_text()
-	json_file.close()
-	var json_data = JSON.parse_string(json_text)
-	if json_data == null:
-		print('Error: Failed to load json')
-		get_tree().quit()
-	level_data = json_data
-
-func setupLevel():
-	print('Setting up: ', level_index)
-	# read the level data and setup the next level before loading it
-	# this should be handled during the transition scene
-	var level = level_data[level_index]
-	# now we check everything
-	next_scene = getScene(level['level'])
-	addDialog(level)
-	buildShip(level)
-
-func getScene(scene: String):
-	# is it the dialog?
-	if scene == 'Dialog':
-		return('res://scenes/Interface/Dialog/Dialog.tscn')
-	if scene.begins_with('tutorial'):
-		return('res://scenes/Levels/tutorial_levels/' + scene + '/' + scene + '.tscn')
-	print('Error: Cannot understand scene name ' + scene)
-	get_tree().quit()
-
-func addDialog(level):
-	if not level.has('dialog'):
-		return
-	# load the dialog json and store it in Dialog singleton
-	var filename = 'res://json/levels/' + level['dialog']
-	var dialog_file = FileAccess.open(filename, FileAccess.READ)
-	if dialog_file == null:
-		print('Error: Failed to load ' + filename)
-	var dialog_text = dialog_file.get_as_text()
-	dialog_file.close()
-	var json_data = JSON.parse_string(dialog_text)
-	if json_data == null:
-		print('Error: JSON error')
-	Dialog.setDialog(json_data['dialog'])
-
-func buildShip(level):
-	if not level.has('ship'):
-		return
-	Globals.ship.reset()
-	for ship_item in level['ship']:
-		match ship_item:
-			'GunsOff':
-				Globals.ship.gun = GunsOff.new()
-			'ShieldOff':
-				Globals.ship.shield = ShieldOff.new()
-			'RocketOff':
-				Globals.ship.rocket = RocketOff.new()
-			'Landed':
-				Globals.ship.status.landed = true
-
-# code to handle loading scenes
-
-func loadScene(scene_path):
-	if current_load_path != '':
-		print('Error: Aloready loading scene')
-		return
+func loadScene(scene_path: String):
+	# start the loading of the scene in the background
 	current_load_path = scene_path
-	# this is called first, then loadChunk until it returns true
-	ResourceLoader.load_threaded_request(current_load_path)
+	# is it a json file, and thus just simple dialog?
+	if scene_path.ends_with('.json'):
+		# it's a dialog file and we already have that
+		Dialog.next_dialog = Dialog.loadDialog(scene_path)
+		loading_dialog = true
+	else:
+		loading_dialog = false
+		# this is called first, then loadChunk until it returns true
+		ResourceLoader.load_threaded_request(current_load_path)
 
 func loadChunk() -> bool:
+	# called constantly until this returns true
+	if loading_dialog == true:
+		# no need to load anything, we are donw
+		return true
 	if current_load_path == '':
 		print('Error: Null loader')
 		return false
@@ -122,6 +82,10 @@ func getLoadedScene():
 	current_load_path = ''
 	return new_resource
 
-func changeScene():
-	var scene: PackedScene = getLoadedScene()
-	get_tree().change_scene_to_packed(scene)
+func addInitialScenes():
+	# run when the game starts. This sets up the tutorial scenes and dialog
+	# If a plain dialog scene is run, it needs some dialog
+	# thus if a line is plain json, it is just dialog and needs a dialog scene
+	var first_scenes = ['/tutorials/pre_light_test.json',
+						'res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.tscn']
+	addScenes(first_scenes)

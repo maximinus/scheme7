@@ -1,0 +1,34 @@
+;simple S7 example
+
+;Functions
+;   let     -> (let foo 5)
+;   print   -> (print ...)
+;   fract   -> (fract x)
+;   round   -> (round x)
+;   floor   -> (floor x)
+;   ceil    -> (ceil x)
+;   list    -> (index index_number list)
+;   reverse -> (reverse list)
+;   sort    -> (sort list)
+;   append  -> (append list)
+;   pop     -> (pop list)
+;   max     -> (max list) or (max a b c ...)
+;   min     -> (min list) or (min a b c ...)
+;   len     -> (len list)
+;   slice   -> (slice list start end)
+;   abs     -> (abs number)
+
+;Macros
+;   if    -> (if cond (...) else (...))
+;   while -> (while cond (...))
+;   func  -> (func name (vars) (...))
+;   for   -> (for name list (...))
+
+
+(print "Hello, World!")
+(setq foo 7)
+(print foo)
+
+;another comment
+(for x in (range 5) (
+    (print x)))

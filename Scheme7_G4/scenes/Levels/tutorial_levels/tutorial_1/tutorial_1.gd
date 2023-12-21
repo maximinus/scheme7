@@ -1,19 +1,15 @@
 extends Node2D
 
 var index: int
-
-var dialog_text: Array = ['Press <Enter> to move this dialog forward',
-						  'First, check the lights',
-						  'You can see the objectives in the bottom right',
-						  'Press the keys as described',
-						  'The tutorial will automatically end']
+var dialog_parts: Array
 
 func _ready():
 	$Player.processing = true
 	# TODO: Set ship status here
 	index = 0
 	setupObjectives()
-	$CanvasLayer/OverlayDialog.setup(dialog_text)
+	dialog_parts = Dialog.loadDialog('tutorials/light_test.json')
+	$CanvasLayer/OverlayDialog.setup(dialog_parts)
 
 func _process(_delta):
 	# advance dialog if enter pressed
@@ -60,10 +56,11 @@ func testObjectives() -> bool:
 # the second entry to the array is the function that checks
 var objectives = [
 	['Turn on lights [L]', 			Callable(self, 'checkLightsOn')],
-	['Turn on surround lights [L]',	Callable(self, 'checkLightCircle')],
+	['Turn on surround lights [L]', Callable(self, 'checkLightCircle')],
 	['Turn on headlights [K]',		Callable(self, 'checkHeadlightOn')]
 ]
 
-func _on_Objectives_mission_complete():
+func _on_objectives_mission_complete():
+	$CanvasLayer/OverlayDialog.hide()
 	$CanvasLayer/MissionComplete.show()
 	$CanvasLayer/MissionComplete.playAnim()

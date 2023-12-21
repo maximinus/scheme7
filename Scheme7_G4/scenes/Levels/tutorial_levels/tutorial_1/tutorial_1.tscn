@@ -107,3 +107,5 @@ position = Vector2(512, 423.95)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.0823529, 0.0784314, 0.0745098, 1)
+
+[connection signal="mission_complete" from="CanvasLayer/Objectives" to="." method="_on_objectives_mission_complete"]

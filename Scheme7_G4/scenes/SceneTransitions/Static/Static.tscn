@@ -13,16 +13,23 @@ const float PHI = 1.61803398874989484820459;
 uniform float brightness = 1.0;
 uniform float contrast = 1.0;
 uniform float saturation = 1.0;
+uniform float border_size = 50.0;
 
 float noise(in vec2 xy, in float seed)
 {
-    return fract(tan(distance(xy * PHI, xy) * seed ) *xy.x);
+    return fract(tan(distance(xy * PHI, xy) * seed) * xy.x);
+}
+
+float rounded_box(vec2 pos) {
+	float radius = 1.4;
+	vec2 q = abs(pos) - vec2(0.2, 0.2) + radius;
+	return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - radius;
 }
 
 void fragment() {
 	vec2 m = SCREEN_UV;
-	m.x *= 1000.0;
-	m.y *= 600.0;
+	m.x *= 1.3;
+	m.y *= 2.5;
 	
 	vec4 pixel = vec4(noise(m, fract(TIME) + 1.0),
 				  	  noise(m, fract(TIME) + 2.0),
@@ -31,7 +38,12 @@ void fragment() {
 	// normalize colors
 	pixel.rgb = mix(vec3(0.0), pixel.rgb, brightness);
     pixel.rgb = mix(vec3(0.5), pixel.rgb, contrast);
-    pixel.rgb = mix(vec3(dot(vec3(1.0), pixel.rgb) * 0.33333), pixel.rgb, saturation);	
+    pixel.rgb = mix(vec3(dot(vec3(1.0), pixel.rgb) * 0.33333), pixel.rgb, saturation);
+	
+	// vigenette it a bit
+	vec2 position = (UV - 0.5);
+	float distance = max(min(rounded_box(position), 1.0), 0.0);
+	pixel.a = 1.0 - distance;
 	
 	COLOR = pixel;
 }
@@ -42,6 +54,7 @@ shader = SubResource("1")
 shader_parameter/brightness = 1.0
 shader_parameter/contrast = 1.0
 shader_parameter/saturation = 1.0
+shader_parameter/border_size = 20.0
 
 [node name="Static" type="Node2D"]
 script = ExtResource("3")
@@ -51,8 +64,8 @@ material = SubResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 1152.0
-offset_bottom = 648.0
+offset_right = 1280.0
+offset_bottom = 800.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -62,7 +75,6 @@ volume_db = -8.0
 autoplay = true
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.6
 one_shot = true
 autostart = true
 

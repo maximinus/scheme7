@@ -34,11 +34,9 @@ _data = {
 
 [sub_resource type="ShaderMaterial" id="2"]
 shader = ExtResource("8_8346l")
-shader_parameter/range = 0.1
-shader_parameter/noiseQuality = 20.0
-shader_parameter/noiseIntensity = 4.65814e-09
-shader_parameter/offsetIntensity = 0.001
-shader_parameter/colorOffsetIntensity = 0.1
+shader_parameter/range = 0.01
+shader_parameter/offsetIntensity = -0.003
+shader_parameter/colorOffsetIntensity = 0.2
 
 [node name="Dialog" type="Control"]
 layout_mode = 3
@@ -179,7 +177,6 @@ stream = ExtResource("5")
 volume_db = -5.0
 
 [node name="Glitch" type="ColorRect" parent="."]
-visible = false
 material = SubResource("2")
 layout_mode = 1
 anchors_preset = 15

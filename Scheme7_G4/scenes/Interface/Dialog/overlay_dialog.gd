@@ -18,5 +18,6 @@ func next():
 	dialog_index += 1
 	if dialog_index >= len(dialogs):
 		# nothing to do
-		return
-	$Panel/MarginContainer/HBox/Label.text = dialogs[dialog_index]
+		hide()
+	else:
+		$Panel/MarginContainer/HBox/Label.text = dialogs[dialog_index].text
