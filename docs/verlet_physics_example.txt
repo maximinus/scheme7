@@ -1,0 +1,52 @@
+struct CParticle{    
+    Vector m_pos;    
+    Vector m_oldpos;    
+    Vector m_vAccel;    
+    float  m_invmass; // 1.0f / mass of particle    
+
+    void Update(void)    {                
+        float dt2   = (1.0f / 60.0f) * (1.0f / 60.0f); // 60 fps        
+        Vector Temp = m_pos;        
+        m_vAccel    = Vector(0, -10); // gravity        
+        m_pos      += (m_pos - m_oldpos) + m_vAccel * dt2;        
+        m_oldpos    = Temp;    }};
+
+struct CLink_Orb_Ship{   
+    CParticle* m_pxShip;   
+    CParticle* m_pxOrb;   
+    float      m_fRestLength;   
+
+    void Update(void)   {       
+        m_pxOrb ->Update();       
+        m_pxShip->Update();       
+        UpdateLink();       
+        while (FindAndProcessCollision())           
+            UpdateLink();   }   
+
+    void UpdateLink(void)   {       
+        // square of the distance
+        float  m_l2      = m_fRestLength * m_fRestLength;       
+        // distance between ship and orb
+        Vector delta     = m_pxShip->m_pos - m_pxOrb->m_pos;
+        // square of this
+        float  delta2    = delta*delta;       
+        // 1/mass for both
+        float  invmass0  = m_pxOrb->m_invmass;       
+        float  invmass1  = m_pxShip->m_invmass;       
+        // add together
+        float  invmass   = (invmass0 + invmass1);
+
+        // example: Morb=1 and Mship=2
+        // inv_orb = 1/1 = 1, inv_ship = 1/2 
+
+        // (length of rod ^ 2) / ((distance_between_orb_and_ship ^ 2) - 0.5f  (centre coords?)
+        float  diff      = m_l2 / (delta2 + m_l2) - 0.5f;
+
+        // diff * (-2 / (invmass0 + invmass1)) -> 
+
+        diff            *= -2.0f / invmass;       
+        delta           *= diff;       
+        m_pxOrb->m_pos  += delta*invmass0;       
+        m_pxShip->m_pos -= delta*invmass1;   }   
+
+        bool FindAndProcessCollision(void)   {       .....       .....       .....   }};

@@ -9,7 +9,7 @@ func _ready():
 	index = 0
 	player_start = $Player.position
 	ship_landed = false
-	$Player.connect('ship_landed', self, 'shipLanded')
+	$Player.connect('ship_landed', Callable(self, 'shipLanded'))
 	setupObjectives()
 	# setup should be from dialog
 	Globals.ship.status.landed = true

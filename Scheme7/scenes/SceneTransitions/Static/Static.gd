@@ -5,19 +5,17 @@ var scene_loaded: bool
 var scene: String
 
 func _ready():
+	# to use this scene, set the value "Scenes.next_scene"
 	scene_loaded = false
 	switch_scene = false
-	scene = Scenes.next_scene
-	Scenes.loadScene(scene)
 
-func _process(delta):
+func _process(_delta):
 	# keep loading until there is no more
 	if scene_loaded == false:
 		scene_loaded = Scenes.loadChunk()
 	else:
 		if switch_scene == true:
-			Scenes.setupScene()
-			Scenes.changeScene()
+			Scenes.completeSceneTransition()
 
 func _on_Timer_timeout():
 	switch_scene = true

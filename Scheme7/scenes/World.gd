@@ -12,12 +12,12 @@ func _ready() -> void:
 	# remember for the next life
 	player_start = $Player.position
 	$Player.hide()
-	$Player.connect('ship_collision', self, 'shipCollision')
-	$Player.connect('laser_fire', self, 'shipLaser')
-	$Player.connect('ship_dead', self, 'shipDead')
-	$Player.connect('ship_landedlanded', self, 'shipLanded')
-	$UILayer/LanderDataTransfer.connect('download_finished', self, 'downloaded')
-	$UILayer/DeathNotice.connect('next_life', self, 'nextLife')
+	$Player.connect('ship_collision', Callable(self, 'shipCollision'))
+	$Player.connect('laser_fire', Callable(self, 'shipLaser'))
+	$Player.connect('ship_dead', Callable(self, 'shipDead'))
+	$Player.connect('ship_landedlanded', Callable(self, 'shipLanded'))
+	$UILayer/LanderDataTransfer.connect('download_finished', Callable(self, 'downloaded'))
+	$UILayer/DeathNotice.connect('next_life', Callable(self, 'nextLife'))
 	$CanvasModulate.show()
 	spawnIn()
 
@@ -32,18 +32,18 @@ func downloaded() -> void:
 	$UILayer/MissionObjectives.downloaded()
 
 func shipCollision(position: Vector2) -> void:
-	var new_node = EXPLOSION.instance()
+	var new_node = EXPLOSION.instantiate()
 	new_node.position = position
 	add_child(new_node)
 
 func shipLaser() -> void:
-	var new_laser = LASER.instance()
+	var new_laser = LASER.instantiate()
 	# match position and rotation
 	new_laser.position = $Player/LaserStart.global_position
 	new_laser.rotation = $Player.rotation
 	new_laser.addMotion()
 	new_laser.add_collision_exception_with($Player)
-	add_child_below_node($Lights, new_laser)
+	add_sibling($Lights, new_laser)
 
 func shipLanded() -> void:
 	$UILayer/LanderDataTransfer.show()
@@ -59,12 +59,12 @@ func shipDead() -> void:
 	$Player.hide()
 	$Player.processing = false
 	# instance the new scene
-	dead_player = DEAD_PLAYER.instance()
+	dead_player = DEAD_PLAYER.instantiate()
 	dead_player.position = player_pos
 	dead_player.rotation = player_rot
 	dead_player.linear_velocity = player_speed
 	dead_player.start()
-	add_child_below_node($Lights, dead_player)
+	add_sibling($Lights, dead_player)
 	$UILayer/DeathNotice.start()
 
 func nextLife() -> void:

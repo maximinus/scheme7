@@ -1,18 +1,18 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=12 format=3 uid="uid://b8lfeevqv0ver"]
 
-[ext_resource path="res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.gd" type="Script" id=1]
-[ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=3]
-[ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/Levels/MapTiles.tres" type="TileSet" id=5]
-[ext_resource path="res://scenes/LevelObjects/Lander/Lander.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/PlayerUI/MissionComplete/MissionComplete.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" type="PackedScene" id=8]
+[ext_resource type="Script" path="res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" id="4"]
+[ext_resource type="TileSet" path="res://scenes/Levels/MapTiles.tres" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/LevelObjects/Lander/Lander.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerUI/MissionComplete/MissionComplete.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" id="8"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 
-uniform vec4 color : hint_color = vec4(0.35, 0.48, 0.95, 1.0);
+uniform vec4 color : source_color = vec4(0.35, 0.48, 0.95, 1.0);
 uniform float noise_scale = 20.0;
 uniform float alpha_power = 2.0;
 uniform int OCTAVES = 1;
@@ -57,73 +57,67 @@ void fragment() {
 	COLOR = vec4(color.rgb, pow(final, alpha_power) * color.a);
 }"
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/color = Color( 0.172549, 0.184314, 0.235294, 1 )
-shader_param/noise_scale = 3.0
-shader_param/alpha_power = 2.0
-shader_param/OCTAVES = 3
-shader_param/TIME_FACTOR = 0.3
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("1")
+shader_parameter/color = Color(0.172549, 0.184314, 0.235294, 1)
+shader_parameter/noise_scale = 3.0
+shader_parameter/alpha_power = 2.0
+shader_parameter/OCTAVES = 3
+shader_parameter/TIME_FACTOR = 0.3
 
-[sub_resource type="NoiseTexture" id=3]
+[sub_resource type="NoiseTexture2D" id="3"]
 seamless = true
 
 [node name="Tutorial2" type="Node2D"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 
 [node name="Background" type="Polygon2D" parent="."]
-material = SubResource( 2 )
-texture = SubResource( 3 )
-polygon = PoolVector2Array( 128, 576, 256, 576, 384, 448, 640, 448, 768, 576, 1152, 576, 1280, 448, 1536, 448, 1664, 576, 1792, 576, 1792, -192, 1664, -320, 256, -320, 128, -192 )
+material = SubResource("2")
+texture = SubResource("3")
+polygon = PackedVector2Array(128, 576, 256, 576, 384, 448, 640, 448, 768, 576, 1152, 576, 1280, 448, 1536, 448, 1664, 576, 1792, 576, 1792, -192, 1664, -320, 256, -320, 128, -192)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Objectives" parent="CanvasLayer" instance=ExtResource( 8 )]
+[node name="Objectives" parent="CanvasLayer" instance=ExtResource("8")]
 
-[node name="MissionComplete" parent="CanvasLayer" instance=ExtResource( 7 )]
+[node name="MissionComplete" parent="CanvasLayer" instance=ExtResource("7")]
 
-[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource( 3 )]
+[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource("3")]
 visible = false
 
 [node name="MapTiles" type="TileMap" parent="."]
-tile_set = ExtResource( 5 )
-format = 1
-tile_data = PoolIntArray( -393213, 5, 0, -393212, 1, 0, -393210, 1, 0, -393208, 1, 0, -393206, 1, 0, -393204, 1, 0, -393202, 1, 0, -393200, 1, 0, -393198, 1, 0, -393196, 1, 0, -393194, 1, 0, -393192, 1, 0, -393190, 6, 0, -327678, 16, 0, -327654, 17, 0, -262143, 5, 0, -262116, 6, 0, -196607, 2, 0, -196580, 3, 0, -65535, 2, 0, -65508, 3, 0, 65537, 2, 0, 65564, 3, 0, 196609, 2, 0, 196636, 3, 0, 327681, 2, 0, 327708, 3, 0, 458753, 2, 0, 458756, 18, 0, 458758, 20, 0, 458760, 20, 0, 458762, 15, 0, 458770, 18, 0, 458772, 20, 0, 458774, 20, 0, 458776, 15, 0, 458780, 3, 0, 589825, 4, 0, 589826, 20, 0, 589828, 19, 0, 589835, 4, 0, 589836, 20, 0, 589838, 20, 0, 589840, 20, 0, 589842, 19, 0, 589850, 20, 0, 589852, 19, 0 )
+tile_set = ExtResource("5")
+format = 2
+layer_0/tile_data = PackedInt32Array(-393213, 4, 0, -393212, 0, 0, -393210, 0, 0, -393208, 0, 0, -393206, 0, 0, -393204, 0, 0, -393202, 0, 0, -393200, 0, 0, -393198, 0, 0, -393196, 0, 0, -393194, 0, 0, -393192, 0, 0, -393190, 5, 0, -327678, 15, 0, -327654, 16, 0, -262143, 4, 0, -262116, 5, 0, -196607, 1, 0, -196580, 2, 0, -65535, 1, 0, -65508, 2, 0, 65537, 1, 0, 65564, 2, 0, 196609, 1, 0, 196636, 2, 0, 327681, 1, 0, 327708, 2, 0, 458753, 1, 0, 458756, 17, 0, 458758, 19, 0, 458760, 19, 0, 458762, 14, 0, 458770, 17, 0, 458772, 19, 0, 458774, 19, 0, 458776, 14, 0, 458780, 2, 0, 589825, 3, 0, 589826, 19, 0, 589828, 18, 0, 589835, 3, 0, 589836, 19, 0, 589838, 19, 0, 589840, 19, 0, 589842, 18, 0, 589850, 19, 0, 589852, 18, 0)
 
 [node name="Lights" type="Node2D" parent="."]
 
-[node name="SimpleLight" parent="Lights" instance=ExtResource( 4 )]
-position = Vector2( 512, -320 )
+[node name="SimpleLight" parent="Lights" instance=ExtResource("4")]
+position = Vector2(512, -320)
 rotation = 3.14159
-cycle_length = 5.0
 strength = 1.5
 direction = 1
 
-[node name="SimpleLight2" parent="Lights" instance=ExtResource( 4 )]
-position = Vector2( 1408, -320 )
+[node name="SimpleLight2" parent="Lights" instance=ExtResource("4")]
+position = Vector2(1408, -320)
 rotation = 3.14159
-cycle_length = 5.0
 strength = 1.5
 direction = 1
 
-[node name="SimpleLight3" parent="Lights" instance=ExtResource( 4 )]
-position = Vector2( 944, 576 )
-cycle_length = 5.0
+[node name="SimpleLight3" parent="Lights" instance=ExtResource("4")]
+position = Vector2(944, 576)
 strength = 1.5
-direction = 0
 
-[node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 512, 423.95 )
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(512, 423.95)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-current = true
 
 [node name="Landers" type="Node2D" parent="."]
 
-[node name="Lander" parent="Landers" instance=ExtResource( 6 )]
-position = Vector2( 1360, 448 )
+[node name="Lander" parent="Landers" instance=ExtResource("6")]
+position = Vector2(1360, 448)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
-color = Color( 0.262745, 0.278431, 0.435294, 1 )
-[connection signal="mission_complete" from="CanvasLayer/Objectives" to="." method="_on_Objectives_mission_complete"]
+color = Color(0.262745, 0.278431, 0.435294, 1)

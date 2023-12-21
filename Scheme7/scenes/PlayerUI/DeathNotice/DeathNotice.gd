@@ -1,5 +1,5 @@
+@tool
 extends Node2D
-tool
 
 signal next_life
 

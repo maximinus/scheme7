@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://q5jgpdk3ppkv"]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
-[ext_resource path="res://sfx/interface/static_tv.wav" type="AudioStream" id=2]
-[ext_resource path="res://scenes/SceneTransitions/Static/Static.gd" type="Script" id=3]
+[ext_resource type="AudioStream" uid="uid://dyqay6gojx6n6" path="res://sfx/interface/static_tv.wav" id="2"]
+[ext_resource type="Script" path="res://scenes/SceneTransitions/Static/Static.gd" id="3"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -14,16 +13,23 @@ const float PHI = 1.61803398874989484820459;
 uniform float brightness = 1.0;
 uniform float contrast = 1.0;
 uniform float saturation = 1.0;
+uniform float border_size = 50.0;
 
 float noise(in vec2 xy, in float seed)
 {
-    return fract(tan(distance(xy * PHI, xy) * seed ) *xy.x);
+    return fract(tan(distance(xy * PHI, xy) * seed) * xy.x);
+}
+
+float rounded_box(vec2 pos) {
+	float radius = 1.4;
+	vec2 q = abs(pos) - vec2(0.2, 0.2) + radius;
+	return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - radius;
 }
 
 void fragment() {
 	vec2 m = SCREEN_UV;
-	m.x *= 1000.0;
-	m.y *= 600.0;
+	m.x *= 1.3;
+	m.y *= 2.5;
 	
 	vec4 pixel = vec4(noise(m, fract(TIME) + 1.0),
 				  	  noise(m, fract(TIME) + 2.0),
@@ -32,43 +38,44 @@ void fragment() {
 	// normalize colors
 	pixel.rgb = mix(vec3(0.0), pixel.rgb, brightness);
     pixel.rgb = mix(vec3(0.5), pixel.rgb, contrast);
-    pixel.rgb = mix(vec3(dot(vec3(1.0), pixel.rgb) * 0.33333), pixel.rgb, saturation);	
+    pixel.rgb = mix(vec3(dot(vec3(1.0), pixel.rgb) * 0.33333), pixel.rgb, saturation);
+	
+	// vigenette it a bit
+	vec2 position = (UV - 0.5);
+	float distance = max(min(rounded_box(position), 1.0), 0.0);
+	pixel.a = 1.0 - distance;
 	
 	COLOR = pixel;
 }
 "
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/brightness = 1.0
-shader_param/contrast = 1.0
-shader_param/saturation = 1.0
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("1")
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/border_size = 20.0
 
 [node name="Static" type="Node2D"]
-script = ExtResource( 3 )
-
-[node name="Sprite" type="Sprite" parent="."]
-position = Vector2( 368, 240 )
-scale = Vector2( 4, 4 )
-texture = ExtResource( 1 )
+script = ExtResource("3")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource( 2 )
+material = SubResource("2")
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 1024.0
-margin_bottom = 600.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_right = 1280.0
+offset_bottom = 800.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="StaticSFX" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 2 )
+stream = ExtResource("2")
 volume_db = -8.0
 autoplay = true
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.6
 one_shot = true
 autostart = true
+
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

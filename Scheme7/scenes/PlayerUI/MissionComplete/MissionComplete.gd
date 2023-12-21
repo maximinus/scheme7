@@ -4,7 +4,7 @@ var waiting: bool
 
 func _ready() -> void:
 	$Logo.hide()
-	$Logo.material.set_shader_param('radius', 0.0)
+	$Logo.material.set_shader_parameter('radius', 0.0)
 	$Instructions.hide()
 	waiting = false
 
@@ -17,13 +17,13 @@ func _on_Reveal_animation_finished(_anim_name) -> void:
 	# we are done, now we wait for input
 	waiting = true
 
-func _process(delta):
+func _process(_delta):
 	# are we waiting for input?
 	if waiting == false:
 		return
 	# did the player ask to move on?
 	if Input.is_action_just_pressed('Enter'):
-		Scenes.moveToTransition()
+		Scenes.moveToNextScene()
 
 func _on_StartTimer_timeout():
 	# we waited a little before starting, but now we start

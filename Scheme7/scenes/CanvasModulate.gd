@@ -1,7 +1,7 @@
 extends CanvasModulate
 
-export(Color, RGBA) var game_color
-export(Color, RGBA) var pause_color
+@export var game_color # (Color, RGBA)
+@export var pause_color # (Color, RGBA)
 
 func _ready():
 	color = game_color

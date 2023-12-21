@@ -24,9 +24,9 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
 
-[sub_resource type="OpenSimplexNoise" id=5]
+[sub_resource type="FastNoiseLite" id=5]
 seed = 2
-octaves = 4
+fractal_octaves = 4
 period = 29.7
 persistence = 1.0
 lacunarity = 4.0
@@ -44,5 +44,5 @@ material = SubResource( 2 )
 position = Vector2( 0, -5.33333 )
 scale = Vector2( 1, 0.666667 )
 texture = SubResource( 4 )
-polygon = PoolVector2Array( -128, -16, 128, -16, 128, 32, -128, 32 )
-uv = PoolVector2Array( 0, 3.8147e-06, 160, 0, 160, 20, 0, 20 )
+polygon = PackedVector2Array( -128, -16, 128, -16, 128, 32, -128, 32 )
+uv = PackedVector2Array( 0, 3.8147e-06, 160, 0, 160, 20, 0, 20 )

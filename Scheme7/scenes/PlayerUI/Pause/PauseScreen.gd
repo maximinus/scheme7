@@ -5,7 +5,7 @@ var can_pause = true
 
 func _ready():
 	$BlurFilter.hide()
-	$Sprite.hide()
+	$Sprite2D.hide()
 
 func _process(_delta):
 	if can_pause == false:
@@ -14,12 +14,12 @@ func _process(_delta):
 		if paused == false:
 			paused = true
 			$BlurFilter.show()
-			$Sprite.show()
+			$Sprite2D.show()
 			emit_signal('paused')
 			get_tree().paused = true
 		else:
 			paused = false
 			get_tree().paused = false
 			$BlurFilter.hide()
-			$Sprite.hide()
+			$Sprite2D.hide()
 			emit_signal('unpaused')

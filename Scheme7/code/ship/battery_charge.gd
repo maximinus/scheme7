@@ -1,8 +1,7 @@
 extends Node
+class_name BatteryCharge
 
 enum LIGHT_STATUS { Normal, Circle, Off }
-
-class_name BatteryCharge
 
 const LIGHT_COST: float = 5.0
 const FULLBEAM_COST: float = 6.0

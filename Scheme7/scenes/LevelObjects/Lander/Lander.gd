@@ -4,7 +4,7 @@ func _ready() -> void:
 	pass
 
 func _on_Timer_timeout() -> void:
-	if $Light2D.visible:
-		$Light2D.hide()
+	if $PointLight2D.visible:
+		$PointLight2D.hide()
 	else:
-		$Light2D.show()
+		$PointLight2D.show()

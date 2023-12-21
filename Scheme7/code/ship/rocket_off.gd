@@ -11,7 +11,7 @@ func _init():
 	temp = RocketTemperatureOff.new()
 	firing_rocket = false
 		
-func update(delta: float, energy: float) -> void:
+func update(_delta: float, _energy: float) -> void:
 	pass
 			
 func canFireRocket() -> bool:

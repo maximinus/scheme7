@@ -1,15 +1,15 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=9 format=3 uid="uid://cymypwbbr1osd"]
 
-[ext_resource path="res://scenes/Levels/MapTiles.tres" type="TileSet" id=1]
-[ext_resource path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/Levels/BaseLevel/BaseLevel.gd" type="Script" id=5]
+[ext_resource type="TileSet" path="res://scenes/Levels/MapTiles.tres" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" id="4"]
+[ext_resource type="Script" path="res://scenes/Levels/BaseLevel/BaseLevel.gd" id="5"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 
-uniform vec4 color : hint_color = vec4(0.35, 0.48, 0.95, 1.0);
+uniform vec4 color : source_color = vec4(0.35, 0.48, 0.95, 1.0);
 uniform float noise_scale = 20.0;
 uniform float alpha_power = 2.0;
 uniform int OCTAVES = 1;
@@ -54,48 +54,47 @@ void fragment() {
 	COLOR = vec4(color.rgb, pow(final, alpha_power) * color.a);
 }"
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/color = Color( 0.172549, 0.184314, 0.235294, 1 )
-shader_param/noise_scale = 3.0
-shader_param/alpha_power = 2.0
-shader_param/OCTAVES = 3
-shader_param/TIME_FACTOR = 0.3
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("1")
+shader_parameter/color = Color(0.172549, 0.184314, 0.235294, 1)
+shader_parameter/noise_scale = 3.0
+shader_parameter/alpha_power = 2.0
+shader_parameter/OCTAVES = 3
+shader_parameter/TIME_FACTOR = 0.3
 
-[sub_resource type="NoiseTexture" id=3]
+[sub_resource type="NoiseTexture2D" id="3"]
 seamless = true
 
 [node name="BaseLevel" type="Node2D"]
-script = ExtResource( 5 )
+script = ExtResource("5")
 
 [node name="Background" type="Polygon2D" parent="."]
-material = SubResource( 2 )
-texture = SubResource( 3 )
-polygon = PoolVector2Array( 384, 64, 128, 320, 128, 576, 256, 576, 384, 448, 640, 448, 768, 576, 896, 576, 896, 320, 640, 64 )
+material = SubResource("2")
+texture = SubResource("3")
+polygon = PackedVector2Array(384, 64, 128, 320, 128, 576, 256, 576, 384, 448, 640, 448, 768, 576, 896, 576, 896, 320, 640, 64)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource( 4 )]
+[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource("4")]
 visible = false
 
 [node name="MapTiles" type="TileMap" parent="."]
-tile_set = ExtResource( 1 )
-format = 1
-tile_data = PoolIntArray( 5, 5, 0, 6, 1, 0, 8, 1, 0, 10, 6, 0, 65540, 16, 0, 65546, 17, 0, 196610, 16, 0, 196620, 17, 0, 262145, 5, 0, 262158, 6, 0, 327681, 2, 0, 327694, 3, 0, 458753, 2, 0, 458756, 18, 0, 458758, 20, 0, 458760, 20, 0, 458762, 15, 0, 458766, 3, 0, 589825, 4, 0, 589826, 20, 0, 589828, 19, 0, 589835, 4, 0, 589836, 20, 0, 589838, 19, 0 )
+tile_set = ExtResource("1")
+format = 2
+layer_0/tile_data = PackedInt32Array(5, 4, 0, 6, 0, 0, 8, 0, 0, 10, 5, 0, 65540, 15, 0, 65546, 16, 0, 196610, 15, 0, 196620, 16, 0, 262145, 4, 0, 262158, 5, 0, 327681, 1, 0, 327694, 2, 0, 458753, 1, 0, 458756, 17, 0, 458758, 19, 0, 458760, 19, 0, 458762, 14, 0, 458766, 2, 0, 589825, 3, 0, 589826, 19, 0, 589828, 18, 0, 589835, 3, 0, 589836, 19, 0, 589838, 18, 0)
 
 [node name="Lights" type="Node2D" parent="."]
 
-[node name="SimpleLight" parent="Lights" instance=ExtResource( 2 )]
-position = Vector2( 512, 64 )
+[node name="SimpleLight" parent="Lights" instance=ExtResource("2")]
+position = Vector2(512, 64)
 rotation = 3.14159
 strength = 1.5
 direction = 1
 
-[node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( 512, 416 )
+[node name="Player" parent="." instance=ExtResource("3")]
+position = Vector2(512, 416)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-current = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color( 0.0823529, 0.0784314, 0.0745098, 1 )
+color = Color(0.0823529, 0.0784314, 0.0745098, 1)

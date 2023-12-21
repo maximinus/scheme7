@@ -1,6 +1,0 @@
-{
-	"dialog": ["Let's start. AIRW-7, are your communication channels open?",
-			   "That's great. Your systems seem to have booted correctly, so we'll start with some simple training.\nWe need to ensure everything works before the start of your mission.\nThis shouldn't take long.",
-			   "Shortly your sensors will transfer you to a simulated world environment.\nAt this stage yopu will only have control of the lights",
-			   "Read the mission objectives on the bottom right and complete this trivial task\n. Press the enter key to start simulation"]
-}
