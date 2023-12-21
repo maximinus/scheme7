@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://ccegau6ge2f3w"]
+
+[ext_resource type="Script" path="res://scenes/TitleScreen/intro_trail.gd" id="1_6y8lj"]
+[ext_resource type="Shader" path="res://scenes/TitleScreen/trail_ball.gdshader" id="1_0358f"]
+[ext_resource type="Texture2D" uid="uid://bcgu0x7nypdvk" path="res://gfx/title_screen/particle.png" id="1_kds85"]
+[ext_resource type="Shader" path="res://scenes/TitleScreen/intro_trail.gdshader" id="2_s01ew"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xk632"]
+resource_local_to_scene = true
+shader = ExtResource("1_0358f")
+shader_parameter/ball_color = Color(1, 0.145098, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dy126"]
+resource_local_to_scene = true
+shader = ExtResource("2_s01ew")
+shader_parameter/size = 200.0
+shader_parameter/max_length = 500.0
+shader_parameter/trail_color = Color(1, 0.145098, 0, 1)
+
+[node name="IntroTrail" type="Node2D"]
+script = ExtResource("1_6y8lj")
+
+[node name="Ball" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_xk632")
+texture = ExtResource("1_kds85")
+
+[node name="Trail" type="Line2D" parent="."]
+material = SubResource("ShaderMaterial_dy126")
+points = PackedVector2Array(0, 0, 0, 0)
+width = 64.0
+texture_mode = 2

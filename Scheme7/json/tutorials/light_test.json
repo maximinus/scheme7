@@ -1,0 +1,9 @@
+{
+    "speaker": "Test Engineer",
+    "dialogs": ["Press <Enter> to move this dialog forward.",
+				"First, test the light subsystem.",
+				"You can see the objectives in the bottom right.",
+				"Press the keys as described.",
+				"The tutorial will automatically end."]
+}
+

@@ -86,6 +86,8 @@ func addInitialScenes():
 	# run when the game starts. This sets up the tutorial scenes and dialog
 	# If a plain dialog scene is run, it needs some dialog
 	# thus if a line is plain json, it is just dialog and needs a dialog scene
-	var first_scenes = ['/tutorials/pre_light_test.json',
-						'res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.tscn']
+	var first_scenes = ['tutorials/pre_light_test.json',
+						'res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.tscn',
+						'tutorials/pre_engine_test.json',
+						'res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.tscn']
 	addScenes(first_scenes)

@@ -11,9 +11,6 @@ This next version is 0.3
 
 The goal is to complete the training missions. For this, we need to do the following:
 
-    Manage moving between scenes
-    The route through scenes and dialogs should be in some external list
-    The tutorial missions and levels are their own scenes, together with the end level conditions
     The tutorial missions need to cover:
         Lights
         Engines
@@ -22,15 +19,12 @@ The goal is to complete the training missions. For this, we need to do the follo
 
 
 The immediate tasks required to fulfill the above:
-
-	
+	Add a tutorial misson
+		"move to area"
+		"move to landing area"
+		"use guns to destroy something"
+		"pick up orb and move up"
 	The dialogs must be loaded by the scenes
-	
-	Rename folder and remove Godot v3 folder
-	Remove music from git repository
-	Remove files not currently used
-	Make a new v03 branch and work on that
-	Consolidate the TODO files we have
 
 
 Long term plan
@@ -99,6 +93,11 @@ New features since November 2023:
 	Add glitch and slight CRT to dialog screen
 	Make start screen set up first tutorial scenes and dialogs
 	Make scene transitions work
+	Rename folder and remove Godot v3 folder
+	Remove music from git repository
+	Remove files not currently used
+	Make a new v03 branch and work on that
+	Consolidate the TODO files we have
 
 Bug fixes since November 2023:
 	Enter button not shown

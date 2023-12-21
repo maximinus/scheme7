@@ -1,0 +1,6 @@
+{
+    "speaker": "Test Engineer",
+    "dialogs": ["The next test is also simple.\nUse <W> to fire the engine and reach the area highlighted.",
+                "The test will be repeated until you have succeeded.\nEven you will pass this, eventually."]
+}
+

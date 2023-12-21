@@ -1,0 +1,6 @@
+{
+    "speaker": "Test Engineer",
+    "dialogs": ["Welcome to basic testing.\nThis test is designed to familiarise yourself with your new ship.",
+                "We will start with a simple test of the ships lighting.\nPlease follow instructions as directed"]
+}
+

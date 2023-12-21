@@ -2,6 +2,7 @@ extends Node2D
 
 var index: int
 var player_start: Vector2
+var dialog_parts: Array
 var ship_landed: bool
 
 func _ready():
@@ -9,18 +10,21 @@ func _ready():
 	index = 0
 	player_start = $Player.position
 	ship_landed = false
+	dialog_parts = Dialog.loadDialog('tutorials/engine_test.json')
+	$CanvasLayer/OverlayDialog.setup(dialog_parts)
 	$Player.connect('ship_landed', Callable(self, 'shipLanded'))
 	setupObjectives()
-	# setup should be from dialog
-	Globals.ship.status.landed = true
+
+func _process(_delta):
+	# advance dialog if enter pressed
+	if Input.is_action_just_pressed('Enter'):
+		$CanvasLayer/OverlayDialog.next()
 
 func setupObjectives():
 	var texts = []
 	for i in objectives:
 		texts.append(i[0])
-	Globals.level.objectives = texts
-	Globals.level.callback = funcref(self, 'testObjectives')
-	$CanvasLayer/Objectives.setup()
+	$CanvasLayer/Objectives.setup(objectives)
 
 func testObjectives() -> bool:
 	# returns true if a mission objective completes
@@ -62,9 +66,9 @@ func landOnLander() -> bool:
 # finally, we need dump the results out here into an array
 # the second entry to the array is the function that checks
 var objectives = [
-	['Take Off [W]', 	funcref(self, 'takeOff')],
-	['Move Right',		funcref(self, 'moveRight')],
-	['Land on lander',	funcref(self, 'landOnLander')]
+	['Take Off [W]', 	Callable(self, 'takeOff')],
+	['Move Right',		Callable(self, 'moveRight')],
+	['Land on lander',	Callable(self, 'landOnLander')]
 ]
 
 func _on_Objectives_mission_complete():

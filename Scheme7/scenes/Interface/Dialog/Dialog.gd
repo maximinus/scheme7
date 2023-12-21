@@ -68,4 +68,4 @@ func stopAnimation():
 
 func _on_Timer_timeout():
 	# we are done, move on to the next scene
-	Scenes.moveToTransition()
+	Scenes.moveToNextScene()
