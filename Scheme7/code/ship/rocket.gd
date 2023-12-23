@@ -2,7 +2,7 @@ extends Node
 
 class_name Rocket
 
-const ROCKET_FORCE: float = 1.6
+const ROCKET_FORCE: float = 2.6
 
 var fuel = FuelTank.new()
 var temp = RocketTemperature.new(0.0, 0.0)

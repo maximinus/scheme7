@@ -23,10 +23,23 @@ curve = SubResource("1")
 direction = Vector3(0, 1, 0)
 spread = 5.0
 gravity = Vector3(0, 0, 0)
+initial_velocity_min = 70.0
+initial_velocity_max = 70.0
 scale_curve = SubResource("2")
+attractor_interaction_enabled = false
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("2")
+
+[node name="LeftWing" type="RayCast2D" parent="."]
+position = Vector2(-22, 24)
+target_position = Vector2(0, 5)
+collide_with_areas = true
+
+[node name="RightWing" type="RayCast2D" parent="."]
+position = Vector2(22, 24)
+target_position = Vector2(0, 5)
+collide_with_areas = true
 
 [node name="Flame" type="Node2D" parent="."]
 position = Vector2(0, 17)
@@ -36,12 +49,14 @@ amount = 12
 process_material = SubResource("3")
 texture = ExtResource("3")
 lifetime = 0.2
+local_coords = true
 
 [node name="InnerParticle" type="GPUParticles2D" parent="Flame"]
 amount = 12
 process_material = SubResource("3")
 texture = ExtResource("4")
 lifetime = 0.15
+local_coords = true
 
 [node name="Image" type="Sprite2D" parent="."]
 texture = ExtResource("11")

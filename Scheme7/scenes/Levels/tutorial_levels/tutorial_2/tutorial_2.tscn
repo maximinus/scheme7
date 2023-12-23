@@ -113,7 +113,7 @@ position = Vector2(944, 576)
 strength = 1.5
 
 [node name="Player" parent="." instance=ExtResource("2")]
-position = Vector2(512, 423.95)
+position = Vector2(512, 360)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 

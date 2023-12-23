@@ -29,7 +29,7 @@ func _init(r, b, s, g):
 	shield = s
 	gun = g
 	status = Status.new()
-		
+
 func calculateSystemFailure(_speed: float, _pos: Vector2) -> void:
 	pass
 
