@@ -1,3 +1,6 @@
+res://scenes/LevelObjects/LimpitGun
+res://scenes/Levels/tutorial_levels/tutorial_3_shoot
+res://scenes/Levels/tutorial_levels/tutorial_1
 res://scenes/Levels/tutorial_levels/tutorial_2
 res://scenes/Levels/tutorial_levels
 res://gfx/tiles
@@ -9,7 +12,6 @@ res://scenes/SceneTransitions/Static
 res://scenes
 res://gfx/fonts
 res://scenes/PlayerUI/MissionObjectives/Objective
-res://scenes/Levels/tutorial_levels/tutorial_1
 res://scenes/PlayerUI/DeathNotice
 res://scenes/Animations/Teleport
 res://scenes/PlayerUI/Pause

@@ -1,22 +1,5 @@
 extends Node2D
 
-# example of a level - in this case used for tutorials
-# it may or may not need some documentation, which is loaded in _ready
-# you need some objectives; they are hard-coded as functions that return
-# true or false if they have been passed, and these are put in a list as
-# can be seen in "objectives" as below
-# Finally, attach the callback _on_Objectives_mission_complete to fire
-# the "mission complete" animation
-# Everything else is thus handled for you
-
-# For making the level, you need to:
-# 1: Re-make the background so the shader covers the level
-# 2: Add the maptiles as required
-# 3: Add objects to level; typically grouped, as for example "lights" here
-# 4: Save this file as a new file in a new place
-# 5: Remove the code attached to the root node and add a new one
-#   (you can cut and paste much of this code)
-
 var index: int
 var dialog_parts: Array
 

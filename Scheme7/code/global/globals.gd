@@ -1,5 +1,7 @@
 extends Node
 
+const SHIP_SIZE: Vector2 = Vector2(48.0, 48.0)
+
 # outside influences need to instance this ship and level
 class GameWorld:
 	# the world outside the player

@@ -89,5 +89,7 @@ func addInitialScenes():
 	var first_scenes = ['tutorials/pre_light_test.json',
 						'res://scenes/Levels/tutorial_levels/tutorial_1/tutorial_1.tscn',
 						'tutorials/pre_engine_test.json',
-						'res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.tscn']
+						'res://scenes/Levels/tutorial_levels/tutorial_2/tutorial_2.tscn',
+						'tutorials/pre_shooting_test.json',
+						'res://scenes/Levels/tutorial_levels/tutorial_3_shoot/tutorial_3_shoot.tscn']
 	addScenes(first_scenes)

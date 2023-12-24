@@ -34,11 +34,13 @@ script = ExtResource("2")
 [node name="LeftWing" type="RayCast2D" parent="."]
 position = Vector2(-22, 24)
 target_position = Vector2(0, 5)
+hit_from_inside = true
 collide_with_areas = true
 
 [node name="RightWing" type="RayCast2D" parent="."]
 position = Vector2(22, 24)
 target_position = Vector2(0, 5)
+hit_from_inside = true
 collide_with_areas = true
 
 [node name="Flame" type="Node2D" parent="."]

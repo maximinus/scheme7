@@ -15,11 +15,9 @@ func _process(_delta):
 			paused = true
 			$BlurFilter.show()
 			$Sprite2D.show()
-			emit_signal('paused')
 			get_tree().paused = true
 		else:
 			paused = false
 			get_tree().paused = false
 			$BlurFilter.hide()
 			$Sprite2D.hide()
-			emit_signal('unpaused')

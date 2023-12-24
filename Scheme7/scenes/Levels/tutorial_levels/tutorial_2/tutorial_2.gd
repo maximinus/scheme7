@@ -45,7 +45,7 @@ func takeOff() -> bool:
 	# vertical speed above some value, and not landed
 	if Globals.ship.status.landed == true:
 		return false
-	if $Player.velocity.y < -50.0:
+	if abs($Player.velocity.y) > 0.6:
 		return true
 	return false
 
@@ -57,11 +57,11 @@ func moveRight() -> bool:
 		return true
 	return false
 
-func shipLanded():
-	ship_landed = true
-
 func landOnLander() -> bool:
-	return ship_landed
+	if Globals.ship.status.landed == false:
+		return false
+	# get the global position of the lander
+	return $Landers/Lander.shipOnLander($Player.global_position)
 
 # finally, we need dump the results out here into an array
 # the second entry to the array is the function that checks
@@ -70,7 +70,6 @@ var objectives = [
 	['Move Right',		Callable(self, 'moveRight')],
 	['Land on lander',	Callable(self, 'landOnLander')]
 ]
-
-func _on_Objectives_mission_complete():
+func _on_objectives_mission_complete():
 	$CanvasLayer/MissionComplete.show()
 	$CanvasLayer/MissionComplete.playAnim()

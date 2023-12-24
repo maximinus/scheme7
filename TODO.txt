@@ -19,10 +19,7 @@ The goal is to complete the training missions. For this, we need to do the follo
 
 
 The immediate tasks required to fulfill the above:
-	Fix the landing code so it actually works
 	Add a tutorial misson
-		"move to area"
-		"move to landing area"
 		"use guns to destroy something"
 		"pick up orb and move up"
 	The dialogs must be loaded by the scenes
@@ -101,6 +98,8 @@ New features since November 2023:
 	Consolidate the TODO files we have
 	Massive improvement to ship flame
 	Simplified base movement code
+	Fixed the landing code so it actually works
+	Added new tutorial mission "Move to landing zone"
 
 Bug fixes since November 2023:
 	Enter button not shown

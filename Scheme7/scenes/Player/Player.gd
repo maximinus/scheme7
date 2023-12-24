@@ -25,10 +25,6 @@ var ship_velocity: Vector2 = Vector2(0, 0)
 
 # turned by hitting something
 var turning: float = 0.0
-#var landing: bool = false
-#var landed: bool = false
-#var takeoff: bool = false
-#var electrified: bool = false
 var processing: bool = false
 var electric_meet_force: Vector2 = Vector2(0.0, 0.0)
 
@@ -39,6 +35,7 @@ var ship
 func _ready() -> void:
 	randomize()
 	ship = Globals.ship
+	ship.status.landed = true
 
 func reset() -> void:
 	ship_velocity = Vector2(0.0, 0.0)
@@ -48,6 +45,7 @@ func reset() -> void:
 	electric_meet_force = Vector2(0.0, 0.0)
 	$Image.frame = 0
 	ship.reset()
+	ship.status.landed = true
 
 func _process(delta: float) -> void:
 	# update general access area
@@ -224,6 +222,9 @@ func _physics_process(delta) -> void:
 func isLanding() -> bool:
 	# the conditions for landing are
 	# no need to check casts as we have just collided
+	# both casts need to be on something
+	if not $LeftWing.is_colliding() or not $RightWing.is_colliding():
+		return false
 	# the speed must be low
 	if velocity.length() > LANDING_MAX_SPEED:
 		return false

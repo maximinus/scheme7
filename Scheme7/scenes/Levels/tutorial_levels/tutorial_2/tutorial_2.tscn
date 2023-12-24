@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://du05w5f78xwh3" path="res://scenes/PlayerUI/Pause/PauseScreen.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/LevelObjects/SimpleLight/SimpleLight.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://b1yeu7c1c0dsb" path="res://scenes/Interface/Dialog/overlay_dialog.tscn" id="5_tyn7f"]
-[ext_resource type="PackedScene" path="res://scenes/LevelObjects/Lander/Lander.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://ceaeqlvprxd2l" path="res://scenes/LevelObjects/Lander/Lander.tscn" id="6"]
 [ext_resource type="TileSet" uid="uid://i8xyuixoae02" path="res://gfx/tiles/godot_4_tileset.tres" id="6_ddj5s"]
 [ext_resource type="PackedScene" uid="uid://cyiyvv24e8gsh" path="res://scenes/PlayerUI/MissionComplete/MissionComplete.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dqbfngx8h1y4l" path="res://scenes/PlayerUI/MissionObjectives/MissionObjectives.tscn" id="8"]
@@ -85,7 +85,6 @@ polygon = PackedVector2Array(128, 576, 256, 576, 384, 448, 640, 448, 768, 576, 1
 visible = false
 
 [node name="PauseScreen" parent="CanvasLayer" instance=ExtResource("3")]
-visible = false
 
 [node name="OverlayDialog" parent="CanvasLayer" instance=ExtResource("5_tyn7f")]
 
@@ -113,7 +112,7 @@ position = Vector2(944, 576)
 strength = 1.5
 
 [node name="Player" parent="." instance=ExtResource("2")]
-position = Vector2(512, 360)
+position = Vector2(512, 424)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
@@ -125,3 +124,5 @@ position = Vector2(1360, 448)
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
 color = Color(0.262745, 0.278431, 0.435294, 1)
+
+[connection signal="mission_complete" from="CanvasLayer/Objectives" to="." method="_on_objectives_mission_complete"]

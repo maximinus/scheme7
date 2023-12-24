@@ -1,39 +1,34 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://ceaeqlvprxd2l"]
 
-[ext_resource path="res://gfx/objects/landing_pad/landing.png" type="Texture2D" id=1]
-[ext_resource path="res://gfx/lights/landing_light.png" type="Texture2D" id=2]
-[ext_resource path="res://scenes/LevelObjects/Lander/Lander.gd" type="Script" id=3]
+[ext_resource type="Texture2D" uid="uid://bnropdcwqtmbs" path="res://gfx/objects/landing_pad/landing.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://fgu3h6wkuo5x" path="res://gfx/lights/landing_light.png" id="2"]
+[ext_resource type="Script" path="res://scenes/LevelObjects/Lander/Lander.gd" id="3"]
 
-[sub_resource type="RectangleShape2D" id=1]
-size = Vector2( 53, 2.5 )
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_donnu"]
+size = Vector2(16, 45)
 
-[sub_resource type="RectangleShape2D" id=2]
-size = Vector2( 8, 22.5 )
-
-[node name="Lander" type="StaticBody2D" groups=[
-"lander",
-]]
-script = ExtResource( 3 )
+[node name="Lander" type="StaticBody2D" groups=["lander"]]
+script = ExtResource("3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource( 1 )
+texture = ExtResource("1")
 centered = false
-offset = Vector2( 0, -49 )
+offset = Vector2(0, -50)
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-texture = ExtResource( 2 )
-offset = Vector2( 44, -20 )
 energy = 2.0
+texture = ExtResource("2")
+offset = Vector2(44, -20)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="FloorCollision" type="CollisionPolygon2D" parent="."]
 visible = false
-position = Vector2( 55, -2.5 )
-shape = SubResource( 1 )
+position = Vector2(55, -2.5)
+polygon = PackedVector2Array(-55, 2.5, -52, -2.5, 52, -2.5, 55, 2.5)
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
 visible = false
-position = Vector2( 92, -27.5 )
-shape = SubResource( 2 )
+position = Vector2(92, -27.5)
+shape = SubResource("RectangleShape2D_donnu")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.5
@@ -41,10 +36,11 @@ autostart = true
 
 [node name="DownloadLine" type="Line2D" parent="."]
 visible = false
-points = PackedVector2Array( 84, -26, 50, -26 )
+points = PackedVector2Array(84, -26, 50, -26)
 width = 3.0
 
 [node name="DataStartSFX" type="AudioStreamPlayer" parent="."]
 
 [node name="DataTransferSFX" type="AudioStreamPlayer" parent="."]
+
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
